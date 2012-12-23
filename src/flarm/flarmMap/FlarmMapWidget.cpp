@@ -1,238 +1,101 @@
-#include "FlarmMapWidget.h"
+#include "src/flarm/flarmMap/FlarmMapWidget.h"
 
-#include <cassert>
+//#include <cassert>
 #include <iostream>
 
 #include <QModelIndex>
 #include <QResizeEvent>
 #include <QKeyEvent>
+#include <QPainter>
+#include <QPen>
+#include <QBrush>
 
-#include <qwt_plot_grid.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_marker.h>
-#include <qwt_plot_panner.h>
-#include <qwt_plot_magnifier.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_symbol.h>
-#include <qwt_series_data.h>
+// FIXME: must emit viewChanged, and only when appropriate
 
+#include "src/util/qRect.h"
 #include "src/flarm/FlarmRecord.h"
 #include "src/numeric/Velocity.h"
-#include "src/numeric/GeoPosition.h"
 #include "src/flarm/FlarmList.h"
-#include "src/util/qHash.h"
+//#include "src/util/qHash.h"
 #include "src/i18n/notr.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/util/qPointF.h"
-#include "src/util/qString.h"
+//#include "src/util/qString.h"
 #include "src/flarm/flarmMap/KmlReader.h"
-#include "src/flarm/flarmMap/Kml.h"
-#include "src/qwt/SkPlotMagnifier.h"
-#include "src/qwt/SkPlotPanner.h"
+#include "src/util/qPainter.h"
+
+
+// **************************
+// ** StaticMarker methods **
+// **************************
+
+FlarmMapWidget::StaticMarker::StaticMarker (const GeoPosition &position, const QString &text, const QColor &backgroundColor):
+	position (position), text (text), backgroundColor (backgroundColor)
+{
+}
+
+FlarmMapWidget::StaticMarker::StaticMarker (const Kml::Marker &marker, const Kml::Style &style):
+	position (marker.position), text (marker.name), backgroundColor (style.labelColor)
+{
+}
+
+// *************************
+// ** StaticCurve methods **
+// *************************
+
+FlarmMapWidget::StaticCurve::StaticCurve (const QVector<GeoPosition> &points, const QString &name, const QPen &pen):
+	points (points), name (name), pen (pen)
+{
+}
+
+FlarmMapWidget::StaticCurve::StaticCurve (const Kml::Path &path, const Kml::Style &style):
+	points (path.positions.toVector ()), name (path.name), pen (style.linePen ())
+{
+}
+
+FlarmMapWidget::StaticCurve::StaticCurve (const Kml::Polygon &polygon, const Kml::Style &style):
+	points (polygon.positions.toVector ()), name (polygon.name), pen (style.linePen ())
+{
+
+}
+
+// *******************
+// ** Image methods **
+// *******************
+
+FlarmMapWidget::Image::Image (const Kml::GroundOverlay &groundOverlay)
+{
+	// TODO error handling - .load returns false
+	pixmap.load (groundOverlay.filename);
+
+	northEast=GeoPosition (groundOverlay.north, groundOverlay.east);
+	southWest=GeoPosition (groundOverlay.south, groundOverlay.west);
+	northWest=GeoPosition (groundOverlay.north, groundOverlay.west);
+	southEast=GeoPosition (groundOverlay.south, groundOverlay.east);
+}
+
 
 // ******************
 // ** Construction **
 // ******************
 
-FlarmMapWidget::FlarmMapWidget (QWidget *parent): QwtPlot (parent),
-	climbColor   (  0, 255, 0, 127),
-	descentColor (255, 255, 0, 127),
+FlarmMapWidget::FlarmMapWidget (QWidget *parent): QFrame (parent),
+	_ownPositionColor (255,   0, 0, 127),
+	_climbColor       (  0, 255, 0, 127),
+	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	ownPositionMarker (NULL),
-	kmlStatus (kmlNone)
+	kmlStatus (kmlNone),
+	_center_local (0, 0), _radius (2000),
+	scrollDragging (false), zoomDragging (false),
+	_keyboardZoomDoubleCount (8), _mouseDragZoomDoubleDistance (50),
+	_mouseWheelZoomDoubleAngle (Angle::fromDegrees (120))
 {
-	// Setup the axes. Note that the aspect ratio may not be correct. This will
-	// be rectified by the first resize event we'll receive before the widget
-	// is shown.
-	double displayRadius=2000;
-	setAxisScale (QwtPlot::yLeft  , -displayRadius, displayRadius);
-	setAxisScale (QwtPlot::xBottom, -displayRadius, displayRadius);
-
-	// Setup the panner
-	QwtPlotPanner* panner = new SkPlotPanner (canvas ());
-	panner->setAxisEnabled (QwtPlot::yLeft, true);
-	panner->setAxisEnabled (QwtPlot::xBottom, true);
-	panner->setMouseButton (Qt::LeftButton);
-	panner->setEnabled (true);
-	connect (panner, SIGNAL (moved ()), this, SIGNAL (viewChanged ()));
-
-	// Setup the magnifier
-	QwtPlotMagnifier *magnifier = new SkPlotMagnifier (canvas ());
-	magnifier->setMouseButton (Qt::MidButton);
-	magnifier->setAxisEnabled (QwtPlot::yRight, true);
-	magnifier->setAxisEnabled (QwtPlot::xBottom, true);
-	// Positive value - mouse wheel down (back) means zooming out. This is the
-	// convention that many other applications, including Firefox and Gimp, use.
-	magnifier->setMouseFactor (1.05);
-	magnifier->setWheelFactor (1.1);
-	// Note that we cannot use QwtPlotMagnifier's keyboard zoom functionality
-	// because that also checks the modifier keys and these may be different for
-	// different keyboard layouts; for example, on the American layout the plus
-	// key requires the shift modifier. Also, this allows only on key each for
-	// zooming in and out. We therefore implement keyboard zooming ourselves.
-	// This requires the widget's focusPolicy to be set. As long as
-	// this->canvas()'s focusPolicy is not set, QwtPlotMagnifier's keyboard
-	// zooming won't get in the way. To be sure, we set the keyFactor to 1.
-	magnifier->setKeyFactor (1);
-	magnifier->setEnabled (true);
-	connect (magnifier, SIGNAL (rescaled ()), this, SIGNAL (viewChanged ()));
-
-	// Add the grid
-	QwtPlotGrid* grid = new QwtPlotGrid ();
-	grid->attach (this);
-
-	// Add static markers
-	setOwnPositionLabel ("Start", QColor (255, 0, 0, 127));
-
-	updateStaticData ();
-	refreshFlarmData ();
-	replot ();
+	_ownPositionText=tr ("Start"); // FIXME proper English word
 }
 
 FlarmMapWidget::~FlarmMapWidget ()
 {
 }
-
-// **************************
-// ** Generic axis methods **
-// **************************
-
-/**
- * Gets the coordinates of the (primary) axes as QRectF
- *
- * @return
- */
-QRectF FlarmMapWidget::getAxesRect () const
-{
-	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-
-	double left  =xScaleDiv->lowerBound ();
-	double right =xScaleDiv->upperBound ();
-	double bottom=yScaleDiv->lowerBound ();
-	double top   =yScaleDiv->upperBound ();
-
-	QPointF topLeft (left, top);
-	QPointF bottomRight (right, bottom);
-	QRectF axesRect (topLeft, bottomRight);
-
-	return axesRect;
-}
-
-/**
- * Gets the current radius of the (primary) axes
- *
- * The axis radius is half the diameter of the axes range. For example, if the
- * range of an axis is from -1 to +5, the radius is +3. The radius is always
- * positive.
- *
- * @return a QPointF containing the radius of the (bottom) x and (left) y axis
- */
-QPointF FlarmMapWidget::getAxesRadius () const
-{
-	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-
-	double xAxisRange = (xScaleDiv->upperBound () - xScaleDiv->lowerBound ())/2;
-	double yAxisRange = (yScaleDiv->upperBound () - yScaleDiv->lowerBound ())/2;
-
-	return QPointF (xAxisRange, yAxisRange);
-}
-
-/**
- * Gets the current center of the (primary) axes
- *
- * The axes center is middle of the axes range. For example, if the range of an
- * axis is from -1 to +5, the center is +2. The center can be positive or
- * negative.
- *
- * @return a QPointF containing the center of the (bottom) x and (left) y axis
- */
-QPointF FlarmMapWidget::getAxesCenter () const
-{
-	const QwtScaleDiv *xScaleDiv = axisScaleDiv (QwtPlot::xBottom);
-	const QwtScaleDiv *yScaleDiv = axisScaleDiv (QwtPlot::yLeft);
-
-	double xAxisCenter = (xScaleDiv->upperBound () + xScaleDiv->lowerBound ())/2;
-	double yAxisCenter = (yScaleDiv->upperBound () + yScaleDiv->lowerBound ())/2;
-
-	return QPointF (xAxisCenter, yAxisCenter);
-}
-
-/**
- * Sets the current axes, given the center and radius in both directions
- *
- * Note that this method does not emit the viewChanged signal because the graph
- * has not been replotted, so accessing its properties (e. g. the axes) may
- * result in an error.
- *
- * @param center the center for the (bottom) x and (left) y axis
- * @param radius the radius for the (bottom) x and (left) y axis
- * @see getAxesRadius
- * @see getAxesCenter
- */
-void FlarmMapWidget::setAxes (const QPointF &center, const QPointF &radius)
-{
-	setAxisScale (QwtPlot::xBottom, center.x () - radius.x (), center.x () + radius.x ());
-	setAxisScale (QwtPlot::yLeft  , center.y () - radius.y (), center.y () + radius.y ());
-}
-
-/**
- * Sets the current axes, given the radius, while retaining the center
- *
- * @param radius the radius for the (bottom) x and (left) y axis
- * @see setAxes
- */
-void FlarmMapWidget::setAxesRadius (const QPointF &radius)
-{
-	setAxes (getAxesCenter (), radius);
-}
-
-/**
- * Sets the current axes, given the center, while retaining the radius
- *
- * @param center the center for the (bottom) x and (left) y axis
- * @see setAxes
- */
-void FlarmMapWidget::setAxesCenter (const QPointF &center)
-{
-	setAxes (center, getAxesRadius ());
-}
-
-/**
- * Sets the current axes, given the radius, while retaining the center
- *
- * This is a convenience method for setAxesRadius (const QPointF &radius).
- *
- * @param xRadius the radius for the (bottom) x axis
- * @param yRadius the radius for the (left) y axis
- */
-void FlarmMapWidget::setAxesRadius (double xRadius, double yRadius)
-{
-	setAxesRadius (QPointF (xRadius, yRadius));
-}
-
-/**
- * A convenience method for setAxesRadius
- *
- * @param factor the zoom factor; a positive zoom factor sets a smaller radius,
- *               thereby enlarging the plot
- */
-void FlarmMapWidget::zoomAxes (double factor)
-{
-	setAxesRadius (getAxesRadius ()/factor);
-}
-
-void FlarmMapWidget::moveAxesCenter (const QPointF &offset)
-{
-	setAxesCenter (getAxesCenter ()+offset);
-}
-
-void FlarmMapWidget::moveAxesCenter (double xOffset, double yOffset)
-{
-	moveAxesCenter (QPointF (xOffset, yOffset));
-}
-
 
 // ****************
 // ** GUI events **
@@ -240,50 +103,41 @@ void FlarmMapWidget::moveAxesCenter (double xOffset, double yOffset)
 
 void FlarmMapWidget::keyPressEvent (QKeyEvent *event)
 {
-	// Note that we don't use the magnifier for scaling; first, its rescale()
-	// method is protected and second, we'd have to store a pointer to it.
-
-	const double keyboardZoomFactor=1.1;
+	// Note that we don't call event->accept (). The documentation for QWidget::
+	// keyPressEvent recommends that implementations do not call the superclass
+	// method if they act upon the key.
+	const double keyboardZoomFactor=pow (2, 1/_keyboardZoomDoubleCount);
 
 	switch (event->key ())
 	{
-		case Qt::Key_Plus : case Qt::Key_BracketLeft : case Qt::Key_Equal:
-			zoomAxes (  keyboardZoomFactor); replot (); emit viewChanged (); break;
-		case Qt::Key_Minus: case Qt::Key_BracketRight:
-			zoomAxes (1/keyboardZoomFactor); replot (); emit viewChanged (); break;
+		// Zoom in
+		case Qt::Key_Plus:        zoom (keyboardZoomFactor); break;
+		case Qt::Key_BracketLeft: zoom (keyboardZoomFactor); break;
+		case Qt::Key_Equal:       zoom (keyboardZoomFactor); break;
 
-		case Qt::Key_Right: case Qt::Key_L: moveAxesCenter ( 0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
-		case Qt::Key_Left : case Qt::Key_H: moveAxesCenter (-0.1*min (getAxesRadius ()), 0); replot (); emit viewChanged (); break;
-		case Qt::Key_Up   : case Qt::Key_K: moveAxesCenter (0,  0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
-		case Qt::Key_Down : case Qt::Key_J: moveAxesCenter (0, -0.1*min (getAxesRadius ())); replot (); emit viewChanged (); break;
+		// Zoom out
+		case Qt::Key_Minus:        zoom (1/keyboardZoomFactor); break;
+		case Qt::Key_BracketRight: zoom (1/keyboardZoomFactor); break;
 
-		default:
-			QwtPlot::keyPressEvent (event);
-			break;
+		// Scroll
+		case Qt::Key_Right: case Qt::Key_L: scroll ( 0.1*_radius, 0); break;
+		case Qt::Key_Left : case Qt::Key_H: scroll (-0.1*_radius, 0); break;
+		case Qt::Key_Up   : case Qt::Key_K: scroll (0,  0.1*_radius); break;
+		case Qt::Key_Down : case Qt::Key_J: scroll (0, -0.1*_radius); break;
+
+		// Other
+		default: QFrame::keyPressEvent (event); break;
 	}
 }
 
-void FlarmMapWidget::resizeEvent (QResizeEvent *event)
+void FlarmMapWidget::wheelEvent (QWheelEvent *event)
 {
-	// Update the display radius such that the smaller value is retained and the
-	// aspect ratio matches the widget's aspect ratio.
-
-	// Don't update the radius if the widget size is zero in either direction
-	if (width () > 0 && height () > 0)
-	{
-		double smallerRadius=min (getAxesRadius ());
-		double widgetAspectRatio = width () / (double)height ();
-
-		if (widgetAspectRatio>=1)
-			// The widget is wider than high
-			setAxesRadius (smallerRadius*widgetAspectRatio, smallerRadius);
-		else
-			// The widget is higher than wide
-			setAxesRadius (smallerRadius, smallerRadius/widgetAspectRatio);
-	}
-
-	QwtPlot::resizeEvent (event);
-	replot ();
+	// FIXME use zoom(), and zoom around the mouse wheel position
+	// Mouse wheel down (back) means zooming out. This is the convention that
+	// many other applications, including Firefox and Gimp, use.
+	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
+	_radius*=pow (2, -angle/_mouseWheelZoomDoubleAngle);
+	update ();
 }
 
 
@@ -292,16 +146,13 @@ void FlarmMapWidget::resizeEvent (QResizeEvent *event)
 // ****************
 
 /**
- * Sets the flarm list to use
+ * Sets the Flarm list to use
  *
  * If a Flarm list was set before, it is replaced by the new Flarm list. If the
  * new Flarm list is the same as before, nothing is changed. Setting the Flarm
  * list to NULL (the default) effectively disables Flarm data display.
  *
- * This method calls replot().
- *
- * @param flarmList the new Flarm list. This view does not take ownership of the
- *                  Flarm list.
+ * This view does not take ownership of the Flarm list.
  */
 void FlarmMapWidget::setFlarmList (FlarmList *flarmList)
 {
@@ -333,8 +184,7 @@ void FlarmMapWidget::setFlarmList (FlarmList *flarmList)
 		connect (this->flarmList, SIGNAL (modelReset ()), this, SLOT (modelReset ()));
 	}
 
-	refreshFlarmData ();
-	replot ();
+	update ();
 }
 
 void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
@@ -366,50 +216,42 @@ void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
  * direction in the window
  *
  * The default is north up, or upDirection=0. upDirection=90° means east up.
- *
- * This method calls replot().
  */
-void FlarmMapWidget::setOrientation (const Angle &upDirection)
+void FlarmMapWidget::setOrientation (const Angle &orientation)
 {
-	transform=QTransform ();
-	transform.rotateRadians (upDirection.toRadians ());
+	_orientation=orientation;
 
-	updateStaticData ();
-	// FIXME we just want to update them here, not refresh them
-	refreshFlarmData ();
-	replot ();
+	// Schedule a repaint
+	update ();
 }
 
 /**
  * Updates the static curves for the new position
  *
  * Call this method when the own position changes.
- *
- * This method calls replot().
  */
 void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 {
-	// Only redraw if either the reference position for the static data is
-	// invalid (i. e., we didn't draw yet), or the position changed by more
-	// than a given threshold, or the position has become invalid.
+	// Only redraw if either the current own position is invalid (i. e., we
+	// didn't draw yet), the new own position is invalid (GPS reception lost),
+	// or the position changed by more than a given threshold.
 	// The typical noise on the Flarm GPS data seems to be substantially less
-	// than 1 m. Currently, the threshold is set to 0, so the static data is
-	// redrawn every time a position is received (typically once per second).
+	// than 1 m. Currently, the threshold is set to 0, so the widget is redrawn
+	// every time a position is received (typically once per second).
 	if (
-		!this->ownPosition.isValid () ||
-		!ownPosition.isValid () ||
-		ownPosition.distanceTo (this->ownPosition)>0)
+		!_ownPosition.isValid () ||
+		! ownPosition.isValid () ||
+		ownPosition.distanceTo (_ownPosition)>0)
 	{
-		this->ownPosition=ownPosition;
-		updateStaticData ();
-		replot ();
-		emit ownPositionUpdated ();
+		_ownPosition=ownPosition;
+		update ();
+		emit ownPositionUpdated (); // FIXME what for?
 	}
 }
 
 bool FlarmMapWidget::isOwnPositionKnown () const
 {
-	return ownPosition.isValid ();
+	return _ownPosition.isValid ();
 }
 
 
@@ -418,231 +260,18 @@ bool FlarmMapWidget::isOwnPositionKnown () const
 // *****************
 
 /**
- * Adds a static curve to the list of static curves
- *
- * This method does not call updateStaticData() or replot(). You have to call it
- * yourself to update the display.
- *
- * The created marker is set to invisible initially. It will be set to visible
- * as soon as the static data is updated when an own position is receive.
- *
- * @param name a name for the curve, e. g. "airfield"
- * @param points a vector of points that make up the curve. The curve will not
- *               be closed automatically.
- * @param pen the pen to use for drawing the curve
- */
-void FlarmMapWidget::addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen)
-{
-	StaticCurve curve;
-
-	curve.name=name;
-
-	curve.points=points;
-
-	curve.data=new QwtPointSeriesData (); // Deleted by curve (FIXME really?)
-
-	curve.curve=new QwtPlotCurve (name); // Deleted by QwtPlot
-	curve.curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-	curve.curve->setPen (pen);
-	curve.curve->setData (curve.data);
-	curve.curve->setVisible (false);
-	curve.curve->attach (this);
-
-	staticCurves.append (curve);
-}
-
-/**
  * Adds, updates or removes a static marker at the origin (i. e. the own
  * position)
  *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param text the text to dsplay on the label. If empty, the label is removed.
+ * @param text the text to display at the own position. If empty, the own
+ * position is not shown.
  * @param color the background color of the label
  */
 void FlarmMapWidget::setOwnPositionLabel (const QString &text, const QColor &color)
 {
-	if (text.isEmpty ())
-	{
-		// The text is empty. Remove the label from the plot.
-		// Delete it because if we only removed it, it would be hard to tell
-		// whether we'd have to delete it in the destructor. If the marker has
-		// not yet been created, this is a noop.
-		delete ownPositionMarker;
-		ownPositionMarker=NULL;
-	}
-	else
-	{
-		// If the marker does not exist yet, create and attach it
-		if (!ownPositionMarker)
-		{
-			ownPositionMarker=new QwtPlotMarker (); // Deleted by plot or manually
-			ownPositionMarker->setValue (QPointF (0, 0));
-			ownPositionMarker->attach (this);
-		}
-
-		// Set the marker's text and color
-		QwtText qwtText (text);
-		qwtText.setBackgroundBrush (QBrush (color));
-		ownPositionMarker->setLabel (qwtText);
-	}
-}
-
-/**
- * Adds a static marker at a given position
- *
- * This method does not call updateStaticData() or replot(). You have to call it
- * yourself to update the display.
- *
- * The created marker is set to invisible initially. It will be set to visible
- * as soon as the static data is updated when an own position is receive.
- *
- * @param text the text to display on the label
- * @param color the background color of the label
- * @param point the position, in meters east and north of the own position
- */
-void FlarmMapWidget::addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color)
-{
-	StaticMarker marker;
-
-	marker.position=position;
-
-	QwtText qwtText (text);
-	qwtText.setBackgroundBrush (QBrush (color));
-
-	marker.marker=new QwtPlotMarker (); // Deleted by QwtPlot
-//	marker.marker->setRenderHint (QwtPlotItem::RenderAntialiased); // FIXME want?
-	marker.marker->setLabel (qwtText);
-	marker.marker->setVisible (false);
-	marker.marker->attach (this);
-
-	staticMarkers.append (marker);
-}
-
-/**
- * Updates the curve data structures for all static curves
- *
- * This must be called whenever the geometry of the curves as drawn on screen
- * changes, for example when the own position or the tranform changes.
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- */
-void FlarmMapWidget::updateStaticData ()
-{
-	bool valid=ownPosition.isValid ();
-
-	allStaticPoints.clear ();
-
-	// Markers
-	foreach (const StaticMarker &marker, staticMarkers)
-	{
-		if (valid)
-		{
-			QPointF point (marker.position.relativePositionTo (ownPosition));
-			QPointF transformedPoint=transform.map (point);
-			marker.marker->setValue (transformedPoint);
-			allStaticPoints.append (transformedPoint);
-		}
-		marker.marker->setVisible (valid);
-	}
-
-	// Curves
-	foreach (const StaticCurve &curve, staticCurves)
-	{
-		if (valid)
-		{
-			QPolygonF polygon (GeoPosition::relativePositionTo (curve.points, ownPosition));
-			QPolygonF transformedPolygon=transform.map (polygon);
-			curve.data->setSamples (transformedPolygon);
-			allStaticPoints.append (transformedPolygon.toList ());
-		}
-		curve.curve->setVisible (valid);
-	}
-
-}
-
-
-// ***********************************
-// ** Flarm data individual updates **
-// ***********************************
-
-/**
- * Sets the marker for a Flarm record to the "minimal" form
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param marker the marker to modify
- * @param record the Flarm record the marker is associated with
- */
-void FlarmMapWidget::updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record)
-{
-	marker->setVisible (true);
-
-	Q_UNUSED (record);
-
-	// Symbol: small blue cross
-	QwtSymbol *symbol=new QwtSymbol (); // Will be deleted by the marker
-	symbol->setStyle (QwtSymbol::Cross);
-	symbol->setSize (8);
-	symbol->setPen (QPen (Qt::blue));
-	marker->setSymbol (symbol);
-
-	// Label: none
-	marker->setLabel (QwtText ());
-}
-
-/**
- * Sets the marker for a Flarm record to the "verbose" form
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param marker the marker to modify
- * @param record the Flarm record the marker is associated with
- */
-void FlarmMapWidget::updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record)
-{
-	marker->setVisible (true);
-
-	// Symbol: none
-	marker->setSymbol (NULL);
-
-	// Label: verbose text
-	QwtText text (qnotr ("%1\n%2/%3/%4")
-		.arg (record.getRegistration ())
-		.arg (record.getRelativeAltitude ())
-		.arg (record.getGroundSpeed () / Velocity::km_h)
-		.arg (record.getClimbRate (), 0, 'f', 1));
-
-	if (record.getClimbRate () > 0.0)
-		text.setBackgroundBrush (QBrush (climbColor));
-	else
-		text.setBackgroundBrush (QBrush (descentColor));
-
-	marker->setLabel (text);
-}
-
-/**
- * Updates the trail curve for a Flarm
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param curve the crve to modify
- * @param record the Flarm record the curve is associated with
- */
-void FlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record)
-{
-	curve->setVisible (true);
-
-	// Prepare data. The data will be deleted by the curve.
-	QPolygonF polygon (record.getPreviousRelativePositions ().toVector ());
-	// Will be deleted by the curve
-	QwtPointSeriesData *data = new QwtPointSeriesData (transform.map (polygon));
-	curve->setData (data);
+	_ownPositionText=text;
+	_ownPositionColor=color;
+	update ();
 }
 
 
@@ -651,121 +280,93 @@ void FlarmMapWidget::updateTrail (QwtPlotCurve *curve, const FlarmRecord &record
 // ****************
 
 /**
- * Adds the plot data for a given Flarm record
+ * Adds a marker for a given Flarm record
  *
- * This must be called exactly once for each Flarm record after it is added.
- * updateFlarmData may only be called after this method has been called for the
- * given Flarm record.
+ * This must be called exactly once for each Flarm record after it is added. If
+ * the plane data changes subsequently, updatePlaneMarker must be called. You
+ * may only call updatePlaneMarker after addPlaneMarker has been called with
+ * the respective Flarm record.
  *
- * This method also calls updateFlarmData, so after the call to addFlarmData,
- * the data will be up to date.
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param record the new Flarm record
+ * This method also calls updatePlaneMarker.
  */
-void FlarmMapWidget::addFlarmData (const FlarmRecord &record)
+void FlarmMapWidget::addPlaneMarker (const FlarmRecord &record)
 {
-	// Create, attach and store the marker
-	QwtPlotMarker *marker = new QwtPlotMarker ();
-	marker->attach (this);
-	flarmMarkers.insert (record.getFlarmId (), marker);
-
-	// Create, attach and store the curve
-	QwtPlotCurve* curve = new QwtPlotCurve ("history");
-	curve->attach (this);
-	flarmCurves.insert (record.getFlarmId (), curve);
-
-	// Setup the curve
-	QPen pen;
-	pen.setWidth (2);
-	curve->setPen (pen);
-	curve->setRenderHint (QwtPlotItem::RenderAntialiased);
-
-	// Update the data (marker and trail)
-	updateFlarmData (record);
+	planeMarkers.insert (record.getFlarmId (), PlaneMarker ());
+	updatePlaneMarker (record);
 }
 
 /**
- * Updates the plot data (marker and curve) for a given Flarm record
+ * Updates the plane marker data for a given Flarm record
  *
- * This must be called whenever a Flarm record is updated.
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param record the updated Flarm record
+ * This method must be called whenever a Flarm record is updated. It also
+ * schedules a repaint of the widget.
  */
-void FlarmMapWidget::updateFlarmData (const FlarmRecord &record)
+void FlarmMapWidget::updatePlaneMarker (const FlarmRecord &record)
 {
-	QwtPlotMarker *marker=flarmMarkers.value (record.getFlarmId (), NULL);
-	QwtPlotCurve  *curve =flarmCurves .value (record.getFlarmId (), NULL);
+	PlaneMarker &marker=planeMarkers[record.getFlarmId ()];
 
 	// Always set the position, even if the marker is not visible
-	marker->setValue (transform.map (record.getRelativePosition ()));
+	marker.position_local=record.getRelativePosition ();
+	marker.trail_local=record.getPreviousRelativePositions ().toVector ();
 
 	switch (record.getState ())
 	{
 		case FlarmRecord::stateStarting:
 		case FlarmRecord::stateFlying:
 		case FlarmRecord::stateLanding:
-			// Verbose marker, trail
-			updateMarkerVerbose (marker, record);
-			updateTrail (curve, record);
+			marker.style=PlaneMarker::verbose;
+
+			marker.text=qnotr ("%1\n%2/%3/%4")
+				.arg (record.getRegistration ())
+				.arg (record.getRelativeAltitude ())
+				.arg (record.getGroundSpeed () / Velocity::km_h)
+				.arg (record.getClimbRate (), 0, 'f', 1);
+
+			if (record.getClimbRate () > 0.0)
+				marker.color=_climbColor;
+			else
+				marker.color=_descentColor;
+
 			break;
 		case FlarmRecord::stateOnGround:
-			// Minimal marker, no trail
-			updateMarkerMinimal (marker, record);
-			curve->setVisible (false);
+			marker.style=PlaneMarker::minimal;
 			break;
 		case FlarmRecord::stateUnknown:
 		case FlarmRecord::stateFlyingFar:
-			// No marker, no trail
-			marker->setVisible (false);
-			curve->setVisible (false);
+			marker.style=PlaneMarker::invisible;
 			break;
 		// no default
 	}
+
+	// Schedule a repaint
 }
 
 /**
- * Removes the plot data for a given Flarm record
+ * Removes the plane marker for a given Flarm record
  *
  * This must be called exactly once for each Flarm record before (!) it is
  * removed. updateFlarmData may not be called after this method has been called
- * for the given Flarm record.
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
- *
- * @param record the new Flarm record
+ * for the given Flarm record. This method also schedules a repaint of the
+ * widget.
  */
-void FlarmMapWidget::removeFlarmData (const FlarmRecord &record)
+void FlarmMapWidget::removePlaneMarker (const FlarmRecord &record)
 {
-	// Items will be detached automatically on deletion.
-	QString flarmId=record.getFlarmId ();
-	removeAndDeleteIfExists (flarmMarkers, flarmId);
-	removeAndDeleteIfExists (flarmCurves , flarmId);
+	planeMarkers.remove (record.getFlarmId ());
+	update ();
 }
 
 /**
- * Refreshes the plot data for all Flarm records in the Flarm list
+ * Refreshes the plane markers for all Flarm records in the Flarm list
  *
- * This is done by first removing all plot data and then adding the plot data
- * by calling addFlarmData for each Flarm record in the Flarm list.
+ * This is done by first removing all plane markers and then adding the plane
+ * markers by calling addPlaneMarker for each Flarm record in the Flarm list.
  *
  * This method can be called even if there is no Flarm list. All plot data will
  * still be removed and nothing will be added.
- *
- * This method does not call replot(). You have to call it yourself to update
- * the display.
  */
-void FlarmMapWidget::refreshFlarmData ()
+void FlarmMapWidget::refreshPlaneMarkers ()
 {
-	// Items will be detached automatically on deletion.
-	clearAndDelete (flarmMarkers);
-	clearAndDelete (flarmCurves);
+	planeMarkers.clear ();
 
 	// Only draw if we have a Flarm list
 	if (flarmList)
@@ -773,7 +374,7 @@ void FlarmMapWidget::refreshFlarmData ()
 		for (int i=0, n=flarmList->size (); i<n; ++i)
 		{
 			const FlarmRecord &record=flarmList->at (i);
-			addFlarmData (record);
+			addPlaneMarker (record);
 		}
 	}
 }
@@ -784,7 +385,7 @@ void FlarmMapWidget::refreshFlarmData ()
 // **********************
 
 /**
- * Called after one or more rows have been inserted into the Flarm lsit. Adds
+ * Called after one or more rows have been inserted into the Flarm list. Adds
  * the Flarm data for the new row(s).
  */
 void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end)
@@ -793,9 +394,7 @@ void FlarmMapWidget::rowsInserted (const QModelIndex &parent, int start, int end
 
 	if (flarmList)
 		for (int i=start; i<=end; ++i)
-			addFlarmData (flarmList->at (i));
-
-	replot ();
+			addPlaneMarker (flarmList->at (i));
 }
 
 /**
@@ -806,10 +405,7 @@ void FlarmMapWidget::dataChanged (const QModelIndex &topLeft, const QModelIndex 
 {
 	if (flarmList)
 		for (int i=topLeft.row (); i<=bottomRight.row (); ++i)
-			updateFlarmData (flarmList->at (i));
-
-	// Disable this to replot only when the own position changes
-	replot ();
+			updatePlaneMarker (flarmList->at (i));
 }
 
 /**
@@ -822,9 +418,7 @@ void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start,
 
 	if (flarmList)
 		for (int i=start; i<=end; ++i)
-			removeFlarmData (flarmList->at (i));
-
-	replot ();
+			removePlaneMarker (flarmList->at (i));
 }
 
 /**
@@ -832,8 +426,7 @@ void FlarmMapWidget::rowsAboutToBeRemoved (const QModelIndex &parent, int start,
  */
 void FlarmMapWidget::modelReset ()
 {
-	refreshFlarmData ();
-	replot ();
+	refreshPlaneMarkers ();
 }
 
 /**
@@ -853,6 +446,10 @@ void FlarmMapWidget::flarmListDestroyed ()
 // ** KML **
 // *********
 
+/**
+ * Note that if multiple KML files have been loaded (by multiple calls to
+ * readKml), this only reflects the status of the last file.
+ */
 FlarmMapWidget::KmlStatus FlarmMapWidget::getKmlStatus () const
 {
 	return kmlStatus;
@@ -867,7 +464,6 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::getKmlStatus () const
 FlarmMapWidget::KmlStatus FlarmMapWidget::readKmlImplementation (const QString &filename)
 {
 	QString effectiveFilename=filename.trimmed ();
-
 	if (effectiveFilename.isEmpty ())
 		return kmlNone;
 
@@ -886,25 +482,44 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKmlImplementation (const QString &
 	if (kmlReader.isEmpty ())
 		return kmlEmpty;
 
-	foreach (const Kml::Marker &marker, kmlReader.markers)
+	// For each KML marker in the KML file, add a static marker
+	foreach (const Kml::Marker &kmlMarker, kmlReader.markers)
 	{
-		Kml::Style style=kmlReader.findStyle (marker.styleUrl);
-		addStaticMarker (marker.name, marker.position, style.labelColor);
+		Kml::Style style=kmlReader.findStyle (kmlMarker.styleUrl);
+		StaticMarker staticMarker (kmlMarker, style);
+		staticMarkers.append (staticMarker);
+		allStaticPositions.append (kmlMarker.position);
 	}
 
+	// For each KML path in the KML file, add a static curve
 	foreach (const Kml::Path &path, kmlReader.paths)
 	{
 		Kml::Style style=kmlReader.findStyle (path.styleUrl);
-		addStaticCurve (path.name, path.positions.toVector (), style.linePen ());
+		StaticCurve staticCurve=StaticCurve (path, style);
+		staticCurves.append (staticCurve);
+		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
+	// For each KML polygon in the KML file, add a static curve
 	foreach (const Kml::Polygon &polygon, kmlReader.polygons)
 	{
 		Kml::Style style=kmlReader.findStyle (polygon.styleUrl);
-		addStaticCurve (polygon.name, polygon.positions.toVector (), style.linePen ());
+		StaticCurve staticCurve=StaticCurve (polygon, style);
+		staticCurves.append (staticCurve);
+		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
-	replot ();
+	// For each ground overlay in the KML file, add an image
+	foreach (const Kml::GroundOverlay &overlay, kmlReader.groundOverlays)
+	{
+		Image image=Image (overlay);
+		images.append (image);
+		// FIXME allStaticPositions
+	}
+
+	// Something changed, so we have to schedule a repaint
+	update ();
+
 	return kmlOk;
 }
 
@@ -921,39 +536,49 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKml (const QString &filename)
 
 bool FlarmMapWidget::isOwnPositionVisible () const
 {
-	return getAxesRect ().contains (0, 0);
+	QRectF visibleRect_widget=rect ();
+
+	QPointF ownPosition_local (0, 0);
+	QPointF ownPosition_widget=ownPosition_local*localSystem_widget;
+
+	return visibleRect_widget.contains (ownPosition_widget.toPoint ());
 }
 
 bool FlarmMapWidget::isAnyStaticElementVisible () const
 {
-	if (!ownPosition.isValid ())
+	if (!_ownPosition.isValid ())
 		return false;
 
-	QRectF axesRect=getAxesRect ();
+	QRectF visibleRect_widget=rect ();
 
-	foreach (const QPointF &point, allStaticPoints)
-		if (axesRect.contains (point))
+	foreach (const GeoPosition &position, allStaticPositions)
+	{
+		QPointF position_widget=transformGeographicToWidget (position);
+		if (visibleRect_widget.contains (position_widget))
 			return true;
+	}
 
 	return false;
 }
 
 bool FlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing) const
 {
-	QPointF viewCenter=getAxesCenter ();
-
-	QPointF closestPoint;
+	QPointF closestPoint_local;
 	double closestDistanceSquared=-1;
 
-	foreach (const QPointF &p, allStaticPoints)
+	foreach (const GeoPosition &p, allStaticPositions)
 	{
-		QPointF point=p-viewCenter;
+		// In the local coordinate system
+		QPointF point_local=p.relativePositionTo (_ownPosition);
 
-		double distanceSquared=lengthSquared (point);
+		// Relative to the display center
+		QPointF relativePoint_local=point_local-_center_local;
+
+		double distanceSquared=lengthSquared (relativePoint_local);
 
 		if (closestDistanceSquared<0 || distanceSquared<closestDistanceSquared)
 		{
-			closestPoint=point;
+			closestPoint_local=relativePoint_local;
 			closestDistanceSquared=distanceSquared;
 		}
 	}
@@ -964,7 +589,7 @@ bool FlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing)
 		// Note the transposition - atan2 calculates mathematical angle
 		// (starting at x, going counter-clockwise), we need geographical angle
 		// (starting at y, going clockwise).
-		if (bearing)  (*bearing)=Angle::atan2 (transposed (closestPoint));
+		if (bearing)  (*bearing)=Angle::atan2 (transposed (closestPoint_local));
 
 		return true;
 	}
@@ -976,7 +601,330 @@ bool FlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing)
 
 void FlarmMapWidget::resetPosition ()
 {
-	setAxesCenter (QPointF (0, 0));
-	replot ();
-	emit viewChanged ();
+	_center_local=QPointF (0, 0);
+	updateView ();
 }
+
+
+// **************
+// ** Painting **
+// **************
+
+double FlarmMapWidget::getXRadius () const
+{
+	double widgetAspectRatio = width () / (double)height ();
+
+	if (widgetAspectRatio>=1)
+		// The widget is wider than high
+		return _radius*widgetAspectRatio;
+	else
+		// The widget is higher than wide
+		return _radius;
+
+}
+
+double FlarmMapWidget::getYRadius () const
+{
+	double widgetAspectRatio = width () / (double)height ();
+
+	if (widgetAspectRatio>=1)
+		// The widget is wider than high
+		return _radius;
+	else
+		// The widget is higher than wide
+		return _radius/widgetAspectRatio;
+}
+
+void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
+{
+	painter.save ();
+	QPen pen=painter.pen ();
+	pen.setCosmetic (true);
+	pen.setWidthF (0.5);
+	painter.setPen (pen);
+
+	double radiusIncrement=1000;
+
+	// FIXME minimum pixel distance
+	// FIXME draw all visible, even when the origin is scrolled out of view
+	// FIXME draw distances
+	for (double radius=radiusIncrement; radius<=_radius; radius+=radiusIncrement)
+	{
+		// FIXME inefficient
+		QSizeF size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
+		QPointF origin_local (0, 0); // The origin is at the origin of the local coordinate system
+		QRectF rect=centeredQRectF (origin_local*localSystem_widget, size);
+		painter.drawArc (rect, 0, 16*360);
+	}
+
+	// Draw an arrow from the own position to the north direction
+	// In order to facilitate the arrow drawing, we transform the painter.
+	painter.setTransform (localSystem_widget);
+	painter.drawLine (0, 0, 0, 500);
+
+
+	// FIXME arrow and "N"
+	QTransform transform; transform.rotateRadians (_orientation.toRadians ());
+	painter.setTransform (transform.transposed (), true);
+	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
+
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintEvent (QPaintEvent *event)
+{
+	// FIXME only when required
+	updateView ();
+
+	(void)event;
+	QPainter painter (this);
+	painter.setRenderHint (QPainter::Antialiasing, true);
+
+	painter.setPen (Qt::black);
+
+	if (_ownPosition.isValid ())
+	{
+		painter.save ();
+
+		// FIXME doing handle north/south/east/west
+		// FIXME handle image.rotation
+		foreach (const Image &image, images)
+		{
+			QPointF northEast_local=image.northEast.relativePositionTo (_ownPosition);
+			QPointF southWest_local=image.southWest.relativePositionTo (_ownPosition);
+			QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
+			QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
+
+			QTransform drawSystem_local;
+			drawSystem_local.scale (1, -1);
+			QTransform localSystem_draw=drawSystem_local.inverted ();
+
+			QTransform drawSystem_widget=drawSystem_local*localSystem_widget;
+
+			QPointF northWest_draw=northWest_local*localSystem_draw;
+			QPointF southEast_draw=southEast_local*localSystem_draw;
+			QRectF imageRect_draw (northWest_draw, southEast_draw);
+
+			painter.setTransform (drawSystem_widget, false);
+			painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
+		}
+
+		painter.restore ();
+	}
+
+	painter.save ();
+	paintCoordinateSystem (painter);
+	painter.restore ();
+
+	painter.save ();
+	// Draw the own position
+	painter.setBrush (_ownPositionColor);
+	// Draw at the own position
+	QPointF position_local (0, 0);
+	drawCenteredText (painter, position_local*localSystem_widget, _ownPositionText);
+	painter.restore ();
+
+	// We can only draw the static data if the own position is known, because it
+	// is specified in absolute (earth) coordinates and the display coordinate
+	// system is centered at the own position.
+	painter.save ();
+	if (_ownPosition.isValid ())
+	{
+		// Draw all static paths
+		foreach (const StaticCurve &curve, staticCurves)
+		{
+			QPolygonF p=transformGeographicToWidget (curve.points);
+			painter.setPen (curve.pen);
+			painter.drawPolyline (p);
+		}
+
+		// Draw all static markers
+		foreach (const StaticMarker &marker, staticMarkers)
+		{
+			QPointF p=transformGeographicToWidget (marker.position);
+			painter.setBrush (marker.backgroundColor);
+			drawCenteredText (painter, p, marker.text);
+		}
+	}
+	painter.restore ();
+
+	foreach (const PlaneMarker &marker, planeMarkers.values ())
+	{
+		QPointF position_widget=(marker.position_local*localSystem_widget).toPoint ();
+
+		switch (marker.style)
+		{
+			case PlaneMarker::invisible:
+				// Don't paint at all
+				break;
+			case PlaneMarker::minimal:
+			{
+				// Cross, 8 pixels in size
+				QPointF dx (4, 0);
+				QPointF dy (0, 4);
+				painter.drawLine (position_widget-dx, position_widget+dx);
+				painter.drawLine (position_widget-dy, position_widget+dy);
+			} break;
+			case PlaneMarker::verbose:
+				// State-dependent text with state-dependent background color
+				painter.setBrush (QBrush (marker.color));
+				QPen pen;
+				pen.setWidth (2);
+				painter.setPen (pen);
+				drawCenteredText (painter, position_widget, marker.text);
+				painter.drawPolyline (marker.trail_local*localSystem_widget);
+				break;
+			// No default
+		}
+
+	}
+}
+
+void FlarmMapWidget::mousePressEvent (QMouseEvent *event)
+{
+	if (event->button ()==Qt::LeftButton)
+	{
+		QPointF dragLocation_widget=event->posF ();
+		dragLocation_local=dragLocation_widget*widgetSystem_local;
+		scrollDragging=true;
+	}
+	else if (event->button ()==Qt::RightButton)
+	{
+		zoomDragStartPosition_widget=event->pos ();
+		zoomDragStartRadius=_radius;
+		zoomDragging=true;
+	}
+}
+
+void FlarmMapWidget::mouseReleaseEvent (QMouseEvent *event)
+{
+	if (event->button ()==Qt::LeftButton)
+		scrollDragging=false;
+	else if (event->button ()==Qt::RightButton)
+		zoomDragging=false;
+}
+
+void FlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
+{
+	if (scrollDragging)
+	{
+		QPointF mousePosition_widget=event->posF ();
+
+		// We want the dragged location (dragLocation) to be at the mouse position
+		// (mousePosition). We therefore calculate the location that is currently
+		// at the mouse position, determine the difference and correct the center
+		// location. This has to be done in local coordinates because this is the
+		// coordinate system the center location is stored in.
+
+		// Calculate the location that is currently displayed at the mouse position,
+		// in local coordinates.
+		QPointF currentLocation_widget=mousePosition_widget;
+		QPointF currentLocation_local=currentLocation_widget*widgetSystem_local;
+
+		// The location that is supposed to be displayed at the mouse position, in
+		// local coordinates, is given by dragLocation_local.
+
+		_center_local += dragLocation_local-currentLocation_local;
+		updateView ();
+	}
+
+	if (zoomDragging)
+	{
+		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
+		_radius=zoomDragStartRadius*pow (2, delta/_mouseDragZoomDoubleDistance);
+	}
+}
+
+
+
+// **********
+// ** View **
+// **********
+
+void FlarmMapWidget::zoom (double factor)
+{
+	_radius/=factor;
+
+	updateView ();
+}
+
+void FlarmMapWidget::scroll (double dx, double dy) // In meters
+{
+	QTransform t;
+	t.rotateRadians (_orientation.toRadians ());
+	// Scrolling takes place in plot/view coordinates
+	QPointF center_view=_center_local*localSystem_view;
+	center_view+=QPointF (dx, dy);
+	_center_local=center_view*viewSystem_local;
+
+	updateView ();
+}
+
+// Coordinate systems:
+//   * geographic: latitude/longitude, origin at the equator/zero meridian
+//   * local: east/north in meters, origin at the own position
+//   * view: right/up in meters, orientation up, origin at the own position
+//   * plot: right/up in pixels, orientation up, origin at the display center
+//   * widget: right/down in pixels, orientation up, origin in the upper left
+
+void FlarmMapWidget::updateView ()
+{
+	// The view coordinate system is rotated clockwise by the orientation with
+	// respect to the local coordinate system. For example, for an orientation
+	// of 45° (northeast up), the view coordinate system is rotated clockwise by
+	// 45°. QTransform::rotateRadians rotates counter-clockwise.
+	viewSystem_local=QTransform ();
+	viewSystem_local.rotateRadians (-_orientation.toRadians ());
+	localSystem_view=viewSystem_local.inverted ();
+
+	// The plot coordinate system has its origin at the center of the display,
+	// is parallel to the view coordinate system and uses pixel units instead of
+	// meter units.
+	QPointF center_view=_center_local*localSystem_view;
+	plotSystem_view=QTransform ();
+	plotSystem_view.translate (center_view.x (), center_view.y ());
+	plotSystem_view.scale (2*getXRadius ()/width (), 2*getYRadius ()/height ());
+	viewSystem_plot=plotSystem_view.inverted ();
+
+	// The widget coordinate system has its origin at the top left corner of the
+	// display and the y axis down instead of up. Otherwise, it is parallel to
+	// the plot coordinate system and has the same size.
+	widgetSystem_plot=QTransform ();
+	widgetSystem_plot.translate (-width ()/2, height ()/2);
+	widgetSystem_plot.scale (1, -1);
+	plotSystem_widget=widgetSystem_plot.inverted ();
+
+	// The transform from the local to the widget coordinate system is given by
+	// the product of the individual transformations.
+	widgetSystem_local=widgetSystem_plot*plotSystem_view*viewSystem_local;
+	localSystem_widget=widgetSystem_local.inverted ();
+
+	emit viewChanged ();
+	update ();
+}
+
+/**
+ * Undefined if the own position is invalid
+ */
+QPointF FlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition) const
+{
+	// Geographic to local
+	QPointF point_local (geoPosition.relativePositionTo (_ownPosition));
+
+	// Local to widget
+	return point_local*localSystem_widget;
+}
+
+// Vectorized transform
+QPolygonF FlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const
+{
+	QPolygonF result;
+
+	// FIXME we can transform a QPolygon directly
+	foreach (const GeoPosition &geoPosition, geoPositions)
+		result.append (transformGeographicToWidget (geoPosition));
+
+	return result;
+}
+
+

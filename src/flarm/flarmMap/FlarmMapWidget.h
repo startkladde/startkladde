@@ -1,111 +1,28 @@
 #ifndef FLARMMAPWIDGET_H_
 #define FLARMMAPWIDGET_H_
 
-#include <QTransform>
-#include <QVector>
-#include <QHash>
+#include <QFrame>
+#include <QString>
 
-#include <qwt_plot.h>
-
+#include "src/flarm/flarmMap/Kml.h"
 #include "src/numeric/GeoPosition.h"
+#include "src/numeric/Angle.h"
 
 class QModelIndex;
 
-class QwtPlotMarker;
-class QwtPlotCurve;
-class QwtPointSeriesData;
-
-class Angle;
+//class Angle;
 class FlarmRecord;
 class FlarmList;
 class GpsTracker;
 
 /*
- * Call tree:
- *   rowsInserted
- *       addFlarmData
- *   dataChanged
- *       updateFlarmData
- *           updateTrail
- *           updateMarkerMinimal
- *           updateMarkerVerbose
- *   rowsAboutToBeRemoved
- *       removeFlarmData
- *   modelReset
- *       refreshFlarmData
- *           addFlarmData
- *   flarmListDestroyed
- *       modelReset
- *           ...
+ * Improvements over QwtPlot-based implementation:
+ *   - visible while scrolling
+ *   - simpler
+ *   - shorter (?)
+ *   - more versatile grid
  */
-
-/**
- * A widget that shows a map containing static curves (like the airfield outline
- * or the traffic circuit), static markers (e. g. landmarks or the own position)
- * and dynamic Flarm data (read from a model)
- *
- * This widget acts as a view for the FlarmList model, using its
- * QAbstractItemList interface. It provides scrolling (by left-dragging with the
- * mouse) and zooming (by mouse wheel or middle-dragging) functionality.
- *
- * Planes (Flarm records) are drawn in different ways, depending on their state:
- * planes on the ground are drawn as a small cross. Flying planes are
- * represented as a label  showing the registration, (relative) altitude,
- * airspeed and climb rate. Additionally, a trail indicating the path of the
- * plane over the last couple of seconds is drawn.
- *
- * The own position is always at the origin of the coordinate system. The static
- * data is drawn whenever the own position is available. The Flarm data is based
- * on relative positions and will be drawn even if the own position is unknown.
- *
- * Note that the Flarm data is based on a relative position. When the own
- * position changes, the past Flarm data is not updated accordingly. Therefore,
- * the trail will be wrong (although the current Flarm positions will always be
- * correct to within the update interval, which is typically one second). In a
- * typical usage scenario, however, the own position will not change
- * significantly.
- *
- * To use this widget, set the Flarm List to show by calling setFlarmList. Call
- * ownPositionChanged whenever the own (receiver) position changes. You can add
- * one or more static curves or markers at any time by calling addStaticCurve or
- * addStaticMarker, respectively.
- *
- * To allow keyboard scrolling and zooming, you must set the focusPolicy
- * propery of the widget.
- *
- *
- * == Implementation details ==
- *
- * === Plotting ===
- *
- * When plot data (e. g. positions of a marker, points of a curve, text of a
- * marker) changes (e. g. on Flarm state change or orientation change), replot()
- * must be called for the changes to be displayed. Since replot() is slow and
- * several plot data items may change at the same time, most functions do not
- * call replot() themselves but leave that to the caller. Each function that
- * affects the plot data should document whether or not it calls replot().
- *
- * Typically, methods that are intended to be called from outside will call
- * replot(). This includes most public methods (as far as they affect the plot
- * data), the model slots and event handlers (even though they are private/
- * protected). Methods called by these methods like those for adding or updating
- * plot data, typically will not call replot ().
- *
- * FIXME after some methods, updateStaticData must also be called
- *
- *
- * === Flarm data ===
- *
- * FIXME document
- *
- * === Static data ===
- *
- * FIXME document
- *
- *
- */
-// FIXME on setting the GPS tracker, get the position
-class FlarmMapWidget: public QwtPlot
+class FlarmMapWidget: public QFrame
 {
 		Q_OBJECT
 
@@ -114,27 +31,49 @@ class FlarmMapWidget: public QwtPlot
 
 		struct StaticCurve
 		{
-			QString name;
+			StaticCurve (const QVector<GeoPosition> &points, const QString &name, const QPen &pen);
+			StaticCurve (const Kml::Path    &path   , const Kml::Style &style);
+			StaticCurve (const Kml::Polygon &polygon, const Kml::Style &style);
 			QVector<GeoPosition> points;
-			QwtPlotCurve *curve;
-			// FIXME why do we store it explicitly for static curves but not for
-			// Flarm curves?
-			QwtPointSeriesData *data;
+			QString name;
+			QPen pen;
 		};
 
 		struct StaticMarker
 		{
+			StaticMarker (const GeoPosition &position, const QString &text, const QColor &backgroundColor);
+			StaticMarker (const Kml::Marker &marker, const Kml::Style &style);
 			GeoPosition position;
-			QwtPlotMarker *marker;
+			QString text;
+			QColor backgroundColor;
 		};
 
-		FlarmMapWidget (QWidget *parent=0);
+		struct Image
+		{
+			Image (const Kml::GroundOverlay &groundOverlay);
+
+			QPixmap pixmap;
+			// FIME remove those that are not required
+			GeoPosition northEast, southWest;
+			GeoPosition northWest, southEast;
+		};
+
+		struct PlaneMarker
+		{
+			enum Style { invisible, minimal, verbose };
+
+			Style style;
+			QPointF position_local;
+			QString text;
+			QPolygonF trail_local;
+			QColor color;
+		};
+
+		FlarmMapWidget (QWidget *parent);
 		virtual ~FlarmMapWidget ();
 
 		// Static data
 		void setOwnPositionLabel (const QString &text, const QColor &color);
-		void addStaticCurve (const QString &name, const QVector<GeoPosition> &points, QPen pen);
-		void addStaticMarker (const QString &text, const GeoPosition &position, const QColor &color);
 
 		// KML
 		KmlStatus readKml (const QString &filename);
@@ -154,37 +93,37 @@ class FlarmMapWidget: public QwtPlot
 		void resetPosition ();
 
 
-	public slots:
-		void ownPositionChanged (const GeoPosition &ownPosition);
-		void setOrientation (const Angle &upDirection);
-
 	signals:
 		void viewChanged ();
 		void ownPositionUpdated ();
 
 	protected:
+		virtual void paintEvent (QPaintEvent *event);
 		virtual void keyPressEvent (QKeyEvent *event);
-		virtual void resizeEvent (QResizeEvent *event);
+		virtual void wheelEvent (QWheelEvent *event);
+		virtual void mouseMoveEvent (QMouseEvent *event);
+		virtual void mousePressEvent (QMouseEvent *event);
+		virtual void mouseReleaseEvent (QMouseEvent *event);
+
 
 	private:
 		// Settings
-		QColor climbColor, descentColor;
+		QColor _ownPositionColor, _climbColor, _descentColor;
+		QString _ownPositionText;
 
 		// Flarm list
 		FlarmList *flarmList;
 		GpsTracker *gpsTracker;
 
-		// View settings
-		QTransform transform;
-		GeoPosition ownPosition;
+		GeoPosition _ownPosition;
 
 		// Static curves and Flarm data
-		QwtPlotMarker *ownPositionMarker;
 		QList<StaticCurve> staticCurves;
 		QList<StaticMarker> staticMarkers;
-		QList<QPointF> allStaticPoints;
-		QHash<QString, QwtPlotMarker *> flarmMarkers;
-		QHash<QString, QwtPlotCurve  *> flarmCurves;
+		QList<Image> images;
+
+		QList<GeoPosition> allStaticPositions;
+		QHash<QString, PlaneMarker> planeMarkers;
 		GeoPosition kmlSouthEast, kmlNorthWest;
 
 		// Status
@@ -193,32 +132,24 @@ class FlarmMapWidget: public QwtPlot
 		// Static data
 		void updateStaticData ();
 
-		// Plot item updates
-		virtual void updateTrail (QwtPlotCurve *curve, const FlarmRecord &record);
-		virtual void updateMarkerMinimal (QwtPlotMarker *marker, const FlarmRecord &record);
-		virtual void updateMarkerVerbose (QwtPlotMarker *marker, const FlarmRecord &record);
-
 		// Flarm data - Flarm list changes
-		virtual void addFlarmData (const FlarmRecord &record);
-		virtual void removeFlarmData (const FlarmRecord &record);
-		virtual void updateFlarmData (const FlarmRecord &record);
-		virtual void refreshFlarmData ();
+		virtual void addPlaneMarker (const FlarmRecord &record);
+		virtual void updatePlaneMarker (const FlarmRecord &record);
+		virtual void removePlaneMarker (const FlarmRecord &record);
+		virtual void refreshPlaneMarkers ();
 
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);
 
+		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition) const;
+		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const;
+
+		void paintCoordinateSystem (QPainter &painter);
+
 	protected:
-		// Generic axis methods
-		QRectF getAxesRect () const;
-		QPointF getAxesRadius () const;
-		QPointF getAxesCenter () const;
-		void setAxes (const QPointF &center, const QPointF &radius);
-		void setAxesRadius (const QPointF &radius);
-		void setAxesRadius (double xRadius, double yRadius);
-		void setAxesCenter (const QPointF &center);
-		void zoomAxes (double factor);
-		void moveAxesCenter (const QPointF &offset);
-		void moveAxesCenter (double xOffset, double yOffset);
+		double getLargerRadius () const;
+		double getXRadius () const;
+		double getYRadius () const;
 
 	private slots:
 		// FlarmList model slots
@@ -227,6 +158,45 @@ class FlarmMapWidget: public QwtPlot
 		void rowsAboutToBeRemoved (const QModelIndex &parent, int start, int end);
 		void modelReset ();
 		void flarmListDestroyed ();
+
+
+
+		// View
+
+	public slots:
+		virtual void ownPositionChanged (const GeoPosition &ownPosition);
+		virtual void setOrientation (const Angle &orientation);
+		virtual void zoom   (double factor);
+		virtual void scroll (double x, double y);
+
+	protected:
+		virtual void updateView ();
+
+
+	private:
+		QPointF _center_local; // In local coordinates, because that's what stays fixed when rotating
+		double _radius;
+		Angle _orientation;
+
+		// Basic transforms
+		// _x means "in the x system"
+		QTransform viewSystem_local, localSystem_view;
+		QTransform plotSystem_view, viewSystem_plot;
+		QTransform widgetSystem_plot, plotSystem_widget;
+
+		// Combined transforms
+		QTransform widgetSystem_local, localSystem_widget;
+
+	private:
+		bool scrollDragging;
+		QPointF dragLocation_local;
+		bool zoomDragging;
+		double zoomDragStartRadius;
+		QPoint zoomDragStartPosition_widget;
+
+		int _keyboardZoomDoubleCount;
+		double _mouseDragZoomDoubleDistance;
+		Angle _mouseWheelZoomDoubleAngle;
 };
 
 #endif

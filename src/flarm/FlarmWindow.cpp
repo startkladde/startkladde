@@ -31,11 +31,8 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	connect (ui.gpsWarning     , SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
 	connect (ui.positionWarning, SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
 
-	connect (ui.oldFlarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
-	connect (ui.oldFlarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
-
-	connect (ui.newFlarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
-	connect (ui.newFlarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
+	connect (ui.flarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
+	connect (ui.flarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
 
 	// FIXME load default orientation
 
@@ -57,10 +54,9 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	// The warnings - if any - will be updated as soon as the GPS tracker is
 	// set and the FlarmMapWidget pulls the position.
 	QString kmlFileName=Settings::instance ().flarmMapKmlFileName;
-	ui.oldFlarmMap->readKml (kmlFileName);
-	ui.newFlarmMap->readKml (kmlFileName);
+	ui.flarmMap->readKml (kmlFileName);
 
-	ui.newFlarmMap->setFocus ();
+	ui.flarmMap->setFocus ();
 
 	// FIXME remove
 	resize (width (), 800);
@@ -71,15 +67,13 @@ FlarmWindow::~FlarmWindow () {
 
 void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 {
-	ui.oldFlarmMap->setGpsTracker (gpsTracker);
-	ui.newFlarmMap->setGpsTracker (gpsTracker);
+	ui.flarmMap->setGpsTracker (gpsTracker);
 }
 
 void FlarmWindow::setFlarmList (FlarmList *flarmList)
 {
 	// Setup the flarm radar
-	ui.oldFlarmMap->setFlarmList (flarmList);
-	ui.newFlarmMap->setFlarmList (flarmList);
+	ui.flarmMap->setFlarmList (flarmList);
 
 	// Setup the list
 	const AbstractObjectList<FlarmRecord> *objectList = flarmList;
@@ -103,8 +97,7 @@ void FlarmWindow::setFlarmList (FlarmList *flarmList)
 
 void FlarmWindow::on_mapOrientationInput_valueChanged (int value)
 {
-	ui.oldFlarmMap->setOrientation (Angle::fromDegrees (value));
-	ui.newFlarmMap->setOrientation (Angle::fromDegrees (value));
+	ui.flarmMap->setOrientation (Angle::fromDegrees (value));
 	ui.compass->setValue (value);
 }
 
@@ -150,15 +143,14 @@ void FlarmWindow::linkActivated (const QString &link)
 	}
 	else if (link=="resetPosition")
 	{
-		ui.oldFlarmMap->resetPosition ();
-		ui.newFlarmMap->resetPosition ();
+		ui.flarmMap->resetPosition ();
 	}
 	else if (link=="noKmlElementsVisible")
 	{
 		double distance;
 		Angle bearing;
 
-		bool ok=ui.newFlarmMap->findClosestStaticElement (&distance, &bearing);
+		bool ok=ui.flarmMap->findClosestStaticElement (&distance, &bearing);
 		if (ok)
 		{
 			// Note that this is not generic functionality - the wording and
@@ -203,7 +195,7 @@ void FlarmWindow::updateWarnings ()
 	// => yes, move it out to the right or left, when the widget is wider than
 	//    high
 
-	switch (ui.newFlarmMap->getKmlStatus ())
+	switch (ui.flarmMap->getKmlStatus ())
 	{
 		case FlarmMapWidget::kmlNone:
 			ui.kmlWarning->showInformation (tr ("No KML file specified  (<a href=\"kmlFileNotSpecified\">details</a>)"));
@@ -221,7 +213,7 @@ void FlarmWindow::updateWarnings ()
 			ui.kmlWarning->showWarning (tr ("The specified KML file does not contain any elements"));
 			break;
 		case FlarmMapWidget::kmlOk:
-			if (ui.newFlarmMap->isOwnPositionKnown () && !ui.newFlarmMap->isAnyStaticElementVisible ())
+			if (ui.flarmMap->isOwnPositionKnown () && !ui.flarmMap->isAnyStaticElementVisible ())
 				ui.kmlWarning->showWarning (tr ("None of the KML elements are visible (<a href=\"noKmlElementsVisible\">details</a>)"));
 			else
 				ui.kmlWarning->hide ();
@@ -229,18 +221,18 @@ void FlarmWindow::updateWarnings ()
 		// no default
 	}
 
-	if (ui.newFlarmMap->isOwnPositionKnown ()) // GPS good
+	if (ui.flarmMap->isOwnPositionKnown ()) // GPS good
 		ui.gpsWarning->hide ();
 	else
 	{
-		if (ui.newFlarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
+		if (ui.flarmMap->getKmlStatus ()==FlarmMapWidget::kmlOk)
 			// We could show the KML data, if only we had GPS
 			ui.gpsWarning->showWarning (tr ("No GPS data. The data from the KML file cannot be shown."));
 		else
 			ui.gpsWarning->showWarning (tr ("No GPS data"));
 	}
 
-	if (!ui.newFlarmMap->isOwnPositionVisible ())
+	if (!ui.flarmMap->isOwnPositionVisible ())
 		ui.positionWarning->showWarning (tr ("The own position is not visible (<a href=\"resetPosition\">reset</a>)"));
 	else
 		ui.positionWarning->hide ();
@@ -249,7 +241,7 @@ void FlarmWindow::updateWarnings ()
 void FlarmWindow::flarmMapViewChanged ()
 {
 	updateWarnings ();
-	ui.newFlarmMap->findClosestStaticElement (NULL, NULL);
+	ui.flarmMap->findClosestStaticElement (NULL, NULL);
 }
 
 void FlarmWindow::flarmMapOwnPositionUpdated ()

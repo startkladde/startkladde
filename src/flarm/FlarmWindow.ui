@@ -20,7 +20,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1,1">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -89,14 +89,7 @@
         <widget class="IconLabel" name="positionWarning" native="true"/>
        </item>
        <item>
-        <widget class="FlarmMapWidget" name="oldFlarmMap">
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="NewFlarmMapWidget" name="newFlarmMap">
+        <widget class="FlarmMapWidget" name="flarmMap">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
@@ -153,12 +146,6 @@
    <header>qwt_dial.h</header>
   </customwidget>
   <customwidget>
-   <class>FlarmMapWidget</class>
-   <extends>QFrame</extends>
-   <header>src/flarm/flarmMap/FlarmMapWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QwtCompass</class>
    <extends>QwtDial</extends>
    <header>qwt_compass.h</header>
@@ -170,9 +157,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>NewFlarmMapWidget</class>
+   <class>FlarmMapWidget</class>
    <extends>QFrame</extends>
-   <header>src/flarm/flarmMap/NewFlarmMapWidget.h</header>
+   <header>src/flarm/flarmMap/FlarmMapWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
