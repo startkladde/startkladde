@@ -686,7 +686,6 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	{
 		painter.save ();
 
-		// FIXME doing handle north/south/east/west
 		// FIXME handle image.rotation
 		foreach (const Image &image, images)
 		{

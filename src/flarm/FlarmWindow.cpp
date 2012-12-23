@@ -57,9 +57,6 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	ui.flarmMap->readKml (kmlFileName);
 
 	ui.flarmMap->setFocus ();
-
-	// FIXME remove
-	resize (width (), 800);
 }
 
 FlarmWindow::~FlarmWindow () {
