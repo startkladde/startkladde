@@ -6,6 +6,7 @@
 #include <QSortFilterProxyModel>
 #include <QPen>
 #include <QMessageBox>
+#include <QStatusBar>
 
 #include "qwt_compass.h"
 #include "qwt_dial_needle.h"
@@ -19,13 +20,24 @@
 #include "src/nmea/GpsTracker.h"
 #include "src/numeric/Distance.h"
 
-FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (parent)
+FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (parent),
+	gpsTracker (NULL)
 {
 	ui.setupUi (this);
+
+	// Add a status bar
+	statusBar=new QStatusBar (this);
+	layout ()->addWidget (statusBar);
+
+	// Add the mouse position label to the status bar
+	mousePositionLabel=new QLabel (this);
+	statusBar->addPermanentWidget (mousePositionLabel);
 
 	ui.kmlWarning->hide ();
 	ui.gpsWarning->hide ();
 	ui.positionWarning->hide ();
+
+	ui.tabWidget->setCurrentIndex (0);
 
 	connect (ui.kmlWarning     , SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
 	connect (ui.gpsWarning     , SIGNAL (linkActivated (const QString &)), this, SLOT (linkActivated (const QString &)));
@@ -244,4 +256,26 @@ void FlarmWindow::flarmMapViewChanged ()
 void FlarmWindow::flarmMapOwnPositionUpdated ()
 {
 	updateWarnings ();
+}
+
+void FlarmWindow::on_flarmMap_mouseMoved (QPointF positionLocal)
+{
+	double north=positionLocal.y ();
+	double east=positionLocal.x ();
+
+	QString northText;
+	QString eastText;
+
+	if (north>=0)
+		northText=tr ("%1 N").arg (Distance::format (north, 0));
+	else
+		northText=tr ("%1 S").arg (Distance::format (-north, 0));
+
+	if (east>=0)
+		eastText=tr ("%1 E").arg (Distance::format (east, 0));
+	else
+		eastText=tr ("%1 W").arg (Distance::format (-east, 0));
+
+
+	mousePositionLabel->setText (tr ("%1, %2").arg (northText, eastText));
 }

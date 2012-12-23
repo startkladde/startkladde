@@ -14,6 +14,7 @@ class QModelIndex;
 class FlarmRecord;
 class FlarmList;
 class GpsTracker;
+class QResizeEvent;
 
 /*
  * Improvements over QwtPlot-based implementation:
@@ -53,7 +54,6 @@ class FlarmMapWidget: public QFrame
 			Image (const Kml::GroundOverlay &groundOverlay);
 
 			QPixmap pixmap;
-			// FIME remove those that are not required
 			GeoPosition northEast, southWest;
 			GeoPosition northWest, southEast;
 		};
@@ -94,8 +94,9 @@ class FlarmMapWidget: public QFrame
 
 
 	signals:
-		void viewChanged ();
-		void ownPositionUpdated ();
+		void viewChanged () const;
+		void ownPositionUpdated () const;
+		void mouseMoved (QPointF position_local) const;
 
 	protected:
 		virtual void paintEvent (QPaintEvent *event);
@@ -104,6 +105,7 @@ class FlarmMapWidget: public QFrame
 		virtual void mouseMoveEvent (QMouseEvent *event);
 		virtual void mousePressEvent (QMouseEvent *event);
 		virtual void mouseReleaseEvent (QMouseEvent *event);
+		virtual void resizeEvent (QResizeEvent *event);
 
 
 	private:
@@ -180,12 +182,15 @@ class FlarmMapWidget: public QFrame
 
 		// Basic transforms
 		// _x means "in the x system"
-		QTransform viewSystem_local, localSystem_view;
-		QTransform plotSystem_view, viewSystem_plot;
-		QTransform widgetSystem_plot, plotSystem_widget;
-
+		mutable bool transformsValid;
+		void invalidateTransforms ();
+		void updateTransforms () const;
+		// Individual transforms
+		mutable QTransform viewSystem_local, localSystem_view;
+		mutable QTransform plotSystem_view, viewSystem_plot;
+		mutable QTransform widgetSystem_plot, plotSystem_widget;
 		// Combined transforms
-		QTransform widgetSystem_local, localSystem_widget;
+		mutable QTransform widgetSystem_local, localSystem_widget;
 
 	private:
 		bool scrollDragging;

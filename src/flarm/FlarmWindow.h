@@ -7,6 +7,7 @@
 
 class FlarmList;
 class GpsTracker;
+class QStatusBar;
 
 class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 {
@@ -28,6 +29,7 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		void on_compass_sliderMoved (double value);
 		void on_northButton_clicked ();
 		void on_reverseButton_clicked ();
+		void on_flarmMap_mouseMoved (QPointF positionLocal);
 
 		void linkActivated (const QString &link);
 
@@ -36,6 +38,8 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 
 	private:
 		GpsTracker *gpsTracker;
+		QStatusBar *statusBar;
+		QLabel *mousePositionLabel;
 };
 
 #endif

@@ -1,29 +1,28 @@
 #include "src/flarm/flarmMap/FlarmMapWidget.h"
 
-//#include <cassert>
 #include <iostream>
 
-#include <QModelIndex>
-#include <QResizeEvent>
+#include <QBrush>
 #include <QKeyEvent>
+#include <QModelIndex>
 #include <QPainter>
 #include <QPen>
-#include <QBrush>
+#include <QResizeEvent>
 
-// FIXME: must emit viewChanged, and only when appropriate
-
-#include "src/util/qRect.h"
-#include "src/flarm/FlarmRecord.h"
-#include "src/numeric/Velocity.h"
 #include "src/flarm/FlarmList.h"
-//#include "src/util/qHash.h"
+#include "src/flarm/FlarmRecord.h"
+#include "src/flarm/flarmMap/KmlReader.h"
 #include "src/i18n/notr.h"
 #include "src/nmea/GpsTracker.h"
-#include "src/util/qPointF.h"
-//#include "src/util/qString.h"
-#include "src/flarm/flarmMap/KmlReader.h"
+#include "src/numeric/Velocity.h"
 #include "src/util/qPainter.h"
+#include "src/util/qPointF.h"
+#include "src/util/qRect.h"
 
+// Implementation note: you must call updateView whenever the view (i. e., the
+// visible region extents) changes. This will schedule a repaint and cause the
+// transforms to be recalculated, which will, in turn, emit the viewChanged
+// signal.
 
 // **************************
 // ** StaticMarker methods **
@@ -86,6 +85,7 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QFrame (parent),
 	flarmList (NULL), gpsTracker (NULL),
 	kmlStatus (kmlNone),
 	_center_local (0, 0), _radius (2000),
+	transformsValid (false),
 	scrollDragging (false), zoomDragging (false),
 	_keyboardZoomDoubleCount (8), _mouseDragZoomDoubleDistance (50),
 	_mouseWheelZoomDoubleAngle (Angle::fromDegrees (120))
@@ -96,6 +96,62 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QFrame (parent),
 FlarmMapWidget::~FlarmMapWidget ()
 {
 }
+
+
+// ****************
+// ** Transforms **
+// ****************
+
+void FlarmMapWidget::invalidateTransforms ()
+{
+	transformsValid=false;
+}
+
+void FlarmMapWidget::updateTransforms () const
+{
+	if (transformsValid)
+		return;
+	transformsValid=true;
+
+	// The view coordinate system is rotated clockwise by the orientation with
+	// respect to the local coordinate system. For example, for an orientation
+	// of 45° (northeast up), the view coordinate system is rotated clockwise by
+	// 45°. QTransform::rotateRadians rotates counter-clockwise.
+	viewSystem_local=QTransform ();
+	viewSystem_local.rotateRadians (-_orientation.toRadians ());
+	localSystem_view=viewSystem_local.inverted ();
+
+	// The plot coordinate system has its origin at the center of the display,
+	// is parallel to the view coordinate system and uses pixel units instead of
+	// meter units.
+	QPointF center_view=_center_local*localSystem_view;
+	plotSystem_view=QTransform ();
+	plotSystem_view.translate (center_view.x (), center_view.y ());
+	plotSystem_view.scale (2*getXRadius ()/width (), 2*getYRadius ()/height ());
+	viewSystem_plot=plotSystem_view.inverted ();
+
+	// The widget coordinate system has its origin at the top left corner of the
+	// display and the y axis down instead of up. Otherwise, it is parallel to
+	// the plot coordinate system and has the same size.
+	widgetSystem_plot=QTransform ();
+	widgetSystem_plot.translate (-width ()/2, height ()/2);
+	widgetSystem_plot.scale (1, -1);
+	plotSystem_widget=widgetSystem_plot.inverted ();
+
+	// The transform from the local to the widget coordinate system is given by
+	// the product of the individual transformations.
+	widgetSystem_local=widgetSystem_plot*plotSystem_view*viewSystem_local;
+	localSystem_widget=widgetSystem_local.inverted ();
+
+	emit viewChanged ();
+}
+
+
+
+
+
+
+
 
 // ****************
 // ** GUI events **
@@ -132,12 +188,11 @@ void FlarmMapWidget::keyPressEvent (QKeyEvent *event)
 
 void FlarmMapWidget::wheelEvent (QWheelEvent *event)
 {
-	// FIXME use zoom(), and zoom around the mouse wheel position
+	// FIXME zoom around the mouse wheel position
 	// Mouse wheel down (back) means zooming out. This is the convention that
 	// many other applications, including Firefox and Gimp, use.
 	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
-	_radius*=pow (2, -angle/_mouseWheelZoomDoubleAngle);
-	update ();
+	zoom (pow (2, -angle/_mouseWheelZoomDoubleAngle));
 }
 
 
@@ -222,7 +277,7 @@ void FlarmMapWidget::setOrientation (const Angle &orientation)
 	_orientation=orientation;
 
 	// Schedule a repaint
-	update ();
+	updateView ();
 }
 
 /**
@@ -244,8 +299,8 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 		ownPosition.distanceTo (_ownPosition)>0)
 	{
 		_ownPosition=ownPosition;
-		update ();
-		emit ownPositionUpdated (); // FIXME what for?
+		updateView ();
+		emit ownPositionUpdated ();
 	}
 }
 
@@ -514,7 +569,10 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKmlImplementation (const QString &
 	{
 		Image image=Image (overlay);
 		images.append (image);
-		// FIXME allStaticPositions
+		allStaticPositions.append (image.northWest);
+		allStaticPositions.append (image.northEast);
+		allStaticPositions.append (image.southWest);
+		allStaticPositions.append (image.southEast);
 	}
 
 	// Something changed, so we have to schedule a repaint
@@ -536,6 +594,8 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKml (const QString &filename)
 
 bool FlarmMapWidget::isOwnPositionVisible () const
 {
+	updateTransforms ();
+
 	QRectF visibleRect_widget=rect ();
 
 	QPointF ownPosition_local (0, 0);
@@ -563,6 +623,8 @@ bool FlarmMapWidget::isAnyStaticElementVisible () const
 
 bool FlarmMapWidget::findClosestStaticElement (double *distance, Angle *bearing) const
 {
+	updateTransforms ();
+
 	QPointF closestPoint_local;
 	double closestDistanceSquared=-1;
 
@@ -637,6 +699,8 @@ double FlarmMapWidget::getYRadius () const
 
 void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 {
+	updateTransforms ();
+
 	painter.save ();
 	QPen pen=painter.pen ();
 	pen.setCosmetic (true);
@@ -673,8 +737,7 @@ void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 
 void FlarmMapWidget::paintEvent (QPaintEvent *event)
 {
-	// FIXME only when required
-	updateView ();
+	updateTransforms ();
 
 	(void)event;
 	QPainter painter (this);
@@ -781,6 +844,8 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 
 void FlarmMapWidget::mousePressEvent (QMouseEvent *event)
 {
+	updateTransforms ();
+
 	if (event->button ()==Qt::LeftButton)
 	{
 		QPointF dragLocation_widget=event->posF ();
@@ -805,10 +870,15 @@ void FlarmMapWidget::mouseReleaseEvent (QMouseEvent *event)
 
 void FlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 {
+	updateTransforms ();
+
+	QPointF mousePosition_widget=event->posF ();
+	QPointF mousePosition_local=mousePosition_widget*widgetSystem_local;
+
+	emit mouseMoved (mousePosition_local);
+
 	if (scrollDragging)
 	{
-		QPointF mousePosition_widget=event->posF ();
-
 		// We want the dragged location (dragLocation) to be at the mouse position
 		// (mousePosition). We therefore calculate the location that is currently
 		// at the mouse position, determine the difference and correct the center
@@ -829,8 +899,11 @@ void FlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 
 	if (zoomDragging)
 	{
+		// FIXME zoom around the initial mouse position
 		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
+		// FIXME add a zoomTo method?
 		_radius=zoomDragStartRadius*pow (2, delta/_mouseDragZoomDoubleDistance);
+		updateView ();
 	}
 }
 
@@ -849,6 +922,8 @@ void FlarmMapWidget::zoom (double factor)
 
 void FlarmMapWidget::scroll (double dx, double dy) // In meters
 {
+	updateTransforms ();
+
 	QTransform t;
 	t.rotateRadians (_orientation.toRadians ());
 	// Scrolling takes place in plot/view coordinates
@@ -868,37 +943,7 @@ void FlarmMapWidget::scroll (double dx, double dy) // In meters
 
 void FlarmMapWidget::updateView ()
 {
-	// The view coordinate system is rotated clockwise by the orientation with
-	// respect to the local coordinate system. For example, for an orientation
-	// of 45° (northeast up), the view coordinate system is rotated clockwise by
-	// 45°. QTransform::rotateRadians rotates counter-clockwise.
-	viewSystem_local=QTransform ();
-	viewSystem_local.rotateRadians (-_orientation.toRadians ());
-	localSystem_view=viewSystem_local.inverted ();
-
-	// The plot coordinate system has its origin at the center of the display,
-	// is parallel to the view coordinate system and uses pixel units instead of
-	// meter units.
-	QPointF center_view=_center_local*localSystem_view;
-	plotSystem_view=QTransform ();
-	plotSystem_view.translate (center_view.x (), center_view.y ());
-	plotSystem_view.scale (2*getXRadius ()/width (), 2*getYRadius ()/height ());
-	viewSystem_plot=plotSystem_view.inverted ();
-
-	// The widget coordinate system has its origin at the top left corner of the
-	// display and the y axis down instead of up. Otherwise, it is parallel to
-	// the plot coordinate system and has the same size.
-	widgetSystem_plot=QTransform ();
-	widgetSystem_plot.translate (-width ()/2, height ()/2);
-	widgetSystem_plot.scale (1, -1);
-	plotSystem_widget=widgetSystem_plot.inverted ();
-
-	// The transform from the local to the widget coordinate system is given by
-	// the product of the individual transformations.
-	widgetSystem_local=widgetSystem_plot*plotSystem_view*viewSystem_local;
-	localSystem_widget=widgetSystem_local.inverted ();
-
-	emit viewChanged ();
+	invalidateTransforms ();
 	update ();
 }
 
@@ -907,6 +952,8 @@ void FlarmMapWidget::updateView ()
  */
 QPointF FlarmMapWidget::transformGeographicToWidget (const GeoPosition &geoPosition) const
 {
+	updateTransforms ();
+
 	// Geographic to local
 	QPointF point_local (geoPosition.relativePositionTo (_ownPosition));
 
@@ -927,3 +974,8 @@ QPolygonF FlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition
 }
 
 
+void FlarmMapWidget::resizeEvent (QResizeEvent *event)
+{
+	(void)event;
+	updateView ();
+}
