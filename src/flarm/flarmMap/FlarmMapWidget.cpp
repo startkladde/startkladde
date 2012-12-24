@@ -933,7 +933,7 @@ void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	// the transformation) with a width of 0.5 pixels.
 	QPen pen=painter.pen ();
 	pen.setCosmetic (true);
-	pen.setWidthF (1);
+	pen.setWidthF (0.5);
 	painter.setPen (pen);
 
 	double radiusIncrement=1000;
@@ -1072,7 +1072,7 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	// static data is specified in absolute (earth) coordinates and the display
 	// coordinate system is centered at the own position.
 	painter.save (); paintImages           (painter); painter.restore ();
-//	painter.save (); paintCoordinateSystem (painter); painter.restore ();
+	painter.save (); paintCoordinateSystem (painter); painter.restore ();
 	painter.save (); paintOwnPosition      (painter); painter.restore ();
 	painter.save (); paintStaticCurves     (painter); painter.restore ();
 	painter.save (); paintStaticMarkers    (painter); painter.restore ();
