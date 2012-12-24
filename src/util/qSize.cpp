@@ -1,5 +1,7 @@
 #include "qSize.h"
 
+#include <cmath>
+
 #include <QMargins>
 #include <QRect>
 
@@ -34,4 +36,12 @@ QPoint centeredIn (const QSize &rect, const QSize &container)
 QPoint centeredIn (const QSize &rect, const QRect &container)
 {
 	return centeredIn (rect, container.size ()) + container.topLeft ();
+}
+
+double diameter (const QSize &size)
+{
+	double w=size.width ();
+	double h=size.height ();
+
+	return sqrt (w*w+h*h);
 }

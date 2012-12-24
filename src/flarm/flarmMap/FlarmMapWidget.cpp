@@ -18,6 +18,7 @@
 #include "src/util/qPainter.h"
 #include "src/util/qPointF.h"
 #include "src/util/qRect.h"
+#include "src/util/qSize.h"
 
 // Implementation note: you must call updateView whenever the view (i. e., the
 // visible region extents) changes. This will schedule a repaint and cause the
@@ -394,6 +395,7 @@ void FlarmMapWidget::updatePlaneMarker (const FlarmRecord &record)
 	}
 
 	// Schedule a repaint
+	update ();
 }
 
 /**
@@ -668,10 +670,6 @@ void FlarmMapWidget::resetPosition ()
 }
 
 
-// **************
-// ** Painting **
-// **************
-
 double FlarmMapWidget::getXRadius () const
 {
 	double widgetAspectRatio = width () / (double)height ();
@@ -695,153 +693,6 @@ double FlarmMapWidget::getYRadius () const
 	else
 		// The widget is higher than wide
 		return _radius/widgetAspectRatio;
-}
-
-void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
-{
-	updateTransforms ();
-
-	painter.save ();
-	QPen pen=painter.pen ();
-	pen.setCosmetic (true);
-	pen.setWidthF (0.5);
-	painter.setPen (pen);
-
-	double radiusIncrement=1000;
-
-	// FIXME minimum pixel distance
-	// FIXME draw all visible, even when the origin is scrolled out of view
-	// FIXME draw distances
-	for (double radius=radiusIncrement; radius<=_radius; radius+=radiusIncrement)
-	{
-		// FIXME inefficient
-		QSizeF size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
-		QPointF origin_local (0, 0); // The origin is at the origin of the local coordinate system
-		QRectF rect=centeredQRectF (origin_local*localSystem_widget, size);
-		painter.drawArc (rect, 0, 16*360);
-	}
-
-	// Draw an arrow from the own position to the north direction
-	// In order to facilitate the arrow drawing, we transform the painter.
-	painter.setTransform (localSystem_widget);
-	painter.drawLine (0, 0, 0, 500);
-
-
-	// FIXME arrow and "N"
-	QTransform transform; transform.rotateRadians (_orientation.toRadians ());
-	painter.setTransform (transform.transposed (), true);
-	painter.drawLine (0, 0, 0, -qMin (width (), height ())*1/4);
-
-	painter.restore ();
-}
-
-void FlarmMapWidget::paintEvent (QPaintEvent *event)
-{
-	QFrame::paintEvent (event);
-
-	updateTransforms ();
-
-	(void)event;
-	QPainter painter (this);
-	painter.setRenderHint (QPainter::Antialiasing, true);
-
-	painter.setPen (Qt::black);
-
-	if (_ownPosition.isValid ())
-	{
-		painter.save ();
-
-		// FIXME handle image.rotation
-		foreach (const Image &image, images)
-		{
-			QPointF northEast_local=image.northEast.relativePositionTo (_ownPosition);
-			QPointF southWest_local=image.southWest.relativePositionTo (_ownPosition);
-			QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
-			QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
-
-			QTransform drawSystem_local;
-			drawSystem_local.scale (1, -1);
-			QTransform localSystem_draw=drawSystem_local.inverted ();
-
-			QTransform drawSystem_widget=drawSystem_local*localSystem_widget;
-
-			QPointF northWest_draw=northWest_local*localSystem_draw;
-			QPointF southEast_draw=southEast_local*localSystem_draw;
-			QRectF imageRect_draw (northWest_draw, southEast_draw);
-
-			painter.setTransform (drawSystem_widget, false);
-			painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
-		}
-
-		painter.restore ();
-	}
-
-	painter.save ();
-	paintCoordinateSystem (painter);
-	painter.restore ();
-
-	painter.save ();
-	// Draw the own position
-	painter.setBrush (_ownPositionColor);
-	// Draw at the own position
-	QPointF position_local (0, 0);
-	drawCenteredText (painter, position_local*localSystem_widget, _ownPositionText);
-	painter.restore ();
-
-	// We can only draw the static data if the own position is known, because it
-	// is specified in absolute (earth) coordinates and the display coordinate
-	// system is centered at the own position.
-	painter.save ();
-	if (_ownPosition.isValid ())
-	{
-		// Draw all static paths
-		foreach (const StaticCurve &curve, staticCurves)
-		{
-			QPolygonF p=transformGeographicToWidget (curve.points);
-			painter.setPen (curve.pen);
-			painter.drawPolyline (p);
-		}
-
-		// Draw all static markers
-		foreach (const StaticMarker &marker, staticMarkers)
-		{
-			QPointF p=transformGeographicToWidget (marker.position);
-			painter.setBrush (marker.backgroundColor);
-			drawCenteredText (painter, p, marker.text);
-		}
-	}
-	painter.restore ();
-
-	foreach (const PlaneMarker &marker, planeMarkers.values ())
-	{
-		QPointF position_widget=(marker.position_local*localSystem_widget).toPoint ();
-
-		switch (marker.style)
-		{
-			case PlaneMarker::invisible:
-				// Don't paint at all
-				break;
-			case PlaneMarker::minimal:
-			{
-				// Cross, 8 pixels in size
-				QPointF dx (4, 0);
-				QPointF dy (0, 4);
-				painter.drawLine (position_widget-dx, position_widget+dx);
-				painter.drawLine (position_widget-dy, position_widget+dy);
-			} break;
-			case PlaneMarker::verbose:
-				// State-dependent text with state-dependent background color
-				painter.setBrush (QBrush (marker.color));
-				QPen pen;
-				pen.setWidth (2);
-				painter.setPen (pen);
-				drawCenteredText (painter, position_widget, marker.text);
-				painter.drawPolyline (marker.trail_local*localSystem_widget);
-				break;
-			// No default
-		}
-
-	}
 }
 
 void FlarmMapWidget::mousePressEvent (QMouseEvent *event)
@@ -987,3 +838,214 @@ void FlarmMapWidget::leaveEvent (QEvent *event)
 	(void)event;
 	emit mouseLeft ();
 }
+
+
+
+// **************
+// ** Painting **
+// **************
+
+// Notes for the paint* methods:
+//   * The painter passed as an argument is set to widget coordinates. It may be
+//     freely modified
+//   * The updateTransforms method does not have to be called; this is done in
+//     paintEvent ().
+//   * All prerequisites (like the validity of the own position) have to be
+//     checked by the methods. If the prerequisites are not met, the method
+//     should return right away.
+
+void FlarmMapWidget::paintImages (QPainter &painter)
+{
+	if (!_ownPosition.isValid ())
+		return;
+
+	painter.save ();
+
+	// The y axis of the pixmap points down, so we use a coordinate system
+	// that is identical to the local coordinate system, only with the y
+	// axis pointing to the south instead of the north. This coordinate
+	// system is called the "draw" coordinate system. We will later transform
+	// the painter to this coordinate system.
+	QTransform drawSystem_local;
+	drawSystem_local.scale (1, -1);
+	QTransform localSystem_draw=drawSystem_local.inverted ();
+	// Calculate the transformation from the draw system to the widget system
+	QTransform drawSystem_widget=drawSystem_local*localSystem_widget;
+
+	// FIXME handle image.rotation
+	foreach (const Image &image, images)
+	{
+		// Calculate the northwest and southeast corners of the image in the
+		// local coordinate system
+		QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
+		QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
+
+		// Calculate the northwest and southeast corners of the image in the
+		// draw coordinate system (the painter will be transformed to this
+		// coordinate system). These two corners define the rectangle the pixmap
+		// will be drawn into.
+		QPointF northWest_draw=northWest_local*localSystem_draw;
+		QPointF southEast_draw=southEast_local*localSystem_draw;
+		QRectF imageRect_draw (northWest_draw, southEast_draw);
+
+		// Draw the whole pixmap in the draw coordinate system, into the
+		// rectangle determined earlier.
+		painter.setTransform (drawSystem_widget, false);
+		painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
+	}
+
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
+{
+	painter.save ();
+
+	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
+	// the transformation) with a width of 0.5 pixels.
+	QPen pen=painter.pen ();
+	pen.setCosmetic (true);
+	pen.setWidthF (1);
+	painter.setPen (pen);
+
+	double radiusIncrement=1000;
+
+	// FIXME minimum pixel distance
+	// FIXME draw all visible, even when the origin is scrolled out of view
+	// FIXME draw distances
+	for (double radius=radiusIncrement*0.01; radius<=_radius; radius+=radiusIncrement)
+	{
+		// FIXME inefficient
+		QSizeF size (radius*width ()/getXRadius (), radius*height ()/getYRadius ());
+		QPointF origin_local (0, 0); // The origin is at the origin of the local coordinate system
+		QRectF rect=centeredQRectF (origin_local*localSystem_widget, size);
+		painter.drawArc (rect, 0, 16*360);
+	}
+
+	// Draw an arrow from the own position to the north direction
+	// In order to facilitate the arrow drawing, we transform the painter to FIXME.
+	//	// FIXME arrow and "N"
+	// Move the painter to a coordinate system that is centered at the own
+	// position (the origin of the local system)
+	painter.translate (QPointF (0, 0)*localSystem_widget);
+	painter.rotate (-_orientation.toDegrees ());
+
+
+	// FIXME ugly results
+	int smallerSide=qMin (width (), height ());
+	double len=smallerSide/4.0;
+	painter.drawLine (QPointF (0, 0)       , QPointF (0, len));
+	painter.drawLine (QPointF (-10, len-10), QPointF (0, len));
+	painter.drawLine (QPointF ( 10, len-10), QPointF (0, len));
+
+	QString text=tr (" N ");
+	QSize size=textSize (painter, text);
+	painter.translate (0, len+diameter (size)/2);
+	painter.rotate (_orientation.toDegrees ());
+	drawCenteredText (painter, QPointF (0, 0), text);
+
+
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintOwnPosition (QPainter &painter)
+{
+	painter.save ();
+	// Draw the own position
+	painter.setBrush (_ownPositionColor);
+	// Draw at the own position
+	QPointF position_local (0, 0);
+	drawCenteredText (painter, position_local*localSystem_widget, _ownPositionText);
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintStaticCurves (QPainter &painter)
+{
+	if (!_ownPosition.isValid ())
+		return;
+
+	// Draw all static paths
+	painter.save ();
+	foreach (const StaticCurve &curve, staticCurves)
+	{
+		QPolygonF p=transformGeographicToWidget (curve.points);
+		painter.setPen (curve.pen);
+		painter.drawPolyline (p);
+	}
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintStaticMarkers (QPainter &painter)
+{
+	if (!_ownPosition.isValid ())
+		return;
+
+	// Draw all static markers
+	painter.save ();
+	foreach (const StaticMarker &marker, staticMarkers)
+	{
+		QPointF p=transformGeographicToWidget (marker.position);
+		painter.setBrush (marker.backgroundColor);
+		drawCenteredText (painter, p, marker.text);
+	}
+	painter.restore ();
+}
+
+void FlarmMapWidget::paintPlanes (QPainter &painter)
+{
+	foreach (const PlaneMarker &marker, planeMarkers.values ())
+	{
+		QPointF position_widget=(marker.position_local*localSystem_widget).toPoint ();
+
+		switch (marker.style)
+		{
+			case PlaneMarker::invisible:
+				// Don't paint at all
+				break;
+			case PlaneMarker::minimal:
+			{
+				// Cross, 8 pixels in size
+				drawOrthogonalCross (painter, position_widget, 4);
+			} break;
+			case PlaneMarker::verbose:
+				// State-dependent text with state-dependent background color
+				painter.setBrush (QBrush (marker.color));
+				QPen pen;
+				pen.setWidth (2);
+				painter.setPen (pen);
+				drawCenteredText (painter, position_widget, marker.text);
+				painter.drawPolyline (marker.trail_local*localSystem_widget);
+				break;
+			// No default
+		}
+
+	}
+}
+
+/**
+ * Paints the widget
+ */
+void FlarmMapWidget::paintEvent (QPaintEvent *event)
+{
+	// Paint the frame
+	QFrame::paintEvent (event);
+
+	// Make sure that all coordinate transforms are up to date
+	updateTransforms ();
+
+	// Create the painter and turn antialiasing on
+	QPainter painter (this);
+	painter.setRenderHint (QPainter::Antialiasing, true);
+
+	// Paint the various items, in order from bottom to top. Note that some of
+	// the items can only be painted if the own position is valid. For example,
+	// static data is specified in absolute (earth) coordinates and the display
+	// coordinate system is centered at the own position.
+	painter.save (); paintImages           (painter); painter.restore ();
+	painter.save (); paintCoordinateSystem (painter); painter.restore ();
+	painter.save (); paintOwnPosition      (painter); painter.restore ();
+	painter.save (); paintStaticCurves     (painter); painter.restore ();
+	painter.save (); paintStaticMarkers    (painter); painter.restore ();
+	painter.save (); paintPlanes           (painter); painter.restore ();
+}
+

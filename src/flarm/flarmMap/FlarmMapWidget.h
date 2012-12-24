@@ -99,8 +99,18 @@ class FlarmMapWidget: public QFrame
 		void mouseMoved (QPointF position_local) const;
 		void mouseLeft () const;
 
+		// ***** Painting
 	protected:
 		virtual void paintEvent (QPaintEvent *event);
+		virtual void paintCoordinateSystem (QPainter &painter);
+		virtual void paintStaticCurves (QPainter &painter);
+		virtual void paintStaticMarkers (QPainter &painter);
+		virtual void paintImages (QPainter &painter);
+		virtual void paintPlanes (QPainter &painter);
+		virtual void paintOwnPosition (QPainter &painter);
+
+
+
 		virtual void keyPressEvent (QKeyEvent *event);
 		virtual void wheelEvent (QWheelEvent *event);
 		virtual void mouseMoveEvent (QMouseEvent *event);
@@ -148,7 +158,6 @@ class FlarmMapWidget: public QFrame
 		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition) const;
 		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const;
 
-		void paintCoordinateSystem (QPainter &painter);
 
 	protected:
 		double getLargerRadius () const;
