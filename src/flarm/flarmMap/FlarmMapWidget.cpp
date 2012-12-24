@@ -85,11 +85,12 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): QFrame (parent),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
 	kmlStatus (kmlNone),
-	_center_local (0, 0), _radius (2000),
+	_center_local (0, 0), _radius (2000), _orientation (Angle::fromDegrees (0)),
 	transformsValid (false),
-	scrollDragging (false), zoomDragging (false),
+	scrollDragging (false), zoomDragging (false), rotateDragging (false),
 	_keyboardZoomDoubleCount (8), _mouseDragZoomDoubleDistance (50),
-	_mouseWheelZoomDoubleAngle (Angle::fromDegrees (120))
+	_mouseWheelZoomDoubleAngle (Angle::fromDegrees (120)),
+	_mouseDragRotationDistance (-360)
 {
 	_ownPositionText=tr ("Start"); // FIXME proper English word
 }
@@ -275,10 +276,22 @@ void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
  */
 void FlarmMapWidget::setOrientation (const Angle &orientation)
 {
-	_orientation=orientation;
+	Angle o=orientation.normalized ();
+
+	bool changed=(o!=_orientation);
+	_orientation=o;
+
+	if (changed)
+		emit orientationChanged ();
 
 	// Schedule a repaint
 	updateView ();
+}
+
+// FIXME document
+Angle FlarmMapWidget::orientation ()
+{
+	return _orientation;
 }
 
 /**
@@ -710,6 +723,11 @@ void FlarmMapWidget::mousePressEvent (QMouseEvent *event)
 		zoomDragStartPosition_widget=event->pos ();
 		zoomDragStartRadius=_radius;
 		zoomDragging=true;
+
+		rotateDragStartPosition_widget=event->pos ();
+		rotateDragStartOrientation=_orientation;
+		qDebug () <<"setted rotateDragStartOrientation to " << rotateDragStartOrientation;
+		rotateDragging=true;
 	}
 }
 
@@ -718,7 +736,10 @@ void FlarmMapWidget::mouseReleaseEvent (QMouseEvent *event)
 	if (event->button ()==Qt::LeftButton)
 		scrollDragging=false;
 	else if (event->button ()==Qt::RightButton)
+	{
 		zoomDragging=false;
+		rotateDragging=false;
+	}
 }
 
 void FlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
@@ -753,10 +774,17 @@ void FlarmMapWidget::mouseMoveEvent (QMouseEvent *event)
 	if (zoomDragging)
 	{
 		// FIXME zoom around the initial mouse position
-		int delta=event->pos ().y () - zoomDragStartPosition_widget.y ();
+		int deltaY=event->pos ().y () - zoomDragStartPosition_widget.y ();
 		// FIXME add a zoomTo method?
-		_radius=zoomDragStartRadius*pow (2, delta/_mouseDragZoomDoubleDistance);
+		_radius=zoomDragStartRadius*pow (2, deltaY/_mouseDragZoomDoubleDistance);
 		updateView ();
+	}
+
+	if (rotateDragging)
+	{
+		int deltaX=event->pos ().x () - rotateDragStartPosition_widget.x ();
+		Angle deltaAngle=Angle::fullCircle ()*deltaX/_mouseDragRotationDistance;
+		setOrientation (rotateDragStartOrientation+deltaAngle);
 	}
 }
 
@@ -928,7 +956,8 @@ void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	// Move the painter to a coordinate system that is centered at the own
 	// position (the origin of the local system)
 	painter.translate (QPointF (0, 0)*localSystem_widget);
-	painter.rotate (-_orientation.toDegrees ());
+	painter.scale (1, -1);
+	painter.rotate (_orientation.toDegrees ());
 
 
 	// FIXME ugly results
@@ -941,7 +970,8 @@ void FlarmMapWidget::paintCoordinateSystem (QPainter &painter)
 	QString text=tr (" N ");
 	QSize size=textSize (painter, text);
 	painter.translate (0, len+diameter (size)/2);
-	painter.rotate (_orientation.toDegrees ());
+	painter.rotate (-_orientation.toDegrees ());
+	painter.scale (1, -1);
 	drawCenteredText (painter, QPointF (0, 0), text);
 
 
@@ -1042,7 +1072,7 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	// static data is specified in absolute (earth) coordinates and the display
 	// coordinate system is centered at the own position.
 	painter.save (); paintImages           (painter); painter.restore ();
-	painter.save (); paintCoordinateSystem (painter); painter.restore ();
+//	painter.save (); paintCoordinateSystem (painter); painter.restore ();
 	painter.save (); paintOwnPosition      (painter); painter.restore ();
 	painter.save (); paintStaticCurves     (painter); painter.restore ();
 	painter.save (); paintStaticMarkers    (painter); painter.restore ();

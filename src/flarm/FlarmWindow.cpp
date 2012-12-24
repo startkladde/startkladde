@@ -284,3 +284,11 @@ void FlarmWindow::on_flarmMap_mouseLeft ()
 {
 	mousePositionLabel->clear ();
 }
+
+void FlarmWindow::on_flarmMap_orientationChanged ()
+{
+	int degrees=round (ui.flarmMap->orientation ().toDegrees ());
+	qDebug () << "orientation was set to" << degrees;
+	ui.mapOrientationInput->setValue (degrees);
+	ui.compass->setValue (degrees);
+}

@@ -31,6 +31,7 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		void on_reverseButton_clicked ();
 		void on_flarmMap_mouseMoved (QPointF positionLocal);
 		void on_flarmMap_mouseLeft ();
+		void on_flarmMap_orientationChanged ();
 
 		void linkActivated (const QString &link);
 

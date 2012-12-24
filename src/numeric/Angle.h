@@ -1,6 +1,8 @@
 #ifndef ANGLE_H_
 #define ANGLE_H_
 
+#include <QDebug>
+
 class QPointF;
 
 /**
@@ -24,6 +26,7 @@ class Angle
 
 		static Angle fromRadians (double radians);
 		static Angle fromDegrees (double degrees);
+		static Angle fullCircle ();
 
 		Angle normalized () const;
 
@@ -62,5 +65,7 @@ class Angle
 		double value;
 		bool valid;
 };
+
+QDebug operator<< (QDebug dbg, const Angle &angle);
 
 #endif

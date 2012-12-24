@@ -96,6 +96,7 @@ class FlarmMapWidget: public QFrame
 	signals:
 		void viewChanged () const;
 		void ownPositionUpdated () const;
+		void orientationChanged () const;
 		void mouseMoved (QPointF position_local) const;
 		void mouseLeft () const;
 
@@ -182,6 +183,8 @@ class FlarmMapWidget: public QFrame
 		virtual void zoom   (double factor);
 		virtual void scroll (double x, double y);
 
+		virtual Angle orientation ();
+
 	protected:
 		virtual void updateView ();
 
@@ -204,15 +207,26 @@ class FlarmMapWidget: public QFrame
 		mutable QTransform widgetSystem_local, localSystem_widget;
 
 	private:
+		// Scroll dragging
 		bool scrollDragging;
 		QPointF dragLocation_local;
+
+		// Zoom dragging
 		bool zoomDragging;
 		double zoomDragStartRadius;
 		QPoint zoomDragStartPosition_widget;
 
+		// Zoom rotation
+		bool rotateDragging;
+		Angle rotateDragStartOrientation;
+		QPoint rotateDragStartPosition_widget;
+
+		// Zoom/rotation factors
 		int _keyboardZoomDoubleCount;
 		double _mouseDragZoomDoubleDistance;
 		Angle _mouseWheelZoomDoubleAngle;
+		double _mouseDragRotationDistance;
+
 };
 
 #endif

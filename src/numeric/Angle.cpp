@@ -64,6 +64,14 @@ Angle Angle::fromDegrees (double degrees)
 }
 
 /**
+ * Creates an angle spanning a full circle (360 degrees or 2*pi radians)
+ */
+Angle Angle::fullCircle ()
+{
+	return Angle::fromRadians (2*M_PI);
+}
+
+/**
  * Returns the status of the valid flag
  */
 bool Angle::isValid () const
@@ -312,4 +320,17 @@ int Angle::compassSection (int numSections) const
 		n=0;
 
 	return n;
+}
+
+/**
+ * Outputs the Angle to a QDebug stream
+ */
+QDebug operator<< (QDebug dbg, const Angle &angle)
+{
+	if (angle.isValid ())
+		dbg.nospace() << angle.toDegrees () << "°";
+	else
+		dbg.nospace () << "invalid angle";
+
+    return dbg.space();
 }
