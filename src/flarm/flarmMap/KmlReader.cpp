@@ -169,9 +169,6 @@ void KmlReader::readGroundOverlay (const QDomNode &groundOverlayNode, const QDir
 	double west =latLonBoxElement.firstChildElement ("west" ).text ().toDouble ();
 	double rotation=latLonBoxElement.firstChildElement ("rotation").text ().toDouble (); // FIXME set to 0 if not present
 
-	// FIXME shown twice for a file with only one ground overlay => file loaded twice?
-	//qDebug () << dir;
-
 	Kml::GroundOverlay groundOverlay;
 	groundOverlay.name=groundOverlayName;
 	groundOverlay.filename=dir.filePath (filename);
@@ -216,9 +213,6 @@ KmlReader::ReadResult KmlReader::read (const QString &filename)
 		 readPlacemark (placemarkNodes.at (i));
 
 	 // Extract the ground overlays
-	 qDebug () << filename;
-	 qDebug () << QDir (filename);
-	 qDebug () << QDir (filename).dirName ();
 	 QDomNodeList groundOverlayNodes=document.elementsByTagName ("GroundOverlay");
 	 for (int i=0, n=groundOverlayNodes.size (); i<n; ++i)
 		 readGroundOverlay (groundOverlayNodes.at (i), QFileInfo (filename).dir ());

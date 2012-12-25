@@ -578,8 +578,6 @@ QPolygonF FlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition
 // Notes for the paint* methods:
 //   * The painter passed as an argument is set to widget coordinates. It may be
 //     freely modified
-//   * The updateTransforms method does not have to be called; this is done in
-//     paintEvent ().
 //   * All prerequisites (like the validity of the own position) have to be
 //     checked by the methods. If the prerequisites are not met, the method
 //     should return right away.
@@ -589,40 +587,38 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 	if (!_ownPosition.isValid ())
 		return;
 
-	// FIXME DOING implement
-
 	// The y axis of the pixmap points down, so we use a coordinate system
-	// that is identical to the local coordinate system, only with the y
+	// that is identical to the plot coordinate system, only with the y
 	// axis pointing to the south instead of the north. This coordinate
 	// system is called the "draw" coordinate system. We will later transform
 	// the painter to this coordinate system.
-//	QTransform drawSystem_local;
-//	drawSystem_local.scale (1, -1);
-//	QTransform localSystem_draw=drawSystem_local.inverted ();
-//	// Calculate the transformation from the draw system to the widget system
-//	QTransform drawSystem_widget=drawSystem_local*localSystem_widget;
-//
-//	// FIXME handle image.rotation
-//	foreach (const Image &image, images)
-//	{
-//		// Calculate the northwest and southeast corners of the image in the
-//		// local coordinate system
-//		QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
-//		QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
-//
-//		// Calculate the northwest and southeast corners of the image in the
-//		// draw coordinate system (the painter will be transformed to this
-//		// coordinate system). These two corners define the rectangle the pixmap
-//		// will be drawn into.
-//		QPointF northWest_draw=northWest_local*localSystem_draw;
-//		QPointF southEast_draw=southEast_local*localSystem_draw;
-//		QRectF imageRect_draw (northWest_draw, southEast_draw);
-//
-//		// Draw the whole pixmap in the draw coordinate system, into the
-//		// rectangle determined earlier.
-//		painter.setTransform (drawSystem_widget, false);
-//		painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
-//	}
+
+	QTransform plotSystem_draw;
+	plotSystem_draw.scale (1, -1);
+
+	transformToPlot (painter);
+	painter.setTransform (plotSystem_draw.inverted (), true);
+
+	// FIXME handle image.rotation
+	foreach (const Image &image, images)
+	{
+		// Calculate the northwest and southeast corners of the image in the
+		// local coordinate system
+		QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
+		QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
+
+		// Calculate the northwest and southeast corners of the image in the
+		// draw coordinate system (the painter will be transformed to this
+		// coordinate system). These two corners define the rectangle the pixmap
+		// will be drawn into.
+		QPointF northWest_draw=northWest_local*plotSystem_draw;
+		QPointF southEast_draw=southEast_local*plotSystem_draw;
+		QRectF imageRect_draw (northWest_draw, southEast_draw);
+
+		// Draw the whole pixmap in the draw coordinate system, into the
+		// rectangle determined earlier.
+		painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
+	}
 }
 
 void FlarmMapWidget::paintDistanceCircles (QPainter &painter)

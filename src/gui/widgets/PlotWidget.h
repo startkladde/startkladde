@@ -100,6 +100,7 @@ class PlotWidget: public QFrame
 		QPolygonF toPlot   (const QPolygonF &polygon_w) const;
 		double toWidget (double length_p) const;
 		double toPlot (double length_w) const;
+		void transformToPlot (QPainter &painter) const;
 
 
 	private:

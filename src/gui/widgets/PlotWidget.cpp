@@ -4,6 +4,7 @@
 
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QWheelEvent>
 
 // Notes:
@@ -386,4 +387,10 @@ double PlotWidget::toPlot (double length_w) const
 {
 	updateTransforms ();
 	return length_w*_w_T_p.m11 ();
+}
+
+void PlotWidget::transformToPlot (QPainter &painter) const
+{
+	updateTransforms ();
+	painter.setTransform (_p_T_w, false);
 }
