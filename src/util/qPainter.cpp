@@ -1,5 +1,8 @@
 #include "src/util/qPainter.h"
 
+#include <iostream>
+
+#include <QDebug>
 #include <QPainter>
 #include <QPoint>
 #include <QPointF>
@@ -13,19 +16,24 @@ QSize textSize (const QPainter &painter, const QString &text)
 	return painter.fontMetrics ().size (0, text);
 }
 
-void drawCenteredText (QPainter &painter, const QPoint &position, const QString &text)
+void drawCenteredText (QPainter &painter, const QPoint &position, const QString &text, int margin)
 {
 	QSize size=textSize (painter, text);
 	QRect rect=centeredQRect (position, size);
-	painter.fillRect (rect, painter.brush ());
+	painter.fillRect (enlarged (rect, margin), painter.brush ());
 	painter.drawText (rect, Qt::AlignHCenter, text);
 }
 
-void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text)
+void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text, double margin)
 {
-	QSize size=painter.fontMetrics ().size (0, text);
+	QSize size=textSize (painter, text);
 	QRectF rect=centeredQRectF (position, QSizeF (size));
-	painter.fillRect (rect, painter.brush ());
+	// It seems like drawText, while it accepts a QRectF, is not able to draw to
+	// subpixel positions. This causes jumping text due to rounding issues. In
+	// order to at least keep text and background rectangle coincident, we round
+	// the position manually.
+	rect=round (rect);
+	painter.fillRect (enlarged (rect, margin), painter.brush ());
 	painter.drawText (rect, text);
 }
 

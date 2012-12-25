@@ -1,5 +1,7 @@
 #include "qRectF.h"
 
+#include <cmath>
+
 #include <QMargins>
 
 QRectF northWestCorner (const QRectF &rect, int width, int height)
@@ -64,4 +66,51 @@ QRectF southWestCorner (const QRectF &rect, const QMargins &margins)
 QRectF southEastCorner (const QRectF &rect, const QMargins &margins)
 {
 	return southEastCorner (rect, 2*margins.right (), 2*margins.bottom ());
+}
+
+
+
+QRectF centeredQRectF (const QPointF &point, double size)
+{
+	return QRectF (point.x ()-size/2, point.y ()-size/2, size, size);
+}
+
+QRectF centeredQRectF (const QPointF &point, const QSizeF &size)
+{
+	double x=point.x ();
+	double y=point.y ();
+	double w=size.width ();
+	double h=size.height ();
+
+	return QRectF (x-w/2, y-h/2, w, h);
+}
+
+QRectF round (const QRectF &rect)
+{
+	double left  =round (rect.left   ()+0.01);
+	double top   =round (rect.top    ()+0.01);
+	double width =round (rect.width  ()+0.01);
+	double height=round (rect.height ()+0.01);
+
+	return QRectF (left, top, width, height);
+}
+
+QRectF floor (const QRectF &rect)
+{
+	double left  =floor (rect.left   ());
+	double top   =floor (rect.top    ());
+	double width =floor (rect.width  ());
+	double height=floor (rect.height ());
+
+	return QRectF (left, top, width, height);
+}
+
+
+QRectF enlarged (const QRectF &rect, double margin)
+{
+	return QRectF (
+		rect.left ()-margin,
+		rect.top  ()-margin,
+		rect.width  ()+2*margin,
+		rect.height ()+2*margin);
 }

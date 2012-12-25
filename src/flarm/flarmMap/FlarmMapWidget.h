@@ -1,29 +1,20 @@
 #ifndef FLARMMAPWIDGET_H_
 #define FLARMMAPWIDGET_H_
 
-#include <QFrame>
 #include <QString>
 
 #include "src/flarm/flarmMap/Kml.h"
+#include "src/gui/widgets/PlotWidget.h"
 #include "src/numeric/GeoPosition.h"
-#include "src/numeric/Angle.h"
 
 class QModelIndex;
 
-//class Angle;
 class FlarmRecord;
 class FlarmList;
 class GpsTracker;
 class QResizeEvent;
 
-/*
- * Improvements over QwtPlot-based implementation:
- *   - visible while scrolling
- *   - simpler
- *   - shorter (?)
- *   - more versatile grid
- */
-class FlarmMapWidget: public QFrame
+class FlarmMapWidget: public PlotWidget
 {
 		Q_OBJECT
 
@@ -63,7 +54,7 @@ class FlarmMapWidget: public QFrame
 			enum Style { invisible, minimal, verbose };
 
 			Style style;
-			QPointF position_local;
+			QPointF position_local; // FIXME rename
 			QString text;
 			QPolygonF trail_local;
 			QColor color;
@@ -94,16 +85,13 @@ class FlarmMapWidget: public QFrame
 
 
 	signals:
-		void viewChanged () const;
 		void ownPositionUpdated () const;
-		void orientationChanged () const;
-		void mouseMoved (QPointF position_local) const;
-		void mouseLeft () const;
 
 		// ***** Painting
 	protected:
 		virtual void paintEvent (QPaintEvent *event);
-		virtual void paintCoordinateSystem (QPainter &painter);
+		virtual void paintNorthDirection (QPainter &painter);
+		virtual void paintDistanceCircles (QPainter &painter);
 		virtual void paintStaticCurves (QPainter &painter);
 		virtual void paintStaticMarkers (QPainter &painter);
 		virtual void paintImages (QPainter &painter);
@@ -112,13 +100,6 @@ class FlarmMapWidget: public QFrame
 
 
 
-		virtual void keyPressEvent (QKeyEvent *event);
-		virtual void wheelEvent (QWheelEvent *event);
-		virtual void mouseMoveEvent (QMouseEvent *event);
-		virtual void mousePressEvent (QMouseEvent *event);
-		virtual void mouseReleaseEvent (QMouseEvent *event);
-		virtual void resizeEvent (QResizeEvent *event);
-		virtual void leaveEvent (QEvent *event);
 
 
 	private:
@@ -160,11 +141,6 @@ class FlarmMapWidget: public QFrame
 		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const;
 
 
-	protected:
-		double getLargerRadius () const;
-		double getXRadius () const;
-		double getYRadius () const;
-
 	private slots:
 		// FlarmList model slots
 		void rowsInserted (const QModelIndex &parent, int start, int end);
@@ -173,59 +149,11 @@ class FlarmMapWidget: public QFrame
 		void modelReset ();
 		void flarmListDestroyed ();
 
-
-
-		// View
-
 	public slots:
 		virtual void ownPositionChanged (const GeoPosition &ownPosition);
-		virtual void setOrientation (const Angle &orientation);
-		virtual void zoom   (double factor);
-		virtual void scroll (double x, double y);
-
-		virtual Angle orientation ();
 
 	protected:
-		virtual void updateView ();
-
-
-	private:
-		QPointF _center_local; // In local coordinates, because that's what stays fixed when rotating
-		double _radius;
-		Angle _orientation;
-
-		// Basic transforms
-		// _x means "in the x system"
-		mutable bool transformsValid;
-		void invalidateTransforms ();
-		void updateTransforms () const;
-		// Individual transforms
-		mutable QTransform viewSystem_local, localSystem_view;
-		mutable QTransform plotSystem_view, viewSystem_plot;
-		mutable QTransform widgetSystem_plot, plotSystem_widget;
-		// Combined transforms
-		mutable QTransform widgetSystem_local, localSystem_widget;
-
-	private:
-		// Scroll dragging
-		bool scrollDragging;
-		QPointF dragLocation_local;
-
-		// Zoom dragging
-		bool zoomDragging;
-		double zoomDragStartRadius;
-		QPoint zoomDragStartPosition_widget;
-
-		// Zoom rotation
-		bool rotateDragging;
-		Angle rotateDragStartOrientation;
-		QPoint rotateDragStartPosition_widget;
-
-		// Zoom/rotation factors
-		int _keyboardZoomDoubleCount;
-		double _mouseDragZoomDoubleDistance;
-		Angle _mouseWheelZoomDoubleAngle;
-		double _mouseDragRotationDistance;
+//		virtual void updateView ();
 
 };
 

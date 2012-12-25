@@ -9,8 +9,8 @@ class QPointF;
 class QString;
 
 QSize textSize (const QPainter &painter, const QString &text);
-void drawCenteredText (QPainter &painter, const QPoint  &position, const QString &text);
-void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text);
+void drawCenteredText (QPainter &painter, const QPoint  &position, const QString &text, int margin=0);
+void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text, double margin=0);
 void drawOrthogonalCross (QPainter &painter, const QPoint  &position, int    size);
 void drawOrthogonalCross (QPainter &painter, const QPointF &position, double size);
 void drawDiagonalCross (QPainter &painter, const QPoint  &position, int    size);

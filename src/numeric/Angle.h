@@ -26,6 +26,7 @@ class Angle
 
 		static Angle fromRadians (double radians);
 		static Angle fromDegrees (double degrees);
+		static Angle zero ();
 		static Angle fullCircle ();
 
 		Angle normalized () const;

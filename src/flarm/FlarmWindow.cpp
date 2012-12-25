@@ -250,7 +250,6 @@ void FlarmWindow::updateWarnings ()
 void FlarmWindow::flarmMapViewChanged ()
 {
 	updateWarnings ();
-	ui.flarmMap->findClosestStaticElement (NULL, NULL);
 }
 
 void FlarmWindow::flarmMapOwnPositionUpdated ()
@@ -258,10 +257,10 @@ void FlarmWindow::flarmMapOwnPositionUpdated ()
 	updateWarnings ();
 }
 
-void FlarmWindow::on_flarmMap_mouseMoved (QPointF positionLocal)
+void FlarmWindow::on_flarmMap_mouseMoved_p (QPointF position_p)
 {
-	double north=positionLocal.y ();
-	double east=positionLocal.x ();
+	double north=position_p.y ();
+	double east=position_p.x ();
 
 	QString northText;
 	QString eastText;
@@ -288,7 +287,6 @@ void FlarmWindow::on_flarmMap_mouseLeft ()
 void FlarmWindow::on_flarmMap_orientationChanged ()
 {
 	int degrees=round (ui.flarmMap->orientation ().toDegrees ());
-	qDebug () << "orientation was set to" << degrees;
 	ui.mapOrientationInput->setValue (degrees);
 	ui.compass->setValue (degrees);
 }

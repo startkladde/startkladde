@@ -72,6 +72,14 @@ Angle Angle::fullCircle ()
 }
 
 /**
+ * Creates a zero angle
+ */
+Angle Angle::zero ()
+{
+	return Angle::fromRadians (0);
+}
+
+/**
  * Returns the status of the valid flag
  */
 bool Angle::isValid () const
