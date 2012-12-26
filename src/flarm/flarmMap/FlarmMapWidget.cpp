@@ -180,7 +180,6 @@ void FlarmMapWidget::ownPositionChanged (const GeoPosition &ownPosition)
 		ownPosition.distanceTo (_ownPosition)>0)
 	{
 		_ownPosition=ownPosition;
-//		updateView ();
 		emit ownPositionUpdated ();
 	}
 }
@@ -657,6 +656,14 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 	}
 }
 
+void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
+{
+	if (!_ownPosition.isValid ())
+		return;
+
+	// TODO implememnt
+}
+
 void FlarmMapWidget::paintNorthDirection (QPainter &painter)
 {
 	// Draw an arrow from the own position to the north direction
@@ -762,7 +769,6 @@ void FlarmMapWidget::paintPlanes (QPainter &painter)
  */
 void FlarmMapWidget::paintEvent (QPaintEvent *event)
 {
-	// FIXME called several times when rotating
 	// Paint the frame
 	QFrame::paintEvent (event);
 
@@ -774,9 +780,9 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	// the items can only be painted if the own position is valid. For example,
 	// static data is specified in absolute (earth) coordinates and the display
 	// coordinate system is centered at the own position.
-	// TODO draw a latitude/longitude grid - need the own position
 	painter.save (); paintImages           (painter); painter.restore ();
 	painter.save (); paintDistanceCircles  (painter); painter.restore ();
+	painter.save (); paintLatLonGrid       (painter); painter.restore ();
 	painter.save (); paintNorthDirection   (painter); painter.restore ();
 	painter.save (); paintOwnPosition      (painter); painter.restore ();
 	painter.save (); paintStaticCurves     (painter); painter.restore ();

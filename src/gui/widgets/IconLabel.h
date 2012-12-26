@@ -4,6 +4,8 @@
 #include <QtGui/QWidget>
 #include <QStyle>
 
+#include "src/container/Maybe.h"
+
 #include "ui_IconLabel.h"
 
 class QString;
@@ -41,6 +43,7 @@ class IconLabel: public QWidget
 
 	private:
 		Ui::IconLabelClass ui;
+		Maybe<QStyle::StandardPixmap> icon;
 };
 
 #endif

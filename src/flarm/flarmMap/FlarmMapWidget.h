@@ -92,6 +92,7 @@ class FlarmMapWidget: public PlotWidget
 		virtual void paintEvent (QPaintEvent *event);
 		virtual void paintNorthDirection (QPainter &painter);
 		virtual void paintDistanceCircles (QPainter &painter);
+		virtual void paintLatLonGrid (QPainter &painter);
 		virtual void paintStaticCurves (QPainter &painter);
 		virtual void paintStaticMarkers (QPainter &painter);
 		virtual void paintImages (QPainter &painter);

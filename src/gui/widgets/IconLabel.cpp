@@ -29,6 +29,12 @@ IconLabel::~IconLabel()
  */
 void IconLabel::setIcon (QStyle::StandardPixmap standardPixmap)
 {
+	// Don't set the icon if it is already current - avoid unnecessary layout
+	// updates and, consequently, widget repaints
+	if (icon.isValid () && icon.getValue ()==standardPixmap)
+		return;
+	icon.setValue (standardPixmap);
+
 	QStyle *style=QApplication::style ();
 	QIcon icon=style->standardIcon (standardPixmap, 0, this);
 	ui.iconLabel->setPixmap (icon.pixmap (16));
