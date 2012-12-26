@@ -114,3 +114,60 @@ QRectF enlarged (const QRectF &rect, double margin)
 		rect.width  ()+2*margin,
 		rect.height ()+2*margin);
 }
+
+/**
+ * Calculates the minimum distance from the specified point to any point in the
+ * specified rectangle
+ */
+double minimumDistance (const QRectF &rect, const QPointF &point)
+{
+	// Get the relevant coordinates of the point and the rectangle. Note that
+	// the coordinate system has y down, so bottom>=top.
+	double x=point.x ();
+	double y=point.y ();
+	double left=rect.left ();
+	double right=rect.right ();
+	double top=rect.top ();
+	double bottom=rect.bottom ();
+
+	double dx, dy;
+
+	if      (x<left ) dx=left-x;  // The point is left of the rectangle
+	else if (x>right) dx=x-right; // The point is right of the rectangle
+	else              dx=0;       // The point is horizontally within the rectangle
+
+	if      (y<top)    dy=top-y;    // The point is above the rectangle
+	else if (y>bottom) dy=y-bottom; // The point is below the rectangle
+	else               dy=0;        // The point is vertically within the rectangle
+
+	return sqrt (dx*dx+dy*dy);
+}
+
+/**
+ * Calculates the minimum distance from the specified point to any point in the
+ * specified rectangle
+ */
+double maximumDistance (const QRectF &rect, const QPointF &point)
+{
+	// The distance is always the distance to a corner
+
+	// Get the relevant coordinates of the point and the rectangle. Note that
+	// the coordinate system has y down, so bottom>=top.
+	double x=point.x ();
+	double y=point.y ();
+	double left=rect.left ();
+	double right=rect.right ();
+	double top=rect.top ();
+	double bottom=rect.bottom ();
+	QPointF center=rect.center ();
+
+	double dx, dy;
+
+	if (x>=center.x ()) dx=x-left;
+	else                dx=right-x;
+
+	if (y>=center.y ()) dy=y-top;
+	else                dy=bottom-y;
+
+	return sqrt (dx*dx+dy*dy);
+}

@@ -28,5 +28,7 @@ QRectF floor (const QRectF &rect);
 
 QRectF enlarged (const QRectF &rect, double margin);
 
+double minimumDistance (const QRectF &rect, const QPointF &point);
+double maximumDistance (const QRectF &rect, const QPointF &point);
 
 #endif

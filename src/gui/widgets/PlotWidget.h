@@ -72,6 +72,8 @@ class PlotWidget: public QFrame
 		void setDiameter_p (double diameter_p);
 		QSizeF size_p () const;
 		void zoomInBy (double factor);
+		double widgetScale_p () const;
+		double plotScale_w () const;
 
 	signals:
 		void viewChanged () const;

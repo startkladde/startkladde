@@ -160,6 +160,24 @@ void PlotWidget::zoomInBy (double factor)
 	setDiameter_p (_diameter_p/factor);
 }
 
+/**
+ * Calculates the length, in plot coordinates, of one widget coordinate length
+ * unit (one pixel)
+ */
+double PlotWidget::widgetScale_p () const
+{
+	return _diameter_p/qMin (width (), height ());
+}
+
+/**
+ * Calculates the length, in widget coordinates (pixels), of one plot coordinate
+ * length unit
+ */
+double PlotWidget::plotScale_w () const
+{
+	return 1/widgetScale_p ();
+}
+
 
 // ***********************
 // ** Coordinate system **
@@ -380,13 +398,13 @@ QPolygonF PlotWidget::toPlot (const QPolygonF &Polygon_w) const
 double PlotWidget::toWidget (double length_p) const
 {
 	updateTransforms ();
-	return length_p*_p_T_w.m11 ();
+	return length_p*plotScale_w ();
 }
 
 double PlotWidget::toPlot (double length_w) const
 {
 	updateTransforms ();
-	return length_w*_w_T_p.m11 ();
+	return length_w*widgetScale_p ();
 }
 
 void PlotWidget::transformToPlot (QPainter &painter) const

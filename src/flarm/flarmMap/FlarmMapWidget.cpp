@@ -632,14 +632,25 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 
 	double radiusIncrement_p=1000;
 
+	QRectF rect_w=rect ();
 	QPointF center_w=toWidget (0, 0);
 
-	// FIXME minimum pixel distance
-	// FIXME draw all visible, even when the origin is scrolled out of view
-	// FIXME draw distances
-	for (double radius_p=0; radius_p<=diameter_p ()/2; radius_p+=radiusIncrement_p)
+	double minimumDistance_w=minimumDistance (rect_w, center_w);
+	double maximumDistance_w=maximumDistance (rect_w, center_w);
+
+	double minimumDistance_p=toPlot (minimumDistance_w);
+	double maximumDistance_p=toPlot (maximumDistance_w);
+
+	double startRadius_p=floor (minimumDistance_p/radiusIncrement_p)*radiusIncrement_p;
+	double endRadius_p=maximumDistance_p;
+
+	// TODO show the radius of the circle on top of the circle
+	// TODO minimum pixel distance
+	// TODO resolution should depend on scale
+	for (double radius_p=startRadius_p; radius_p<=endRadius_p; radius_p+=radiusIncrement_p)
 	{
 		double radius_w=toWidget (radius_p);
+
 		QSizeF size_w (2*radius_w, 2*radius_w);
 		QRectF rect=centeredQRectF (center_w, size_w);
 		painter.drawArc (rect, 0, 16*360);
@@ -763,6 +774,7 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	// the items can only be painted if the own position is valid. For example,
 	// static data is specified in absolute (earth) coordinates and the display
 	// coordinate system is centered at the own position.
+	// TODO draw a latitude/longitude grid - need the own position
 	painter.save (); paintImages           (painter); painter.restore ();
 	painter.save (); paintDistanceCircles  (painter); painter.restore ();
 	painter.save (); paintNorthDirection   (painter); painter.restore ();
