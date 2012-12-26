@@ -13,6 +13,7 @@
 #include "src/i18n/notr.h"
 #include "src/nmea/GpsTracker.h"
 #include "src/numeric/Velocity.h"
+#include "src/util/double.h"
 #include "src/util/qPainter.h"
 #include "src/util/qPointF.h"
 #include "src/util/qRect.h"
@@ -644,8 +645,7 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 	double endRadius_p=maximumDistance_p;
 
 	// TODO show the radius of the circle on top of the circle
-	// TODO minimum pixel distance
-	// TODO resolution should depend on scale
+	// TODO resolution should depend on scale (minimum pixel distance)
 	for (double radius_p=startRadius_p; radius_p<=endRadius_p; radius_p+=radiusIncrement_p)
 	{
 		double radius_w=toWidget (radius_p);
@@ -661,7 +661,54 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 	if (!_ownPosition.isValid ())
 		return;
 
-	// TODO implememnt
+	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
+	// the transformation) with a width of 0.5 pixels.
+	QPen pen=painter.pen ();
+	pen.setCosmetic (true);
+	pen.setWidthF (0.5);
+	painter.setPen (pen);
+
+	QRectF bounding_p=boundingRect_p ();
+
+	GeoPosition southWest=_ownPosition.offsetPosition (bounding_p.topLeft     ());
+	GeoPosition northEast=_ownPosition.offsetPosition (bounding_p.bottomRight ());
+
+	Angle westLongitude=southWest.getLongitude ();
+	Angle eastLongitude=northEast.getLongitude ();
+	Angle southLatitude=southWest.getLatitude ();
+	Angle northLatitude=northEast.getLatitude ();
+
+	double west_min=westLongitude.toMinutes ();
+	double east_min=eastLongitude.toMinutes ();
+	double south_min=southLatitude.toMinutes ();
+	double north_min=northLatitude.toMinutes ();
+
+	double increment_min=1; // 1 nautical mile (great circle)
+
+	// FIXME show the latitude/longitude values
+	// TODO resolution should depend on scale (minimum pixel distance)
+
+	// Longitude (vertical) lines
+	for (double longitude_min=floor (west_min, increment_min); longitude_min<=east_min; longitude_min+=increment_min)
+	{
+		Angle longitude=Angle::fromMinutes (longitude_min);
+
+		QPointF p1=transformGeographicToWidget (GeoPosition (southLatitude, longitude));
+		QPointF p2=transformGeographicToWidget (GeoPosition (northLatitude, longitude));
+
+		painter.drawLine (p1, p2);
+	}
+
+	// Latitude (horizontal) lines
+	for (double latitude_min=floor (south_min, increment_min); latitude_min<=north_min; latitude_min+=increment_min)
+	{
+		Angle latitude=Angle::fromMinutes (latitude_min);
+
+		QPointF p1=transformGeographicToWidget (GeoPosition (latitude, westLongitude));
+		QPointF p2=transformGeographicToWidget (GeoPosition (latitude, eastLongitude));
+
+		painter.drawLine (p1, p2);
+	}
 }
 
 void FlarmMapWidget::paintNorthDirection (QPainter &painter)

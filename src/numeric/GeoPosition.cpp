@@ -3,8 +3,9 @@
 #include <cmath>
 #include <iostream>
 
-#include <QString>
+#include <QDebug>
 #include <QSettings>
+#include <QString>
 
 #include "src/util/qString.h"
 
@@ -90,7 +91,7 @@ double GeoPosition::distanceTo (const GeoPosition &reference) const
 	Angle latitudeDifference =latitude -reference.latitude;
 	Angle longitudeDifference=longitude-reference.longitude;
 
-	double east  = earthRadius * longitudeDifference.toRadians () * cos (averageLatitude.toRadians ());
+	double east  = earthRadius * longitudeDifference.toRadians () * averageLatitude.cos ();
 	double north = earthRadius * latitudeDifference .toRadians ();
 
 	return sqrt (east*east+north*north);
@@ -116,6 +117,7 @@ double GeoPosition::distanceTo (const GeoPosition &reference) const
  *
  * @param reference the other point
  * @return a QPointF with the east distance as x and the north distance as y
+ * @see offsetPosition
  */
 QPointF GeoPosition::relativePositionTo (const GeoPosition &reference) const
 {
@@ -123,10 +125,33 @@ QPointF GeoPosition::relativePositionTo (const GeoPosition &reference) const
 	Angle latitudeDifference =latitude -reference.latitude;
 	Angle longitudeDifference=longitude-reference.longitude;
 
-	double east  = earthRadius * longitudeDifference.toRadians () * cos (averageLatitude.toRadians ());
+	double east  = earthRadius * longitudeDifference.toRadians () * averageLatitude.cos ();
 	double north = earthRadius * latitudeDifference .toRadians ();
 
 	return QPointF (east, north);
+}
+
+/**
+ * Calculates the position that is the given distance (in meters) east and north
+ * of the own position
+ *
+ * This is the inverse of relativePositionTo.
+ *
+ * @param offset the offset, with the east distance as x and the north distance
+ * as y
+ * @return the resulting position
+ * @see relativePositionTo
+ */
+GeoPosition GeoPosition::offsetPosition (const QPointF &offset) const
+{
+	double east =offset.x ();
+	double north=offset.y ();
+
+	Angle resultLatitude=latitude+Angle::fromRadians (north/earthRadius);
+	Angle averageLatitude=(latitude+resultLatitude)/2;
+	Angle resultLongitude=longitude+Angle::fromRadians (east/earthRadius/averageLatitude.cos ());
+
+	return GeoPosition (resultLatitude, resultLongitude);
 }
 
 /**
@@ -167,7 +192,7 @@ bool GeoPosition::isValid () const
  */
 QDebug operator<< (QDebug dbg, const GeoPosition &position)
 {
-	dbg.nospace () << "(" << position.getLatitude ().toDegrees () << ", " << position.getLongitude ().toDegrees () << ")";
+	dbg.nospace () << "(" << position.getLatitude () << ", " << position.getLongitude () << ")";
 	return dbg.space ();
 }
 

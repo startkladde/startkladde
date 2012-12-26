@@ -55,13 +55,41 @@ Angle Angle::fromRadians (double radians)
 /**
  * Constructs an angle with a given value in degrees
  *
- * @param radians the value, in degrees
+ * @param degrees the value, in degrees
  * @return an Angle with the given value
  */
 Angle Angle::fromDegrees (double degrees)
 {
 	return Angle (degrees/360*(2*M_PI));
 }
+
+/**
+ * Constructs an angle with a given value in arc minutes
+ *
+ * @param minutes the value, in arc minutes
+ * @return an Angle with the given value
+ */
+Angle Angle::fromMinutes (double minutes)
+{
+	return Angle (minutes/(360*60)*(2*M_PI));
+}
+
+// FIXME document
+// Untested
+//Angle Angle::fromDMS (bool positive, uint degrees, uint minutes, uint seconds)
+//{
+//	if (positive)
+//		return fromDegrees (  degrees + minutes/60.0 + seconds/3600.0);
+//	else
+//		return fromDegrees (-(degrees + minutes/60.0 + seconds/3600.0));
+//}
+
+// FIXME document
+// Untested
+//Angle Angle::fromDMS_asymmetric (uint degrees, uint minutes, uint seconds)
+//{
+//	return fromDegrees (degrees + minutes/60.0 + seconds/3600.0);
+//}
 
 /**
  * Creates an angle spanning a full circle (360 degrees or 2*pi radians)
@@ -105,6 +133,16 @@ double Angle::toRadians () const
 double Angle::toDegrees () const
 {
 	return value/(2*M_PI)*360;
+}
+
+/**
+ * Returns the value, in arc minutes
+ *
+ * If the Angle is invalid, the result is undefined.
+ */
+double Angle::toMinutes () const
+{
+	return value/(2*M_PI)*360*60;
 }
 
 /**
@@ -341,4 +379,19 @@ QDebug operator<< (QDebug dbg, const Angle &angle)
 		dbg.nospace () << "invalid angle";
 
     return dbg.space();
+}
+
+double Angle::sin () const
+{
+	return std::sin (value);
+}
+
+double Angle::cos () const
+{
+	return std::cos (value);
+}
+
+double Angle::tan () const
+{
+	return std::tan (value);
 }

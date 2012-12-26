@@ -228,6 +228,7 @@ void PlotWidget::updateTransforms () const
 	emit viewChanged ();
 }
 
+
 // *********************
 // ** Qt mouse events **
 // *********************
@@ -411,4 +412,17 @@ void PlotWidget::transformToPlot (QPainter &painter) const
 {
 	updateTransforms ();
 	painter.setTransform (_p_T_w, false);
+}
+
+/**
+ * Returns the bounding rectangle for the visible rectangle, in plot coordinates
+ *
+ * Note that the y axis of QRectF points up and the y axis of the plot
+ * coordinate system points down, so the top of the returned rectangle will
+ * actually be the south of the bounding rectangle.
+ */
+QRectF PlotWidget::boundingRect_p () const
+{
+	updateTransforms ();
+	return _w_T_p.mapRect (QRectF (rect ()));
 }

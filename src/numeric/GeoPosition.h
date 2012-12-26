@@ -40,6 +40,7 @@ class GeoPosition
 
 		QPointF relativePositionTo (const GeoPosition &reference) const;
 		static QVector<QPointF> relativePositionTo (const QVector<GeoPosition> &values, const GeoPosition &reference);
+		GeoPosition offsetPosition (const QPointF &offset) const;
 
 		bool isValid () const;
 

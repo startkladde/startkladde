@@ -103,6 +103,7 @@ class PlotWidget: public QFrame
 		double toWidget (double length_p) const;
 		double toPlot (double length_w) const;
 		void transformToPlot (QPainter &painter) const;
+		QRectF boundingRect_p () const;
 
 
 	private:

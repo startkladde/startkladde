@@ -26,6 +26,9 @@ class Angle
 
 		static Angle fromRadians (double radians);
 		static Angle fromDegrees (double degrees);
+		static Angle fromMinutes (double minutes);
+		//static Angle fromDMS (bool positive, uint degrees, uint minutes, uint seconds);
+		//static Angle fromDMS_asymmetric (int degrees, uint minutes, uint seconds);
 		static Angle zero ();
 		static Angle fullCircle ();
 
@@ -35,6 +38,9 @@ class Angle
 
 		double toRadians () const;
 		double toDegrees () const;
+		double toMinutes () const;
+		//void toDMS (bool *positive, uint *degrees, uint *minutes, uint *seconds) const;
+		//void toDMS_asymmetric (int *degrees, uint *minutes, uint *seconds) const;
 
 		Angle operator+ (const Angle &other) const;
 		Angle operator- (const Angle &other) const;
@@ -50,6 +56,10 @@ class Angle
 		bool operator<= (const Angle &other) const;
 		bool operator>  (const Angle &other) const;
 		bool operator>= (const Angle &other) const;
+
+		double sin () const;
+		double cos () const;
+		double tan () const;
 
 		static Angle min (const Angle &a1, const Angle &a2);
 		static Angle max (const Angle &a1, const Angle &a2);
