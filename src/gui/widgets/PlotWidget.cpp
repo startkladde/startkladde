@@ -239,8 +239,9 @@ void PlotWidget::mousePressEvent (QMouseEvent *event)
 	{
 		_mouseScrollPosition_p=toPlot (event->posF ());
 		_mouseScrollActive=true;
+		event->accept ();
 	}
-	else if (event->button ()==Qt::RightButton)
+	else if (event->button ()==Qt::MiddleButton)
 	{
 		_mouseZoomStartPosition_w=event->pos ();
 		_mouseZoomOriginalDiameter_p=diameter_p ();
@@ -249,6 +250,7 @@ void PlotWidget::mousePressEvent (QMouseEvent *event)
 		_mouseRotationStartPosition_w=event->pos ();
 		_mouseRotationOriginalOrientation=orientation ();
 		_mouseRotationActive=true;
+		event->accept ();
 	}
 	else
 	{
@@ -261,11 +263,13 @@ void PlotWidget::mouseReleaseEvent (QMouseEvent *event)
 	if (event->button ()==Qt::LeftButton)
 	{
 		_mouseScrollActive=false;
+		event->accept ();
 	}
-	else if (event->button ()==Qt::RightButton)
+	else if (event->button ()==Qt::MiddleButton)
 	{
 		_mouseZoomActive=false;
 		_mouseRotationActive=false;
+		event->accept ();
 	}
 }
 

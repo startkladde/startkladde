@@ -80,9 +80,26 @@ FlarmMapWidget::FlarmMapWidget (QWidget *parent): PlotWidget (parent),
 	_climbColor       (  0, 255, 0, 127),
 	_descentColor     (255, 255, 0, 127),
 	flarmList (NULL), gpsTracker (NULL),
-	kmlStatus (kmlNone)
+	kmlStatus (kmlNone),
+	showImagesAction  (tr ("Show images" ), this),
+	showGridAction    (tr ("Show grid"   ), this),
+	showCirclesAction (tr ("Show circles"), this)
 {
 	setDiameter_p (4000);
+
+	showImagesAction .setCheckable (true);
+	showGridAction   .setCheckable (true);
+	showCirclesAction.setCheckable (true);
+
+	showImagesAction .setChecked (true);
+	showGridAction   .setChecked (true);
+	showCirclesAction.setChecked (true);
+
+	addAction (&showImagesAction);
+	addAction (&showGridAction);
+	addAction (&showCirclesAction);
+
+	setContextMenuPolicy (Qt::ActionsContextMenu);
 
 	_ownPositionText=tr ("Me"); // FIXME proper English word for "Startstelle"
 }
@@ -584,8 +601,8 @@ QPolygonF FlarmMapWidget::transformGeographicToWidget (const QVector<GeoPosition
 
 void FlarmMapWidget::paintImages (QPainter &painter)
 {
-	if (!_ownPosition.isValid ())
-		return;
+	if (!_ownPosition.isValid ()) return;
+	if (!showImagesAction.isChecked ()) return;
 
 	// The y axis of the pixmap points down, so we use a coordinate system
 	// that is identical to the plot coordinate system, only with the y
@@ -623,6 +640,8 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 
 void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 {
+	if (!showCirclesAction.isChecked ()) return;
+
 	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
 	// the transformation) with a width of 0.5 pixels.
 	QPen pen=painter.pen ();
@@ -658,8 +677,8 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 
 void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 {
-	if (!_ownPosition.isValid ())
-		return;
+	if (!_ownPosition.isValid ()) return;
+	if (!showGridAction.isChecked ()) return;
 
 	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
 	// the transformation) with a width of 0.5 pixels.

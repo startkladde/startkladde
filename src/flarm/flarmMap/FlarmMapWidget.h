@@ -1,6 +1,7 @@
 #ifndef FLARMMAPWIDGET_H_
 #define FLARMMAPWIDGET_H_
 
+#include <QAction>
 #include <QString>
 
 #include "src/flarm/flarmMap/Kml.h"
@@ -153,8 +154,11 @@ class FlarmMapWidget: public PlotWidget
 	public slots:
 		virtual void ownPositionChanged (const GeoPosition &ownPosition);
 
-	protected:
-//		virtual void updateView ();
+
+	private:
+		QAction showImagesAction;
+		QAction showGridAction;
+		QAction showCirclesAction;
 
 };
 
