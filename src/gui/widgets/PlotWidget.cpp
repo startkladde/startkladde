@@ -299,9 +299,16 @@ void PlotWidget::mouseMoveEvent (QMouseEvent *event)
 
 void PlotWidget::wheelEvent (QWheelEvent *event)
 {
+	// Store the previous position so we can zoom around the mouse position
+	QPointF position_w=QPointF (event->pos ());
+	QPointF position_p=toPlot (position_w);
+
 	// TODO zoom around the mouse wheel position
 	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
 	zoomInBy (pow (2, angle/_mouseWheelZoomDoubleAngle));
+
+	// Scroll so the same point as before is at the mouse position
+	scrollTo (position_p, position_w);
 }
 
 
