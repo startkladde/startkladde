@@ -128,7 +128,8 @@ class PlotWidget: public QFrame
 		// Mouse zooming
 		double _mouseZoomDoubleDistance_w;
 		bool   _mouseZoomActive;
-		QPoint _mouseZoomStartPosition_w;
+		QPointF _mouseZoomStartPosition_w;
+		QPointF _mouseZoomStartPosition_p;
 		double _mouseZoomOriginalDiameter_p;
 
 		// Mouse rotation

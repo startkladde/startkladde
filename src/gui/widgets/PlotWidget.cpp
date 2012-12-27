@@ -243,7 +243,8 @@ void PlotWidget::mousePressEvent (QMouseEvent *event)
 	}
 	else if (event->button ()==Qt::MiddleButton)
 	{
-		_mouseZoomStartPosition_w=event->pos ();
+		_mouseZoomStartPosition_w=event->posF ();
+		_mouseZoomStartPosition_p=toPlot (_mouseZoomStartPosition_w);
 		_mouseZoomOriginalDiameter_p=diameter_p ();
 		_mouseZoomActive=true;
 
@@ -275,6 +276,12 @@ void PlotWidget::mouseReleaseEvent (QMouseEvent *event)
 
 void PlotWidget::mouseMoveEvent (QMouseEvent *event)
 {
+	// Shift: move only
+	// Control: zoom only
+
+	bool shiftPressed  =((event->modifiers () & Qt::ShiftModifier  )!=0);
+	bool controlPressed=((event->modifiers () & Qt::ControlModifier)!=0);
+
 	emit mouseMoved_p (toPlot (event->posF ()));
 
 	if (_mouseScrollActive)
@@ -282,14 +289,16 @@ void PlotWidget::mouseMoveEvent (QMouseEvent *event)
 		scrollTo (_mouseScrollPosition_p, event->posF ());
 	}
 
-	if (_mouseZoomActive)
+	if (_mouseZoomActive && !shiftPressed)
 	{
-		// TODO zoom around the initial mouse position
 		int deltaY=event->pos ().y () - _mouseZoomStartPosition_w.y ();
 		setDiameter_p (_mouseZoomOriginalDiameter_p*pow (2, deltaY/_mouseZoomDoubleDistance_w));
+
+		// Zoom around the initial mouse position
+		scrollTo (_mouseZoomStartPosition_p, _mouseZoomStartPosition_w);
 	}
 
-	if (_mouseRotationActive)
+	if (_mouseRotationActive && !controlPressed)
 	{
 		int deltaX=event->pos ().x () - _mouseRotationStartPosition_w.x ();
 		Angle deltaAngle=Angle::fullCircle ()*deltaX/_mouseRotationRevolutionDistance_w;
@@ -303,11 +312,10 @@ void PlotWidget::wheelEvent (QWheelEvent *event)
 	QPointF position_w=QPointF (event->pos ());
 	QPointF position_p=toPlot (position_w);
 
-	// TODO zoom around the mouse wheel position
 	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
 	zoomInBy (pow (2, angle/_mouseWheelZoomDoubleAngle));
 
-	// Scroll so the same point as before is at the mouse position
+	// Zoom around the mouse position
 	scrollTo (position_p, position_w);
 }
 
