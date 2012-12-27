@@ -80,6 +80,8 @@ class PlotWidget: public QFrame
 		void mouseMoved_p (QPointF position_p) const;
 		void mouseLeft () const;
 		void orientationChanged () const;
+		void showMessage (QString message) const;
+		void clearMessage () const;
 
 	protected:
 		// Qt mouse events

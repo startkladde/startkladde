@@ -252,6 +252,8 @@ void PlotWidget::mousePressEvent (QMouseEvent *event)
 		_mouseRotationOriginalOrientation=orientation ();
 		_mouseRotationActive=true;
 		event->accept ();
+
+		emit showMessage (tr ("Ctrl: zoom only; Shift: rotate only"));
 	}
 	else
 	{
@@ -272,6 +274,8 @@ void PlotWidget::mouseReleaseEvent (QMouseEvent *event)
 		_mouseRotationActive=false;
 		event->accept ();
 	}
+
+	emit clearMessage ();
 }
 
 void PlotWidget::mouseMoveEvent (QMouseEvent *event)

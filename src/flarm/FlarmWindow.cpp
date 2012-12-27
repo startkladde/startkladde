@@ -46,6 +46,9 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	connect (ui.flarmMap, SIGNAL (ownPositionUpdated ()), this, SLOT (flarmMapOwnPositionUpdated ()));
 	connect (ui.flarmMap, SIGNAL (viewChanged        ()), this, SLOT (flarmMapViewChanged        ()));
 
+	connect (ui.flarmMap, SIGNAL (showMessage (QString)), statusBar, SLOT (showMessage (const QString &)));
+	connect (ui.flarmMap, SIGNAL (clearMessage ()), statusBar, SLOT (clearMessage ()));
+
 	// FIXME load default orientation
 
 	// Setup the table
