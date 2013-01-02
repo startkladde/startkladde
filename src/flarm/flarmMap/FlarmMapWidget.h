@@ -48,6 +48,7 @@ class FlarmMapWidget: public PlotWidget
 			QPixmap pixmap;
 			GeoPosition northEast, southWest;
 			GeoPosition northWest, southEast;
+			Angle rotation;
 		};
 
 		struct PlaneMarker

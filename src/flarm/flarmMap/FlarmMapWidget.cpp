@@ -68,6 +68,7 @@ FlarmMapWidget::Image::Image (const Kml::GroundOverlay &groundOverlay)
 	southWest=GeoPosition (groundOverlay.south, groundOverlay.west);
 	northWest=GeoPosition (groundOverlay.north, groundOverlay.west);
 	southEast=GeoPosition (groundOverlay.south, groundOverlay.east);
+	rotation=groundOverlay.rotation;
 }
 
 
@@ -616,7 +617,6 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 	transformToPlot (painter);
 	painter.setTransform (plotSystem_draw.inverted (), true);
 
-	// FIXME handle image.rotation
 	foreach (const Image &image, images)
 	{
 		// Calculate the northwest and southeast corners of the image in the
@@ -632,9 +632,16 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 		QPointF southEast_draw=southEast_local*plotSystem_draw;
 		QRectF imageRect_draw (northWest_draw, southEast_draw);
 
+		// Rotate the painter coordinate system around the image center
+		painter.save ();
+		painter.translate (imageRect_draw.center ());
+		painter.rotate (-image.rotation.toDegrees ());
+		painter.translate (-imageRect_draw.center ());
+
 		// Draw the whole pixmap in the draw coordinate system, into the
-		// rectangle determined earlier.
+		// rectangle determined earlier
 		painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
+		painter.restore ();
 	}
 }
 
