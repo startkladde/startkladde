@@ -38,6 +38,7 @@ PlotWidget::PlotWidget (QWidget *parent): QFrame (parent)
 	// revolution
 	_mouseRotationRevolutionDistance_w=-360; // 1° per pixel
 	_keyboardRotationRevolutionCount=36; // 10° per keypress
+	_mouseWheelRotationRevolutionAngle=Angle::fromDegrees (540); // 10° rotate per "standard" wheel increment (15°)
 
 	// For the mouse actions, the initial mouse positions are irrelevant as they
 	// are set when the actions starts and ignored as long as the action is not
@@ -312,15 +313,24 @@ void PlotWidget::mouseMoveEvent (QMouseEvent *event)
 
 void PlotWidget::wheelEvent (QWheelEvent *event)
 {
-	// Store the previous position so we can zoom around the mouse position
-	QPointF position_w=QPointF (event->pos ());
-	QPointF position_p=toPlot (position_w);
-
 	Angle angle=Angle::fromDegrees (event->delta ()/(double)8);
-	zoomInBy (pow (2, angle/_mouseWheelZoomDoubleAngle));
 
-	// Zoom around the mouse position
-	scrollTo (position_p, position_w);
+	if (event->modifiers ()==Qt::AltModifier)
+	{
+		double angleFraction=angle/_mouseWheelRotationRevolutionAngle;
+		rotateBy (Angle::fullCircle () * angleFraction);
+	}
+	else
+	{
+		// Store the previous position so we can zoom around the mouse position
+		QPointF position_w=QPointF (event->pos ());
+		QPointF position_p=toPlot (position_w);
+
+		zoomInBy (pow (2, angle/_mouseWheelZoomDoubleAngle));
+
+		// Zoom around the mouse position
+		scrollTo (position_p, position_w);
+	}
 }
 
 

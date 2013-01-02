@@ -143,6 +143,9 @@ class PlotWidget: public QFrame
 		// Mouse wheel zooming
 		Angle _mouseWheelZoomDoubleAngle;
 
+		// Mouse wheel rotation
+		Angle _mouseWheelRotationRevolutionAngle;
+
 		// Keyboard zooming
 		int _keyboardZoomDoubleCount;
 
