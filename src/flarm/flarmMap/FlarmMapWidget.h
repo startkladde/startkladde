@@ -140,6 +140,9 @@ class FlarmMapWidget: public PlotWidget
 		// KML
 		KmlStatus readKmlImplementation (const QString &filename);
 
+		Angle transformWidgetToGeographic (double distance_w) const;
+
+		double    transformGeographicToWidget (const Angle &greatCircleAngle) const;
 		QPointF   transformGeographicToWidget (const GeoPosition &geoPosition) const;
 		QPolygonF transformGeographicToWidget (const QVector<GeoPosition> &geoPositions) const;
 

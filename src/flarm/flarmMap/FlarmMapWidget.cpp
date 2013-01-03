@@ -567,6 +567,16 @@ void FlarmMapWidget::resetPosition ()
 // ** View **
 // **********
 
+double FlarmMapWidget::transformGeographicToWidget (const Angle &greatCircleAngle) const
+{
+	return toWidget (GeoPosition::greatCircleDistance (greatCircleAngle));
+}
+
+Angle FlarmMapWidget::transformWidgetToGeographic (double distance_w) const
+{
+	return GeoPosition::greatCircleAngle (toPlot (distance_w));
+}
+
 /**
  * Undefined if the own position is invalid
  */
@@ -682,6 +692,37 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 	}
 }
 
+double getDecimalGridSize (double minimum)
+{
+	// Express the minimum value in as m*10^e degrees
+	double m, e;
+	toScientific (minimum, &m, &e, NULL);
+
+	// Increase the mantissa to the next higher value from 2, 5 and 10
+	if      (m<= 2) m=2;
+	else if (m<= 5) m=5;
+	else            m=10;
+
+	// Convert the value back to a regular value
+	return fromScientific (m, e, true);
+}
+
+double getGridSize_min (double minimum_min)
+{
+	// For grid step sizes, the permissible values are a bit peculiar due to the
+	// base 60 system: for values less than 1 degree, we allow 1, 2, 5, 10 and
+	// 30 minutes. For values larger than 1 degree, we allow the usual decimal
+	// values, 1*10^e, 2*10^e and 5*10^e.
+
+	if      (minimum_min<= 1) return  1; //  1 minute
+	else if (minimum_min<= 2) return  2; //  2 minutes
+	else if (minimum_min<= 5) return  5; //  5 minutes
+	else if (minimum_min<=10) return 10; // 10 minutes
+	else if (minimum_min<=30) return 30; // 30 minutes (0.5°)
+	else if (minimum_min<=60) return 60; //  1 degree (1 nautical mile)
+	else return 60*getDecimalGridSize (minimum_min/60);
+}
+
 void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 {
 	if (!_ownPosition.isValid ()) return;
@@ -714,9 +755,38 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 	double south_min=southLatitude.toMinutes ();
 	double north_min=northLatitude.toMinutes ();
 
-	double increment_min=1; // 1 nautical mile (great circle)
+	// The minimum distance between grid lines is given by the width of a sample
+	// text
+	int minimumDistance_w=textSize (painter, "999° 99° E").width ();
+	Angle minimumDistance_geo=transformWidgetToGeographic (minimumDistance_w);
+	double minimumDistance_min=minimumDistance_geo.toMinutes ();
 
-	// TODO resolution should depend on scale (minimum pixel distance)
+	// Determine the actual increment
+	double increment_min=getGridSize_min (minimumDistance_min);
+
+//	double increment_min;
+//	if      (minimumDistance_min<=1) increment_min=1;   // 1 minute
+//	else if (minimumDistance_min<=2) increment_min=2;   // 2 mintues
+//	else if (minimumDistance_min<=5) increment_min=5;   // 5 minutes
+//	else if (minimumDistance_min<=10) increment_min=10; // 10 minutes
+//	else if (minimumDistance_min<=30) increment_min=30; // 30 minutes (0.5°)
+//	else if (minimumDistance_min<=60) increment_min=60; // 1° (1 nautical mile)
+//	else
+//	{
+//		double minimumDistance_deg=minimumDistance_min/60;
+//
+//		// Express the minimum distance as m*10^e degrees
+//		double m, e;
+//		toScientific (minimumDistance_min/60, &m, &e, NULL);
+//
+//		// Increase the mantissa to the next higher value from 2, 5 and 10
+//		if      (m<= 2) m=2;
+//		else if (m<= 5) m=5;
+//		else            m=10;
+//
+//		// Convert the value back to minutes
+//		increment_min=60*fromScientific (m, e, true);
+//	}
 
 	// Depending on the orientation, draw the latitude/longitude values at
 	// different positions. The orientation type may be 0 (north up), 1 (north

@@ -36,6 +36,9 @@ class GeoPosition
 		Angle getLatitude  () const { return latitude ; }
 		Angle getLongitude () const { return longitude; }
 
+		static double greatCircleDistance (const Angle &angle);
+		static Angle greatCircleAngle (double distance);
+
 		double distanceTo (const GeoPosition &reference) const;
 
 		QPointF relativePositionTo (const GeoPosition &reference) const;

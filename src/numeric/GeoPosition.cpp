@@ -71,6 +71,26 @@ GeoPosition GeoPosition::fromRadians (const double latitude, const double longit
 }
 
 /**
+ * Calculates the distance (along a great circle) between two points on the
+ * earth surface, in meters, given the spherical angle between the points
+ *
+ * This method can also be used to determine the distance of two points on the
+ * same meridian, given their relative latitude, or two points on the equator,
+ * given their relative longitude.
+ *
+ * If the angle is negative, the result will also be negative.
+ */
+double GeoPosition::greatCircleDistance (const Angle &angle)
+{
+	return earthRadius * angle.toRadians ();
+}
+
+Angle GeoPosition::greatCircleAngle (double distance)
+{
+	return Angle::fromRadians (distance/earthRadius);
+}
+
+/**
  * Calculates the distance between this position and another position
  *
  * The calculation uses an approximation that only works for small differences
