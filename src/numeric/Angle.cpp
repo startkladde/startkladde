@@ -4,6 +4,8 @@
 
 #include <QPointF>
 
+#include "src/i18n/notr.h"
+
 /**
  * Constructs an invalid angle
  */
@@ -394,4 +396,17 @@ double Angle::cos () const
 double Angle::tan () const
 {
 	return std::tan (value);
+}
+
+QString Angle::formatDmSuffix (const QString &positiveSuffix, const QString &negativeSuffix) const
+{
+	double degrees=toDegrees ();
+
+	bool positive=(degrees>0);
+	int minutes=round (fabs (degrees)*60);
+
+	return qnotrUtf8 ("%1° %2' %3")
+		.arg (minutes/60)
+		.arg (minutes%60)
+		.arg (positive ? positiveSuffix : negativeSuffix);
 }

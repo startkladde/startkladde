@@ -447,6 +447,11 @@ void PlotWidget::transformToPlot (QPainter &painter) const
 	painter.setTransform (_p_T_w, false);
 }
 
+QRectF PlotWidget::rect_w () const
+{
+	return QRectF (rect ());
+}
+
 /**
  * Returns the bounding rectangle for the visible rectangle, in plot coordinates
  *
@@ -457,5 +462,5 @@ void PlotWidget::transformToPlot (QPainter &painter) const
 QRectF PlotWidget::boundingRect_p () const
 {
 	updateTransforms ();
-	return _w_T_p.mapRect (QRectF (rect ()));
+	return _w_T_p.mapRect (rect_w ());
 }

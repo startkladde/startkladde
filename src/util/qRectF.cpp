@@ -72,7 +72,7 @@ QRectF southEastCorner (const QRectF &rect, const QMargins &margins)
 
 QRectF centeredQRectF (const QPointF &point, double size)
 {
-	return QRectF (point.x ()-size/2, point.y ()-size/2, size, size);
+	return centeredQRectF (point, QSizeF (size, size));
 }
 
 QRectF centeredQRectF (const QPointF &point, const QSizeF &size)
@@ -83,6 +83,31 @@ QRectF centeredQRectF (const QPointF &point, const QSizeF &size)
 	double h=size.height ();
 
 	return QRectF (x-w/2, y-h/2, w, h);
+}
+
+QRectF alignedQRectF (const QPointF &point, Qt::Alignment alignment, double size)
+{
+	return alignedQRectF (point, alignment, QSizeF (size, size));
+}
+
+QRectF alignedQRectF (const QPointF &point, Qt::Alignment alignment, const QSizeF &size)
+{
+	double x=point.x ();
+	double y=point.y ();
+	double w=size.width ();
+	double h=size.height ();
+
+	double rx;
+	if      (alignment & Qt::AlignLeft ) rx=x;     // Left aligned
+	else if (alignment & Qt::AlignRight) rx=x-w;   // Right aligned
+	else                                 rx=x-w/2; // Centered horizontally
+
+	double ry;
+	if      (alignment & Qt::AlignTop   ) ry=y;     // Top aligned
+	else if (alignment & Qt::AlignBottom) ry=y-h;   // Bottom aligned
+	else                                  ry=y-h/2; // Centered vertically
+
+	return QRectF (rx, ry, w, h);
 }
 
 QRectF round (const QRectF &rect)
@@ -170,4 +195,24 @@ double maximumDistance (const QRectF &rect, const QPointF &point)
 	else                dy=bottom-y;
 
 	return sqrt (dx*dx+dy*dy);
+}
+
+QLineF topLine (const QRectF &rect)
+{
+	return QLineF (rect.topLeft (), rect.topRight ());
+}
+
+QLineF bottomLine (const QRectF &rect)
+{
+	return QLineF (rect.bottomRight (), rect.bottomLeft ());
+}
+
+QLineF leftLine (const QRectF &rect)
+{
+	return QLineF (rect.bottomLeft (), rect.topLeft ());
+}
+
+QLineF rightLine (const QRectF &rect)
+{
+	return QLineF (rect.topRight (), rect.bottomRight ());
 }

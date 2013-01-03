@@ -693,7 +693,12 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 	pen.setCosmetic (true);
 	pen.setWidthF (0.5);
 	painter.setPen (pen);
+	// Set a white, semi-transparent background (for the text)
+	painter.setBrush (QBrush (QColor (255, 255, 255, 127)));
 
+	// The lines will be drawn into the bounding rectangle to the widget
+	// rectangle in plot coordinates. They will therefore be longer than what
+	// fits in the widget if the orientation is not 0°, 90°, 180° or 270°.
 	QRectF bounding_p=boundingRect_p ();
 
 	GeoPosition southWest=_ownPosition.offsetPosition (bounding_p.topLeft     ());
@@ -711,29 +716,76 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 
 	double increment_min=1; // 1 nautical mile (great circle)
 
-	// FIXME show the latitude/longitude values
 	// TODO resolution should depend on scale (minimum pixel distance)
 
-	// Longitude (vertical) lines
+	// Depending on the orientation, draw the latitude/longitude values at
+	// different positions. The orientation type may be 0 (north up), 1 (north
+	// right), 2 (north down) or 3 (north left)
+	int o=orientation ().toDegrees ();
+	int orientationType;
+	if      (o>=  0+45 && o< 90+45) orientationType=3;
+	else if (o>= 90+45 && o<180+45) orientationType=2;
+	else if (o>=180+45 && o<270+45) orientationType=1;
+	else                            orientationType=0;
+
+	// Calculate the outlines of the rectangle. Shrink the rectangle a bit to
+	// get a margin between the widget borders and the text. Also, for
+	// orthogonal orientations, the latitude/longitude lines' points may be on
+	// the outlines of the rectangle, so due to rounding errors, they may not
+	// intersect.
+	QRectF rect_w=this->rect_w ();
+	rect_w=enlarged (rect_w, -2);
+
+	// Longitude (vertical) lines (_min signifies minutes)
 	for (double longitude_min=floor (west_min, increment_min); longitude_min<=east_min; longitude_min+=increment_min)
 	{
+		// Calculate the line extents
 		Angle longitude=Angle::fromMinutes (longitude_min);
-
 		QPointF p1=transformGeographicToWidget (GeoPosition (southLatitude, longitude));
 		QPointF p2=transformGeographicToWidget (GeoPosition (northLatitude, longitude));
+		QLineF line (p1, p2);
 
-		painter.drawLine (p1, p2);
+		// Draw the line
+		painter.drawLine (line);
+
+		// Draw text at intersection with widget outline
+		QLineF intersectionLine;
+		Qt::Alignment textAlignment;
+		if      (orientationType==0) { intersectionLine=topLine    (rect_w); textAlignment=Qt::AlignTop   ; }
+		else if (orientationType==1) { intersectionLine=rightLine  (rect_w); textAlignment=Qt::AlignRight ; }
+		else if (orientationType==2) { intersectionLine=bottomLine (rect_w); textAlignment=Qt::AlignBottom; }
+		else if (orientationType==3) { intersectionLine=leftLine   (rect_w); textAlignment=Qt::AlignLeft  ; }
+
+		QString text=longitude.formatDmSuffix ("E", "W");
+		QPointF intersection;
+		if (line.intersect (intersectionLine, &intersection)==QLineF::BoundedIntersection)
+			drawText (painter, intersection, textAlignment, text);
 	}
 
-	// Latitude (horizontal) lines
+	// Latitude (horizontal) lines (_min signifies minutes)
 	for (double latitude_min=floor (south_min, increment_min); latitude_min<=north_min; latitude_min+=increment_min)
 	{
+		// Calculate the line extents
 		Angle latitude=Angle::fromMinutes (latitude_min);
-
 		QPointF p1=transformGeographicToWidget (GeoPosition (latitude, westLongitude));
 		QPointF p2=transformGeographicToWidget (GeoPosition (latitude, eastLongitude));
+		QLineF line (p1, p2);
 
-		painter.drawLine (p1, p2);
+		// Draw the line
+		painter.drawLine (line);
+
+		// Draw text at intersection with widget outline
+		QLineF intersectionLine;
+		Qt::Alignment textAlignment;
+		if      (orientationType==0) { intersectionLine=leftLine   (rect_w); textAlignment=Qt::AlignLeft  ; }
+		else if (orientationType==1) { intersectionLine=topLine    (rect_w); textAlignment=Qt::AlignTop   ; }
+		else if (orientationType==2) { intersectionLine=rightLine  (rect_w); textAlignment=Qt::AlignRight ; }
+		else if (orientationType==3) { intersectionLine=bottomLine (rect_w); textAlignment=Qt::AlignBottom; }
+
+		QString text=latitude.formatDmSuffix ("N", "S");
+		QPointF intersection;
+		if (line.intersect (intersectionLine, &intersection)==QLineF::BoundedIntersection)
+			drawText (painter, intersection, textAlignment, text);
 	}
 }
 

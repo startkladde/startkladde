@@ -2,6 +2,7 @@
 #define ANGLE_H_
 
 #include <QDebug>
+#include <QString>
 
 class QPointF;
 
@@ -68,6 +69,8 @@ class Angle
 		static Angle atan2 (const QPointF &point);
 
 		int compassSection (int numSections) const;
+
+		QString formatDmSuffix (const QString &positiveSuffix, const QString &negativeSuffix) const;
 
 	private:
 		Angle (double value);
