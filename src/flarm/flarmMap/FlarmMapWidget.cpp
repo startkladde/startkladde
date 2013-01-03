@@ -260,8 +260,8 @@ void FlarmMapWidget::updatePlaneMarker (const FlarmRecord &record)
 	PlaneMarker &marker=planeMarkers[record.getFlarmId ()];
 
 	// Always set the position, even if the marker is not visible
-	marker.position_local=record.getRelativePosition ();
-	marker.trail_local=record.getPreviousRelativePositions ().toVector ();
+	marker.position_p=record.getRelativePosition ();
+	marker.trail_p=record.getPreviousRelativePositions ().toVector ();
 
 	switch (record.getState ())
 	{
@@ -621,15 +621,15 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 	{
 		// Calculate the northwest and southeast corners of the image in the
 		// local coordinate system
-		QPointF northWest_local=image.northWest.relativePositionTo (_ownPosition);
-		QPointF southEast_local=image.southEast.relativePositionTo (_ownPosition);
+		QPointF northWest_p=image.northWest.relativePositionTo (_ownPosition);
+		QPointF southEast_p=image.southEast.relativePositionTo (_ownPosition);
 
 		// Calculate the northwest and southeast corners of the image in the
 		// draw coordinate system (the painter will be transformed to this
 		// coordinate system). These two corners define the rectangle the pixmap
 		// will be drawn into.
-		QPointF northWest_draw=northWest_local*plotSystem_draw;
-		QPointF southEast_draw=southEast_local*plotSystem_draw;
+		QPointF northWest_draw=northWest_p*plotSystem_draw;
+		QPointF southEast_draw=southEast_p*plotSystem_draw;
 		QRectF imageRect_draw (northWest_draw, southEast_draw);
 
 		// Rotate the painter coordinate system around the image center
@@ -863,7 +863,7 @@ void FlarmMapWidget::paintPlanes (QPainter &painter)
 {
 	foreach (const PlaneMarker &marker, planeMarkers.values ())
 	{
-		QPointF position_w=toWidget (marker.position_local);
+		QPointF position_w=toWidget (marker.position_p);
 
 		switch (marker.style)
 		{
@@ -882,7 +882,7 @@ void FlarmMapWidget::paintPlanes (QPainter &painter)
 				pen.setWidth (2);
 				painter.setPen (pen);
 				drawCenteredText (painter, position_w, marker.text);
-				painter.drawPolyline (toWidget (marker.trail_local));
+				painter.drawPolyline (toWidget (marker.trail_p));
 				break;
 			// No default
 		}

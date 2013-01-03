@@ -56,9 +56,9 @@ class FlarmMapWidget: public PlotWidget
 			enum Style { invisible, minimal, verbose };
 
 			Style style;
-			QPointF position_local; // FIXME rename
+			QPointF position_p;
 			QString text;
-			QPolygonF trail_local;
+			QPolygonF trail_p;
 			QColor color;
 		};
 
