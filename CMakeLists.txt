@@ -50,7 +50,7 @@ FIND_PACKAGE (Qt4       REQUIRED)
 FIND_PACKAGE (MySQL 5.0 REQUIRED)
 FIND_PACKAGE (Acpi              )
 FIND_PACKAGE (Ruby      REQUIRED)
-FIND_PACKAGE (Qwt6	REQUIRED)
+#FIND_PACKAGE (Qwt6	REQUIRED)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -59,19 +59,19 @@ SET(QT_USE_QTNETWORK TRUE)
 
 set(CMAKE_AUTOMOC TRUE)
 
-string(REPLACE "qwt.dll" "qwtd.dll" Qwt6_Qt4_DEBUG_LIBRARY ${Qwt6_Qt4_LIBRARY})
-if(NOT Qwt6_FOUND)
-    message(STATUS "Qwt6 not found! Disabling plotting support!")
-else()
-    message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR} ${Qwt6_Qt4_LIBRARY}")
-    include_directories(${Qwt6_INCLUDE_DIR})
-    
-    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
-		link_libraries(${Qwt6_Qt4_DEBUG_LIBRARY})
-	ELSE ()
-    	link_libraries(${Qwt6_Qt4_LIBRARY})
-	ENDIF()
-endif()
+#string(REPLACE "qwt.dll" "qwtd.dll" Qwt6_Qt4_DEBUG_LIBRARY ${Qwt6_Qt4_LIBRARY})
+#if(NOT Qwt6_FOUND)
+#    message(STATUS "Qwt6 not found! Disabling plotting support!")
+#else()
+#    message(STATUS "Qwt6 available at: ${Qwt6_INCLUDE_DIR} ${Qwt6_Qt4_LIBRARY}")
+#    include_directories(${Qwt6_INCLUDE_DIR})
+#    
+#    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+#		link_libraries(${Qwt6_Qt4_DEBUG_LIBRARY})
+#	ELSE ()
+#    	link_libraries(${Qwt6_Qt4_LIBRARY})
+#	ENDIF()
+#endif()
 
 # For gcc and release mode, enable some options that make the binary smaller
 if (CMAKE_COMPILER_IS_GNUCXX)
@@ -172,16 +172,16 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 
 	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
 
-	# FIXME should not be hardcoded
-    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
-		message (STATUS "Copying library ${Qwt6_Qt4_DEBUG_LIBRARY}")
-		file (COPY ${Qwt6_Qt4_DEBUG_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
-		set (INSTALL_LIBS ${INSTALL_LIBS} qwtd.dll)
-	ELSE ()
-		message (STATUS "Copying library ${Qwt6_Qt4_LIBRARY}")
-		file (COPY ${Qwt6_Qt4_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
-		set (INSTALL_LIBS ${INSTALL_LIBS} qwt.dll)
-	ENDIF()
+#	# FIXME should not be hardcoded
+#    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+#		message (STATUS "Copying library ${Qwt6_Qt4_DEBUG_LIBRARY}")
+#		file (COPY ${Qwt6_Qt4_DEBUG_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
+#		set (INSTALL_LIBS ${INSTALL_LIBS} qwtd.dll)
+#	ELSE ()
+#		message (STATUS "Copying library ${Qwt6_Qt4_LIBRARY}")
+#		file (COPY ${Qwt6_Qt4_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
+#		set (INSTALL_LIBS ${INSTALL_LIBS} qwt.dll)
+#	ENDIF()
 
 	file (COPY ${QT_PLUGINS_DIR}/sqldrivers/qsqlmysql4.dll DESTINATION ${PROJECT_BINARY_DIR}/plugins/sqldrivers/)
 endif()
