@@ -26,7 +26,6 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 
 	private slots:
 		void on_mapOrientationInput_valueChanged (int value);
-		void on_compass_sliderMoved (double value);
 		void on_northButton_clicked ();
 		void on_reverseButton_clicked ();
 		void on_flarmMap_mouseMoved_p (QPointF position_p);

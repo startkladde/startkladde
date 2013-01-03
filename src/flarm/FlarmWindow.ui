@@ -56,13 +56,6 @@
              </widget>
             </item>
             <item>
-             <widget class="QwtCompass" name="compass" native="true">
-              <property name="lineWidth" stdset="0">
-               <number>4</number>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="northButton">
               <property name="text">
                <string>&amp;North</string>
@@ -177,16 +170,6 @@
    <class>SkTableView</class>
    <extends>QTableView</extends>
    <header>src/gui/widgets/SkTableView.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QwtDial</class>
-   <extends>QWidget</extends>
-   <header>qwt_dial.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QwtCompass</class>
-   <extends>QwtDial</extends>
-   <header>qwt_compass.h</header>
   </customwidget>
   <customwidget>
    <class>IconLabel</class>
