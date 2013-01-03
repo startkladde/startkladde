@@ -17,6 +17,12 @@
 // ** Shapes **
 // ************
 
+/**
+ * Draws a cross, consisting of a vertical and a horizontal line
+ *
+ * The center of the cross is at the specified position. The size specifies the
+ * distance from the center of the cross to the end of the lines.
+ */
 void drawOrthogonalCross (QPainter &painter, const QPoint &position, int size)
 {
 	QPoint dx (size, 0);
@@ -25,6 +31,12 @@ void drawOrthogonalCross (QPainter &painter, const QPoint &position, int size)
 	painter.drawLine (position-dy, position+dy);
 }
 
+/**
+ * Draws a cross, consisting of a vertical and a horizontal line
+ *
+ * The center of the cross is at the specified position. The size specifies the
+ * distance from the center of the cross to the end of the lines.
+ */
 void drawOrthogonalCross (QPainter &painter, const QPointF &position, double size)
 {
 	QPointF dx (size, 0);
@@ -33,6 +45,12 @@ void drawOrthogonalCross (QPainter &painter, const QPointF &position, double siz
 	painter.drawLine (position-dy, position+dy);
 }
 
+/**
+ * Draws a cross, consisting of to perpendicular diagonal lines
+ *
+ * The center of the cross is at the specified position. The size specifies the
+ * distance from the center of the cross to the end of the lines.
+ */
 void drawDiagonalCross (QPainter &painter, const QPoint &position, int size)
 {
 	size=size/M_SQRT2;
@@ -42,6 +60,12 @@ void drawDiagonalCross (QPainter &painter, const QPoint &position, int size)
 	painter.drawLine (position-dy, position+dy);
 }
 
+/**
+ * Draws a cross, consisting of to perpendicular diagonal lines
+ *
+ * The center of the cross is at the specified position. The size specifies the
+ * distance from the center of the cross to the end of the lines.
+ */
 void drawDiagonalCross (QPainter &painter, const QPointF &position, double size)
 {
 	size=size/M_SQRT2;
@@ -51,11 +75,17 @@ void drawDiagonalCross (QPainter &painter, const QPointF &position, double size)
 	painter.drawLine (position-dy, position+dy);
 }
 
+/**
+ * Draws a circle
+ */
 void drawCircle (QPainter &painter, const QPoint &center, int radius)
 {
 	painter.drawArc (centeredQRect (center, radius), 0, 16*360);
 }
 
+/**
+ * Draws a circle
+ */
 void drawCircle (QPainter &painter, const QPointF &center, double radius)
 {
 	painter.drawArc (centeredQRectF (center, 2*radius), 0, 16*360);
@@ -66,20 +96,34 @@ void drawCircle (QPainter &painter, const QPointF &center, double radius)
 // ** Text **
 // **********
 
+/**
+ * Determines the size of a text when painted with the current painter
+ *
+ * The text may contain newlines.
+ */
 QSize textSize (const QPainter &painter, const QString &text)
 {
 	return painter.fontMetrics ().size (0, text);
 }
 
+/**
+ * Same as drawCenteredText (QPainter &, const QPointF &, const QString &,
+ * double), but with integer arguments
+ */
 void drawCenteredText (QPainter &painter, const QPoint &position, const QString &text, int margin)
 {
-	// FIXME call other drawCenteredText instead?
-	QSize size=textSize (painter, text);
-	QRect rect=centeredQRect (position, size);
-	painter.fillRect (enlarged (rect, margin), painter.brush ());
-	painter.drawText (rect, Qt::AlignHCenter, text);
+	drawCenteredText (painter, QPointF (position), text, margin);
 }
 
+/**
+ * Draws a string at the specified position
+ *
+ * The text will be drawn with the center at the specified position. If the text
+ * contains newlines, the individual lines will be centered.
+ *
+ * The text rectangle plus the specified margin is filled with the background
+ * brush.
+ */
 void drawCenteredText (QPainter &painter, const QPointF &position, const QString &text, double margin)
 {
 	QSize size=textSize (painter, text);
@@ -90,14 +134,28 @@ void drawCenteredText (QPainter &painter, const QPointF &position, const QString
 	// the position manually.
 	rect=round (rect);
 	painter.fillRect (enlarged (rect, margin), painter.brush ());
-	painter.drawText (rect, text); // FIXME need Qt::AlignHCenter?
+	painter.drawText (rect, Qt::AlignHCenter, text); // FIXME need Qt::AlignHCenter?
 }
 
+/**
+ * Same as drawText (QPainter &, const QPointF &, Qt::Alignment, const
+ * QString &, double), but with integer arguments
+ */
 void drawText (QPainter &painter, const QPoint &position, Qt::Alignment alignment, const QString &text, int margin)
 {
 	return drawText (painter, QPointF (position), alignment, text, margin);
 }
 
+/**
+ * Draws a string of text at the specified position
+ *
+ * The text will be drawn aligned with the specified position according to the
+ * alignment parameter. For alignment, the same rules as for alignedQRectF
+ * apply.
+ *
+ * The text rectangle plus the specified margin is filled with the background
+ * brush.
+ */
 void drawText (QPainter &painter, const QPointF &position, Qt::Alignment alignment, const QString &text, double margin)
 {
 	QSize size=textSize (painter, text);
@@ -108,5 +166,5 @@ void drawText (QPainter &painter, const QPointF &position, Qt::Alignment alignme
 	// the position manually.
 	rect=round (rect);
 	painter.fillRect (enlarged (rect, margin), painter.brush ());
-	painter.drawText (rect, text);
+	painter.drawText (rect, Qt::AlignHCenter, text);
 }
