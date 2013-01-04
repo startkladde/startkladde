@@ -134,7 +134,7 @@ void drawCenteredText (QPainter &painter, const QPointF &position, const QString
 	// the position manually.
 	rect=round (rect);
 	painter.fillRect (enlarged (rect, margin), painter.brush ());
-	painter.drawText (rect, Qt::AlignHCenter, text); // FIXME need Qt::AlignHCenter?
+	painter.drawText (rect, Qt::AlignHCenter, text);
 }
 
 /**

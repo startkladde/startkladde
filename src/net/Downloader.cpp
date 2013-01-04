@@ -66,7 +66,6 @@ void Downloader::startDownload (int state, const QUrl &url)
 	request.setUrl (QUrl (url));
 
 	// Create the reply
-	// FIXME should we connect the signals first?
 	reply=manager->get (request);
 
 	QObject::connect (
