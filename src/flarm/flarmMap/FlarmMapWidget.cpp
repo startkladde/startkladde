@@ -673,7 +673,7 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 	double minimumIncrement_p=toPlot (minimumIncrement_w);
 	double radiusIncrement_p=getDecimalGridSize (minimumIncrement_p);
 	// Smallest radius increment we'll use: 500 m
-	if (radiusIncrement_p<=500) radiusIncrement_p=500;
+	if (radiusIncrement_p<=1000) radiusIncrement_p=1000;
 
 	QRectF rect_w=rect ();
 	QPointF center_w=toWidget (0, 0);
@@ -687,15 +687,18 @@ void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
 	double startRadius_p=floor (minimumDistance_p/radiusIncrement_p)*radiusIncrement_p;
 	double endRadius_p=maximumDistance_p;
 
-	// FIXME show the radius of the circle on top of the circle
+	// Don't start at 0
+	if (startRadius_p==0)
+		startRadius_p=radiusIncrement_p;
+
 	for (double radius_p=startRadius_p; radius_p<=endRadius_p; radius_p+=radiusIncrement_p)
 	{
 		double radius_w=toWidget (radius_p);
 
-		// FIXME we can use drawCircle, n'est ce pas?
-		QSizeF size_w (2*radius_w, 2*radius_w);
-		QRectF rect=centeredQRectF (center_w, size_w);
-		painter.drawArc (rect, 0, 16*360);
+		drawCircle (painter, center_w, radius_w);
+
+		QString text=tr ("%1 km").arg (radius_p/1000);
+		drawText (painter, center_w+QPointF (0, -radius_w), Qt::AlignBottom, text, 0);
 	}
 }
 
