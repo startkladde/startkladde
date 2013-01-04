@@ -655,43 +655,6 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 	}
 }
 
-void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
-{
-	if (!showCirclesAction.isChecked ()) return;
-
-	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
-	// the transformation) with a width of 0.5 pixels.
-	QPen pen=painter.pen ();
-	pen.setCosmetic (true);
-	pen.setWidthF (0.5);
-	painter.setPen (pen);
-
-	double radiusIncrement_p=1000;
-
-	QRectF rect_w=rect ();
-	QPointF center_w=toWidget (0, 0);
-
-	double minimumDistance_w=minimumDistance (rect_w, center_w);
-	double maximumDistance_w=maximumDistance (rect_w, center_w);
-
-	double minimumDistance_p=toPlot (minimumDistance_w);
-	double maximumDistance_p=toPlot (maximumDistance_w);
-
-	double startRadius_p=floor (minimumDistance_p/radiusIncrement_p)*radiusIncrement_p;
-	double endRadius_p=maximumDistance_p;
-
-	// TODO show the radius of the circle on top of the circle
-	// TODO resolution should depend on scale (minimum pixel distance)
-	for (double radius_p=startRadius_p; radius_p<=endRadius_p; radius_p+=radiusIncrement_p)
-	{
-		double radius_w=toWidget (radius_p);
-
-		QSizeF size_w (2*radius_w, 2*radius_w);
-		QRectF rect=centeredQRectF (center_w, size_w);
-		painter.drawArc (rect, 0, 16*360);
-	}
-}
-
 double getDecimalGridSize (double minimum)
 {
 	// Express the minimum value in as m*10^e degrees
@@ -721,6 +684,49 @@ double getGridSize_min (double minimum_min)
 	else if (minimum_min<=30) return 30; // 30 minutes (0.5°)
 	else if (minimum_min<=60) return 60; //  1 degree (1 nautical mile)
 	else return 60*getDecimalGridSize (minimum_min/60);
+}
+
+void FlarmMapWidget::paintDistanceCircles (QPainter &painter)
+{
+	if (!showCirclesAction.isChecked ()) return;
+
+	// Set a cosmetic pen (i. e. one that uses pixel dimensions, regardless of
+	// the transformation) with a width of 0.5 pixels.
+	QPen pen=painter.pen ();
+	pen.setCosmetic (true);
+	pen.setWidthF (0.5);
+	painter.setPen (pen);
+
+	// The minimum distance between circles is given by the height of a sample
+	// text
+	int minimumIncrement_w=4*textSize (painter, "1 km").height ();
+	double minimumIncrement_p=toPlot (minimumIncrement_w);
+	double radiusIncrement_p=getDecimalGridSize (minimumIncrement_p);
+	// Smallest radius increment we'll use: 500 m
+	if (radiusIncrement_p<=500) radiusIncrement_p=500;
+
+	QRectF rect_w=rect ();
+	QPointF center_w=toWidget (0, 0);
+
+	double minimumDistance_w=minimumDistance (rect_w, center_w);
+	double maximumDistance_w=maximumDistance (rect_w, center_w);
+
+	double minimumDistance_p=toPlot (minimumDistance_w);
+	double maximumDistance_p=toPlot (maximumDistance_w);
+
+	double startRadius_p=floor (minimumDistance_p/radiusIncrement_p)*radiusIncrement_p;
+	double endRadius_p=maximumDistance_p;
+
+	// FIXME show the radius of the circle on top of the circle
+	for (double radius_p=startRadius_p; radius_p<=endRadius_p; radius_p+=radiusIncrement_p)
+	{
+		double radius_w=toWidget (radius_p);
+
+		// FIXME we can use drawCircle, n'est ce pas?
+		QSizeF size_w (2*radius_w, 2*radius_w);
+		QRectF rect=centeredQRectF (center_w, size_w);
+		painter.drawArc (rect, 0, 16*360);
+	}
 }
 
 void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
@@ -763,30 +769,6 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 
 	// Determine the actual increment
 	double increment_min=getGridSize_min (minimumDistance_min);
-
-//	double increment_min;
-//	if      (minimumDistance_min<=1) increment_min=1;   // 1 minute
-//	else if (minimumDistance_min<=2) increment_min=2;   // 2 mintues
-//	else if (minimumDistance_min<=5) increment_min=5;   // 5 minutes
-//	else if (minimumDistance_min<=10) increment_min=10; // 10 minutes
-//	else if (minimumDistance_min<=30) increment_min=30; // 30 minutes (0.5°)
-//	else if (minimumDistance_min<=60) increment_min=60; // 1° (1 nautical mile)
-//	else
-//	{
-//		double minimumDistance_deg=minimumDistance_min/60;
-//
-//		// Express the minimum distance as m*10^e degrees
-//		double m, e;
-//		toScientific (minimumDistance_min/60, &m, &e, NULL);
-//
-//		// Increase the mantissa to the next higher value from 2, 5 and 10
-//		if      (m<= 2) m=2;
-//		else if (m<= 5) m=5;
-//		else            m=10;
-//
-//		// Convert the value back to minutes
-//		increment_min=60*fromScientific (m, e, true);
-//	}
 
 	// Depending on the orientation, draw the latitude/longitude values at
 	// different positions. The orientation type may be 0 (north up), 1 (north
