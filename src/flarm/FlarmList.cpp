@@ -36,6 +36,9 @@ FlarmList::~FlarmList ()
 
 void FlarmList::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 {
+	if (nmeaDecoder==this->nmeaDecoder)
+		return;
+
 	if (this->nmeaDecoder)
 	{
 		this->nmeaDecoder->disconnect (this);

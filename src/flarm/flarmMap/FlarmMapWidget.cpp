@@ -126,7 +126,6 @@ FlarmMapWidget::~FlarmMapWidget ()
  */
 void FlarmMapWidget::setFlarmList (FlarmList *flarmList)
 {
-	// FIXME do this in all classes using a model
 	if (flarmList==this->flarmList)
 		return;
 
@@ -159,6 +158,9 @@ void FlarmMapWidget::setFlarmList (FlarmList *flarmList)
 
 void FlarmMapWidget::setGpsTracker (GpsTracker *gpsTracker)
 {
+	if (gpsTracker==this->gpsTracker)
+		return;
+
 	if (this->gpsTracker)
 	{
 		disconnect (this->gpsTracker, SIGNAL (positionChanged (const GeoPosition &)), this, SLOT (ownPositionChanged (const GeoPosition &)));

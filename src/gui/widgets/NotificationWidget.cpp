@@ -123,6 +123,9 @@ NotificationWidget::~NotificationWidget ()
  */
 void NotificationWidget::setContents (QWidget *contents)
 {
+	if (contents==_contents)
+		return;
+
 	if (_contents)
 	{
 		// Delete the old contents widget
