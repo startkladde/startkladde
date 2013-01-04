@@ -2,12 +2,25 @@
 
 #include <cmath>
 
-Scientific::Scientific (double mantissa, int exponent, bool sign):
-	_mantissa (mantissa), _exponent (exponent), _sign (sign)
-{
 
+// ******************
+// ** Construction **
+// ******************
+
+/**
+ * Creates a Scientific number with a given mantissa and exponent
+ *
+ * The number is not necessarily normalized.
+ */
+Scientific::Scientific (double mantissa, int exponent):
+	_mantissa (mantissa), _exponent (exponent)
+{
 }
 
+/**
+ * Creates a Scientific number with a given value. The number will be
+ * normalized.
+ */
 Scientific::Scientific (double value)
 {
 	setValue (value);
@@ -17,28 +30,72 @@ Scientific::~Scientific ()
 {
 }
 
-void Scientific::setValue (double value)
-{
-	if (value>=0)
-	{
-		// Positive
-		_sign=true;
-	}
-	else
-	{
-		// Negative, continue with negated value
-		_sign=false;
-		value=-value;
-	}
 
-	_exponent=floor (log (value)/log (10));
-	_mantissa=value/pow (10, _exponent);
+// ****************
+// ** Properties **
+// ****************
+
+/**
+ * Returns the mantissa of the number (not necessarily normalized)
+ */
+double Scientific::mantissa () const
+{
+	return _mantissa;
 }
 
+/**
+ * Returns the exponent of the number (not necessarily normalized)
+ */
+int Scientific::exponent () const
+{
+	return _exponent;
+}
+
+/**
+ * Sets the mantissa of the number. The exponent is not changed. The value may
+ * change. The number is not necessarily normalized afterwards.
+ */
+void Scientific::setMantissa (double mantissa)
+{
+	_mantissa=mantissa;
+}
+
+/**
+ * Sets the exponent of the number. The mantissa is not changed. The value may
+ * change. The number is not necessarily normalized afterwards.
+ */
+void Scientific::setExponent (int exponent)
+{
+	_exponent=exponent;
+}
+
+
+// ****************
+// ** Conversion **
+// ****************
+
+/**
+ * Sets the number to a value. The number will be normalized.
+ */
+void Scientific::setValue (double value)
+{
+	if (value==0)
+	{
+		_mantissa=0;
+		_exponent=0;
+	}
+	else
+	{
+		// Calculate exponent and mantissa
+		_exponent=floor (log (fabs (value))/log (10));
+		_mantissa=value/pow (10, _exponent);
+	}
+}
+
+/**
+ * Converts the number to a value
+ */
 double Scientific::toValue ()
 {
-	if (_sign)
-		return _mantissa * pow (10, _exponent);
-	else
-		return -_mantissa * pow (10, _exponent);
+	return _mantissa * pow (10, _exponent);
 }

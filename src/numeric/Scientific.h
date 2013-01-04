@@ -2,22 +2,27 @@
 #define SCIENTIFIC_H_
 
 /**
- * Scientific number representation
+ * Scientific representation of floating point numbers
+ *
+ * The number is represented as (mantissa * 10 ^ exponent), where the mantissa
+ * is a (positive or negative) floating point number and the exponent is a
+ * signed integer.
+ *
+ * The number is said to be "normalized" if (1 <= mantissa < 10) for non-zero
+ * values, or (mantissa = exponent = 0) for zero values.
  */
 class Scientific
 {
 	public:
-		Scientific (double mantissa, int exponent, bool sign);
+		Scientific (double mantissa, int exponent);
 		Scientific (double value);
 		virtual ~Scientific ();
 
-		double mantissa () { return _mantissa; }
-		int    exponent () { return _exponent; }
-		bool   sign     () { return _sign;     }
+		double mantissa () const;
+		int    exponent () const;
 
-		void setMantissa (double mantissa) { _mantissa=mantissa; }
-		void setExponent (int    exponent) { _exponent=exponent; }
-		void setSign     (bool   sign    ) { _sign    =sign;     }
+		void setMantissa (double mantissa);
+		void setExponent (int    exponent);
 
 		void setValue (double value);
 		double toValue ();
@@ -25,7 +30,6 @@ class Scientific
 	private:
 		double _mantissa;
 		int _exponent;
-		bool _sign;
 };
 
 #endif
