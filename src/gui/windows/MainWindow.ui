@@ -501,8 +501,8 @@
     </property>
     <addaction name="connectFlarmAction"/>
     <addaction name="separator"/>
-    <addaction name="actionFlarmOverview"/>
     <addaction name="actionFlarmRadar"/>
+    <addaction name="actionFlarmPlaneList"/>
     <addaction name="separator"/>
     <addaction name="actionFlarmNetOverview"/>
     <addaction name="flarmNetImportFileAction"/>
@@ -911,7 +911,7 @@
     <string>Set GPS time from Flarm data</string>
    </property>
   </action>
-  <action name="actionFlarmOverview">
+  <action name="actionFlarmPlaneList">
    <property name="text">
     <string>Plane &amp;list...</string>
    </property>

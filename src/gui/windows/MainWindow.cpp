@@ -566,7 +566,7 @@ void MainWindow::settingsChanged ()
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 	
 	// Flarm
-	ui.actionFlarmOverview   ->setEnabled (s.flarmEnabled && s.flarmOverview);
+	ui.actionFlarmPlaneList  ->setEnabled (s.flarmEnabled && s.flarmOverview);
 	ui.actionFlarmRadar	     ->setEnabled (s.flarmEnabled && s.flarmRadar);
 	ui.flarmStateCaptionLabel->setEnabled (s.flarmEnabled);
 	ui.flarmStateLabel       ->setEnabled (s.flarmEnabled);
@@ -1689,7 +1689,7 @@ void MainWindow::on_actionSetDisplayDate_triggered ()
 const char *ntr_planeLogBooksTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Plane logbooks");
 const char *ntr_pilotLogBooksTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Pilot logbooks");
 const char *ntr_launchMethodOverviewTitle=QT_TRANSLATE_NOOP ("StatisticsWindow", "Launch method overview");
-const char *ntr_flarmOverviewTitle       =QT_TRANSLATE_NOOP ("StatisticsWindow", "Flarm overview");
+const char *ntr_flarmPlaneListTitle      =QT_TRANSLATE_NOOP ("StatisticsWindow", "Flarm overview");
 
 void MainWindow::on_actionPlaneLogs_triggered ()
 {
@@ -1732,11 +1732,13 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 // ** Flarm **
 // ***********
 
-void MainWindow::on_actionFlarmOverview_triggered ()
+void MainWindow::on_actionFlarmPlaneList_triggered ()
 {
-	// FIXME implement - show the Flarm window with the table preselected
-//	FlarmLog *flarmLog = FlarmLog::createNew ();
-//	StatisticsWindow::display (flarmLog, true, ntr_flarmOverviewTitle, this);
+	FlarmWindow* dialog = new FlarmWindow (this);
+	dialog->setGpsTracker (flarm.gpsTracker ());
+	dialog->setFlarmList (flarm.flarmList ());
+	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
+	dialog->showPlaneList ();
 }
 
 void MainWindow::on_actionFlarmRadar_triggered ()
@@ -1745,7 +1747,7 @@ void MainWindow::on_actionFlarmRadar_triggered ()
 	dialog->setGpsTracker (flarm.gpsTracker ());
 	dialog->setFlarmList (flarm.flarmList ());
 	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
-	dialog->show ();
+	dialog->showFlarmMap ();
 }
 
 void MainWindow::on_actionFlarmNetOverview_triggered ()

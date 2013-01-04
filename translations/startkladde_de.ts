@@ -3833,12 +3833,12 @@ Konfiguration: %2</translation>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="912"/>
         <source>Plane &amp;list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Flugzeug&amp;liste...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="917"/>
         <source>Flarm &amp;radar...</source>
-        <translation>Flarm &amp;Radar</translation>
+        <translation>Flarm&amp;radar...</translation>
     </message>
     <message>
         <location filename="../src/gui/windows/MainWindow.ui" line="925"/>

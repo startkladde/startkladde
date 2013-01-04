@@ -66,6 +66,18 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 FlarmWindow::~FlarmWindow () {
 } 
 
+void FlarmWindow::showFlarmMap ()
+{
+	ui.tabWidget->setCurrentWidget (ui.flarmMapTab);
+	show ();
+}
+
+void FlarmWindow::showPlaneList ()
+{
+	ui.tabWidget->setCurrentWidget (ui.planeListTab);
+	show ();
+}
+
 void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 {
 	ui.flarmMap->setGpsTracker (gpsTracker);

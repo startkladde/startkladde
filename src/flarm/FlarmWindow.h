@@ -24,6 +24,9 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		void flarmMapViewChanged ();
 		void flarmMapOwnPositionUpdated ();
 
+		void showFlarmMap ();
+		void showPlaneList ();
+
 	private slots:
 		void on_mapOrientationInput_valueChanged (int value);
 		void on_northButton_clicked ();
