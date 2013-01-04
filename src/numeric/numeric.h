@@ -3,7 +3,9 @@
 
 namespace numeric
 {
-	double roundToPlaces (double value, int places);
+	double roundToDecimalPlaces (double value, int places);
+	double roundToTotalPlaces (double value, int places);
+	double roundToMinimumTotalPlaces (double value, int minimumPlaces);
 }
 
-#endif /* NUMERIC_H_ */
+#endif

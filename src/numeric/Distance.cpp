@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <QDebug>
+
 #include "src/i18n/notr.h"
 #include "src/numeric/numeric.h"
 
@@ -12,7 +14,7 @@
  * @param numDecimalPlaces
  * @return
  */
-QString Distance::format (double distance, int numDecimalPlaces)
+QString Distance::format (double distance, int minimumTotalPlaces)
 {
 	QString unit;
 	double factor;
@@ -25,8 +27,13 @@ QString Distance::format (double distance, int numDecimalPlaces)
 	distance*=factor;
 
 	// Round to the specified number of places
-	double roundedValue=numeric::roundToPlaces (distance, numDecimalPlaces);
+	double roundedValue=numeric::roundToMinimumTotalPlaces (distance, minimumTotalPlaces);
 
 	// Construct the string
 	return qnotr ("%1 %2").arg (roundedValue).arg (unit);
+}
+
+double Distance::euclidean (double x, double y)
+{
+	return sqrt (x*x+y*y);
 }

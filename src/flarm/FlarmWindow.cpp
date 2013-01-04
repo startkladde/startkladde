@@ -247,22 +247,26 @@ void FlarmWindow::on_flarmMap_mouseMoved_p (QPointF position_p)
 {
 	double north=position_p.y ();
 	double east=position_p.x ();
+	double distance=Distance::euclidean (north, east);
+	Angle direction=Angle::atan2 (east, north).normalized ();
 
 	QString northText;
-	QString eastText;
-
 	if (north>=0)
-		northText=tr ("%1 N").arg (Distance::format (north, 0));
+		northText=tr ("%1 N").arg (Distance::format (north, 2));
 	else
-		northText=tr ("%1 S").arg (Distance::format (-north, 0));
+		northText=tr ("%1 S").arg (Distance::format (-north, 2));
 
+	QString eastText;
 	if (east>=0)
-		eastText=tr ("%1 E").arg (Distance::format (east, 0));
+		eastText=tr ("%1 E").arg (Distance::format (east, 2));
 	else
-		eastText=tr ("%1 W").arg (Distance::format (-east, 0));
+		eastText=tr ("%1 W").arg (Distance::format (-east, 2));
 
-
-	mousePositionLabel->setText (tr ("%1, %2").arg (northText, eastText));
+	mousePositionLabel->setText (trUtf8 ("%1, %2 (%3° %4)")
+		.arg (northText)
+		.arg (eastText)
+		.arg (round (direction.toDegrees ()))
+		.arg (Distance::format (distance, 2)));
 }
 
 void FlarmWindow::on_flarmMap_mouseLeft ()

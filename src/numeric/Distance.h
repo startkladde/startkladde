@@ -6,7 +6,8 @@
 class Distance
 {
 	public:
-		static QString format (double distance, int numDecimalPlaces);
+		static QString format (double distance, int minimumTotalPlaces);
+		static double euclidean (double x, double y);
 };
 
 #endif
