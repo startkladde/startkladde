@@ -110,19 +110,31 @@ class PlotWidget: public QFrame
 
 
 	private:
+		class Transforms
+		{
+			public:
+				Transforms (PlotWidget &widget);
+				void invalidate ();
+				void update ();
+				QTransform &w_T_p ();
+				QTransform &p_T_w ();
+
+			private:
+				PlotWidget &_widget;
+				QTransform _w_T_p, _p_T_w;
+				bool _valid;
+		};
+
 		// The values defining the plot coordinate system
 		QPointF _center_p;
 		double _diameter_p;
 		Angle _orientation;
 
 		// Coordinate system
-		// FIXME we should probably put this into a class
-		mutable QTransform _w_T_p;
-		mutable QTransform _p_T_w;
-		mutable bool _transformsValid;
-		void invalidateView ();
-		void updateTransforms () const;
-
+		mutable Transforms _transforms;
+		void emitViewChanged () const;
+		QTransform &w_T_p () const { return _transforms.w_T_p (); }
+		QTransform &p_T_w () const { return _transforms.p_T_w (); }
 
 		// Mouse scrolling
 		bool    _mouseScrollActive;

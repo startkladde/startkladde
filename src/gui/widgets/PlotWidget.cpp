@@ -8,19 +8,18 @@
 #include <QWheelEvent>
 
 // Notes:
-//   * whenever the plot coordinate system changes, call invalidateView
-//   * before accessing the transforms, call updateTransforms
+//   * Whenever the plot coordinate system changes, call invalidateView.
+//   * For accessing the transforms, use w_T_p()/p_T_w(). The transforms will be
+//     updated automatically, if necessary
 
-PlotWidget::PlotWidget (QWidget *parent): QFrame (parent)
+PlotWidget::PlotWidget (QWidget *parent): QFrame (parent),
+	_transforms (*this)
 {
 	// Default orientation: plot coordinate system origin at widget center,
 	// smaller side 1, x axis right
 	_center_p=QPointF (0, 0);
 	_diameter_p=1;
 	_orientation=Angle::zero ();
-
-	// The transforms are invalid
-	_transformsValid=false;
 
 	// None of the mouse actions are active
 	_mouseScrollActive=false;
@@ -69,7 +68,7 @@ QPointF PlotWidget::center_p () const
 void PlotWidget::setCenter_p (const QPointF &center_p)
 {
 	_center_p=center_p;
-	invalidateView ();
+	_transforms.invalidate ();
 }
 
 void PlotWidget::scrollToCenter (const QPointF &position_p)
@@ -111,7 +110,7 @@ void PlotWidget::setOrientation (const Angle &orientation)
 	_orientation=normalizedOrientation;
 
 	// Invalidate cached data
-	invalidateView ();
+	_transforms.invalidate ();
 
 	// Emit the orientationChanged signal, *after* setting the new value and
 	// invalidating cached data
@@ -141,7 +140,7 @@ double PlotWidget::diameter_p () const
 void PlotWidget::setDiameter_p (double diameter_p)
 {
 	_diameter_p=diameter_p;
-	invalidateView ();
+	_transforms.invalidate ();
 }
 
 QSizeF PlotWidget::size_p () const
@@ -184,20 +183,25 @@ double PlotWidget::plotScale_w () const
 // ** Coordinate system **
 // ***********************
 
-void PlotWidget::invalidateView ()
+PlotWidget::Transforms::Transforms (PlotWidget &widget):
+	_widget (widget), _valid (false)
 {
-	// Mark the transforms as invalid. They will be recalculated the next time
-	// they are needed. The viewChanged signal will also be emitted at that
-	// point.
-	_transformsValid=false;
-
-	// Schedule a repaint
-	update ();
 }
 
-void PlotWidget::updateTransforms () const
+void PlotWidget::Transforms::invalidate ()
 {
-	if (_transformsValid)
+	// Mark the transforms as invalid. They will be recalculated the next time
+	// they are accessed. The widget's viewChanged signal will also be emitted
+	// at that point.
+	_valid=false;
+
+	// Schedule a repaint of the widget
+	_widget.update ();
+}
+
+void PlotWidget::Transforms::update ()
+{
+	if (_valid)
 		return;
 
 	//qDebug () << "Recalculating transforms with " << _center_p << _orientation << _diameter_p;
@@ -209,25 +213,43 @@ void PlotWidget::updateTransforms () const
 	// Start at the plot coordinate system itself
 	_w_T_p=QTransform ();
 	// Translate it so that its origin is at the center of the widget
-	_w_T_p.translate (_center_p.x (), _center_p.y ());
+	_w_T_p.translate (_widget._center_p.x (), _widget._center_p.y ());
 	// Rotate it so that the x axis is parallel to the widget's x axis; this
 	// will point the y axis opposite to the widget's y axis.
-	_w_T_p.rotateRadians (-_orientation.toRadians ());
+	_w_T_p.rotateRadians (-_widget._orientation.toRadians ());
 	// Flip it upside down so both axes are parallel to the widget's axes
 	_w_T_p.scale (1, -1);
 	// Scale it so that the diameter fits
-	double scale=_diameter_p/qMin (width (), height ());
+	double scale=_widget._diameter_p/qMin (_widget.width (), _widget.height ());
 	_w_T_p.scale (scale, scale);
 	// Translate it to the origin of the widget coordinate system
-	_w_T_p.translate (-width ()/2.0, -height ()/2.0);
+	_w_T_p.translate (-_widget.width ()/2.0, -_widget.height ()/2.0);
 
 	// Calculate the inverse transform
 	_p_T_w=_w_T_p.inverted ();
 
-	_transformsValid=true;
+	_valid=true;
+	_widget.emitViewChanged ();
+}
 
+QTransform &PlotWidget::Transforms::w_T_p ()
+{
+	update ();
+	return _w_T_p;
+}
+
+QTransform &PlotWidget::Transforms::p_T_w ()
+{
+	update ();
+	return _p_T_w;
+}
+
+void PlotWidget::emitViewChanged () const
+{
 	emit viewChanged ();
 }
+
+
 
 
 // *********************
@@ -387,7 +409,7 @@ void PlotWidget::keyPressEvent (QKeyEvent *event)
 void PlotWidget::resizeEvent (QResizeEvent *event)
 {
 	(void)event;
-	invalidateView ();
+	_transforms.invalidate ();
 }
 
 
@@ -397,14 +419,12 @@ void PlotWidget::resizeEvent (QResizeEvent *event)
 
 QPointF PlotWidget::toWidget (const QPointF &point_p) const
 {
-	updateTransforms ();
-	return point_p * _p_T_w;
+	return point_p * p_T_w ();
 }
 
 QPointF PlotWidget::toPlot (const QPointF &point_w) const
 {
-	updateTransforms ();
-	return point_w * _w_T_p;
+	return point_w * w_T_p ();
 }
 
 QPointF PlotWidget::toWidget (double x_p, double y_p) const
@@ -419,32 +439,27 @@ QPointF PlotWidget::toPlot (double x_w, double y_w) const
 
 QPolygonF PlotWidget::toWidget (const QPolygonF &Polygon_p) const
 {
-	updateTransforms ();
-	return Polygon_p * _p_T_w;
+	return Polygon_p * p_T_w ();
 }
 
 QPolygonF PlotWidget::toPlot (const QPolygonF &Polygon_w) const
 {
-	updateTransforms ();
-	return Polygon_w * _w_T_p;
+	return Polygon_w * w_T_p ();
 }
 
 double PlotWidget::toWidget (double length_p) const
 {
-	updateTransforms ();
 	return length_p*plotScale_w ();
 }
 
 double PlotWidget::toPlot (double length_w) const
 {
-	updateTransforms ();
 	return length_w*widgetScale_p ();
 }
 
 void PlotWidget::transformToPlot (QPainter &painter) const
 {
-	updateTransforms ();
-	painter.setTransform (_p_T_w, false);
+	painter.setTransform (p_T_w (), false);
 }
 
 QRectF PlotWidget::rect_w () const
@@ -461,6 +476,5 @@ QRectF PlotWidget::rect_w () const
  */
 QRectF PlotWidget::boundingRect_p () const
 {
-	updateTransforms ();
-	return _w_T_p.mapRect (rect_w ());
+	return w_T_p ().mapRect (rect_w ());
 }
