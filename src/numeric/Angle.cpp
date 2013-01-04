@@ -76,23 +76,6 @@ Angle Angle::fromMinutes (double minutes)
 	return Angle (minutes/(360*60)*(2*M_PI));
 }
 
-// FIXME document
-// Untested
-//Angle Angle::fromDMS (bool positive, uint degrees, uint minutes, uint seconds)
-//{
-//	if (positive)
-//		return fromDegrees (  degrees + minutes/60.0 + seconds/3600.0);
-//	else
-//		return fromDegrees (-(degrees + minutes/60.0 + seconds/3600.0));
-//}
-
-// FIXME document
-// Untested
-//Angle Angle::fromDMS_asymmetric (uint degrees, uint minutes, uint seconds)
-//{
-//	return fromDegrees (degrees + minutes/60.0 + seconds/3600.0);
-//}
-
 /**
  * Creates an angle spanning a full circle (360 degrees or 2*pi radians)
  */
