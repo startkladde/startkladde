@@ -19,18 +19,21 @@ double getDecimalGridSize (double minimum)
 	return fromScientific (m, e, true);
 }
 
-double getAngleGridSize_min (double minimum_min)
+Angle getAngleGridSize (const Angle &minimum)
 {
+	double minimum_min=minimum.toMinutes ();
+	double minimum_deg=minimum.toDegrees ();
+
 	// For grid step sizes, the permissible values are a bit peculiar due to the
 	// base 60 system: for values less than 1 degree, we allow 1, 2, 5, 10 and
 	// 30 minutes. For values larger than 1 degree, we allow the usual decimal
 	// values, 1*10^e, 2*10^e and 5*10^e.
 
-	if      (minimum_min<= 1) return  1; //  1 minute
-	else if (minimum_min<= 2) return  2; //  2 minutes
-	else if (minimum_min<= 5) return  5; //  5 minutes
-	else if (minimum_min<=10) return 10; // 10 minutes
-	else if (minimum_min<=30) return 30; // 30 minutes (0.5°)
-	else if (minimum_min<=60) return 60; //  1 degree (1 nautical mile)
-	else return 60*getDecimalGridSize (minimum_min/60);
+	if      (minimum_min<= 1) return Angle::fromMinutes ( 1); //  1 minute
+	else if (minimum_min<= 2) return Angle::fromMinutes ( 2); //  2 minutes
+	else if (minimum_min<= 5) return Angle::fromMinutes ( 5); //  5 minutes
+	else if (minimum_min<=10) return Angle::fromMinutes (10); // 10 minutes
+	else if (minimum_min<=30) return Angle::fromMinutes (30); // 30 minutes (0.5°)
+	else if (minimum_min<=60) return Angle::fromMinutes (60); //  1 degree (1 nautical mile)
+	else return Angle::fromDegrees (getDecimalGridSize (minimum_deg));
 }

@@ -1,8 +1,9 @@
 #ifndef GRID_H_
 #define GRID_H_
 
-double getDecimalGridSize (double minimum);
-double getAngleGridSize_min (double minimum_min);
+#include "src/numeric/Angle.h"
 
+double getDecimalGridSize (double minimum);
+Angle getAngleGridSize (const Angle &minimum);
 
 #endif

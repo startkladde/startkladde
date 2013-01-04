@@ -735,10 +735,10 @@ void FlarmMapWidget::paintLatLonGrid (QPainter &painter)
 	// text
 	int minimumDistance_w=textSize (painter, "999° 99° E").width ();
 	Angle minimumDistance_geo=transformWidgetToGeographic (minimumDistance_w);
-	double minimumDistance_min=minimumDistance_geo.toMinutes ();
 
 	// Determine the actual increment
-	double increment_min=getAngleGridSize_min (minimumDistance_min);
+	Angle increment=getAngleGridSize (minimumDistance_geo);
+	double increment_min=increment.toMinutes ();
 
 	// Depending on the orientation, draw the latitude/longitude values at
 	// different positions. The orientation type may be 0 (north up), 1 (north
