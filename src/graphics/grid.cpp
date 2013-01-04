@@ -2,21 +2,23 @@
 
 #include <cstddef>
 
-#include "src/util/double.h"
+#include "src/numeric/Scientific.h"
+//#include "src/util/double.h"
 
 double getDecimalGridSize (double minimum)
 {
 	// Express the minimum value in as m*10^e degrees
-	double m, e;
-	toScientific (minimum, &m, &e, NULL);
+	Scientific minimumValue (minimum);
 
 	// Increase the mantissa to the next higher value from 2, 5 and 10
+	double m=minimumValue.mantissa ();
 	if      (m<= 2) m=2;
 	else if (m<= 5) m=5;
 	else            m=10;
 
 	// Convert the value back to a regular value
-	return fromScientific (m, e, true);
+	minimumValue.setMantissa (m);
+	return minimumValue.toValue ();
 }
 
 Angle getAngleGridSize (const Angle &minimum)

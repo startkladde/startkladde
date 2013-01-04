@@ -15,32 +15,6 @@ double floor (double value, double unit)
 }
 
 
-void toScientific (double value, double *mantissa, double *exponent, bool *sign)
-{
-	bool s=true;
-	if (value<0)
-	{
-		s=false;
-		value=-value;
-	}
-
-	double e=floor (log (value)/log (10));
-	double m=value/pow (10, e);
-
-	if (mantissa) (*mantissa)=m;
-	if (exponent) (*exponent)=e;
-	if (sign)     (*sign    )=s;
-}
-
-double fromScientific (double mantissa, double exponent, bool sign)
-{
-	if (sign)
-		return mantissa*pow (10, exponent);
-	else
-		return -mantissa*pow (10, exponent);
-}
-
-
 // Regular modulus arithmetic:
 //   Given y = ax + b, with b<x (I)
 //     Then a = y div x        = floor (y/x)
