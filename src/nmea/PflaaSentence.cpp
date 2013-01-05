@@ -4,14 +4,14 @@
 
 #include "src/nmea/Nmea.h"
 
-PflaaSentence::PflaaSentence (const QString &line): NmeaSentence (line, "PFLAA", 10),
+PflaaSentence::PflaaSentence (const QString &line): NmeaSentence (line, "PFLAA", 11),
 	relativeNorth (0), relativeEast (0), relativeVertical (0),
 	groundSpeed (0), climbRate (0)
 {
+	// Example: $PFLAA,0,-52,-11,-4,2,DDAFD0,0,,0,0.1,1*07
+
 	if (!isValid ()) return;
 	QStringList parts = getParts ();
-
-	// FIXME ok flag
 
 	// parts[1]: alarmLevel
 	relativeNorth    = parts[ 2].toInt ();

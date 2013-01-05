@@ -8,6 +8,9 @@
 /**
  * Flarm aircraft data
  *
+ * This sentence is specified in the Flarm data port specifications,
+ * http://www.flarm.com/support/manual/FLARM_DataportManual_v6.00E.pdf
+ *
  * Not all fields are currently parsed.
  */
 class PflaaSentence: public NmeaSentence

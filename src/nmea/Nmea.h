@@ -6,6 +6,7 @@
 #include <QDate>
 #include <QTime>
 #include <QDateTime>
+#include <QStringList>
 
 #include "src/numeric/Angle.h"
 
@@ -19,8 +20,9 @@ class Nmea
 	public:
 		virtual ~Nmea ();
 
-	    static uint8_t calculateChecksum (const QString &sentence);
-	    static bool verifyChecksum       (const QString &sentence);
+	    static uint8_t calculateChecksum (const QString &data);
+	    static bool sentenceValid (const QString &sentence);
+	    static QStringList sentenceParts (const QString &sentence);
 
 	    static Angle parseLatitude  (const QString &value, const QString &sign);
 	    static Angle parseLongitude (const QString &value, const QString &sign);

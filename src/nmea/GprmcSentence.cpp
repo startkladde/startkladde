@@ -4,9 +4,10 @@
 
 #include "src/nmea/Nmea.h"
 
-GprmcSentence::GprmcSentence (const QString &line): NmeaSentence (line, "GPRMC", 10),
+GprmcSentence::GprmcSentence (const QString &line): NmeaSentence (line, "GPRMC", 13),
 	status (false)
 {
+	// Example: $GPRMC,103400.00,A,5256.58562,N,01247.34325,E,0.002,,100911,,,A*77
 	if (!isValid ()) return;
 	QStringList parts = getParts ();
 

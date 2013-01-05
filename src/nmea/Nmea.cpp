@@ -23,26 +23,20 @@ Nmea::~Nmea ()
  *   representing the exclusive OR of all characters between, but not including,
  *   the "$" and "*". A checksum is required on some sentences.
  *
- * @param sentence
- * @return
+ * The checksum is calculated for the whole argument. The argument must
+ * therefore contain everything between, but not including, the leading "$" and
+ * the "*" separating the sentence from the checksum.
+ *
+ * The checksum is returned as numeric value and must be converted to a
+ * hexadecimal ASCII representation.
  */
-uint8_t Nmea::calculateChecksum (const QString &sentence)
+uint8_t Nmea::calculateChecksum (const QString &data)
 {
 	uchar checksum=0;
 
-	for (int i=1, n=sentence.length (); i < n; ++i)
+	for (int i=0, n=data.length (); i<n; ++i)
 	{
-		uint8_t character = (sentence[i]).toAscii();
-
-		// Ignore the start sign
-		if (character == '$')
-			continue;
-
-		// Stop at the end of the sentence
-		if (character == '*') // End of sentence reached
-			break;
-
-		// Update the checksum
+		uint8_t character = data[i].toAscii ();
 		checksum ^= character;
 	}
 
@@ -50,29 +44,52 @@ uint8_t Nmea::calculateChecksum (const QString &sentence)
 }
 
 /**
- * Checks that the checksum recorded in the sentence matches the sentence
+ * Checks if the string passed is a correct NMEA sentence
  *
- * @param sentence the sentence to test
- * @return true if the checksum is correct, false otherwise
+ * The argument may contain leading or trailing whitespace.
  */
-bool Nmea::verifyChecksum (const QString &sentence)
+bool Nmea::sentenceValid (const QString &sentence)
 {
-	// Split the sentence on an asterisk. The first part is the actual sentence,
-	// the second part is the checksum.
-	QStringList list = sentence.split ('*');
+	// $GPRMC,103400.00,A,5256.58562,N,01247.34325,E,0.002,,100911,,,A*77
 
-	if (list.length () > 1)
-	{
-		// Get the checksum from the sentence and compare it with the calculated
-		// checksum
-		uint8_t checksum = (uchar)list[1].trimmed ().toUShort (0, 16);
-		return (checksum == calculateChecksum (list[0]));
-	}
-	else
-	{
-		// The sentence does not contain a checksum
-		return false;
-	}
+	// Remove whitespace from the beginning and end of the string
+	QString s=sentence.trimmed ();
+	int l=s.length ();
+
+	// The string must be long enough to contain the $ and the checksum.
+	if (s.length ()<4) return false;
+
+	// The string must begin with a $ and contain a * at the third place from
+	// the end
+	if (s[0]  .toAscii ()!='$') return false;
+	if (s[l-3].toAscii ()!='*') return false;
+
+	// Extract the data part and the checksum
+	QString data    =s.mid (1  , l-4);
+	QString checksum=s.mid (l-2, 2  );
+
+	// The extracted checksum must match the calculated checksum
+	uint8_t calculatedChecksum=calculateChecksum (data);
+	uint8_t extractedChecksum=checksum.toUShort (NULL, 16);
+	qDebug () << calculatedChecksum << extractedChecksum;
+	if (calculatedChecksum!=extractedChecksum) return false;
+
+	// Everything seems to be in order
+	return true;
+}
+
+/**
+ * Returns the parts of a sentence, including the name part (e. g. "GPRMC")
+ *
+ * The result is undefined if the sentence is not valid (as checked by
+ * sentenceValid).
+ */
+QStringList Nmea::sentenceParts (const QString &sentence)
+{
+	QString s=sentence.trimmed ();
+	int l=s.length ();
+
+	return s.mid (1, l-4).split (',');
 }
 
 /**

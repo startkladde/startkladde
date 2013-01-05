@@ -5,13 +5,13 @@
 #include <QStringList>
 
 /**
- * An NMEA sentences
+ * An NMEA sentence
  *
  * The primary use of this class is to be inherited by a concrete NMEA sentence
  * class (e. g. GprmcSentence). It can also be used directly, although that's
  * probably not very useful.
  *
- * Implementation notes: after calling the constructur, call isValid() to make
+ * Implementation notes: after calling the constructor, call isValid() to make
  * sure that the sentence is valid. If isValid() returns true, use getParts() to
  * access the individual parts of the sentence. The parts list is guaranteed to
  * contain at least the specified number of parts in this case. If isValid()

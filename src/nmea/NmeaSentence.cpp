@@ -21,32 +21,30 @@
 NmeaSentence::NmeaSentence (const QString &line, const QString &sentenceType, int numParts):
 	line (line.trimmed ()), valid (false)
 {
-	// Split the string
-	// FIXME remove the checksum from the last part
+	// Example:
+	// $GPRMC,103400.00,A,5256.58562,N,01247.34325,E,0.002,,100911,,,A*77
 
-	parts=line.split (',');
-
-	// FIXME test
-	if (!Nmea::verifyChecksum (line))
+	// Make sure the sentence is valid
+	if (!Nmea::sentenceValid (line))
 	{
-		std::cout << "NMEA sentence checksum mismatch: " << line << std::endl;
+		std::cout << "NMEA sentence invalid: " << line << std::endl;
 		return;
 	}
 
-	// Make sure that it is not truncated
-	// FIXME test
-	// FIXME even if numParts is 0, make sure we have at least one part so we can access parts[0]
+	// Extract the parts
+	parts=Nmea::sentenceParts (line);
+
+	// Make sure that there are enough parts
 	if (parts.length () < numParts)
 	{
 		std::cout << "NMEA sentence truncated: " << line << std::endl;
 		return;
 	}
 
-	// Make sure that the sentence type is correct
-	// FIXME test
-	if (parts[0]!="$"+sentenceType)
+	// Make sure that the sentence type matches the expected sentence type
+	if (parts[0]!=sentenceType)
 	{
-		std::cout << "NMEA sentence type mismatch (expected " << sentenceType << "): " << std::endl;
+		std::cout << "NMEA sentence type mismatch (expected " << sentenceType << "): " << line << std::endl;
 		return;
 	}
 
