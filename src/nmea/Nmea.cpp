@@ -14,6 +14,11 @@ Nmea::~Nmea ()
 {
 }
 
+bool Nmea::isType (const QString &type, const QString &line)
+{
+	return line.trimmed ().startsWith ("$"+type);
+}
+
 
 /**
  * Calculates the checksum for an NMEA sentence
@@ -41,55 +46,6 @@ uint8_t Nmea::calculateChecksum (const QString &data)
 	}
 
 	return checksum;
-}
-
-/**
- * Checks if the string passed is a correct NMEA sentence
- *
- * The argument may contain leading or trailing whitespace.
- */
-bool Nmea::sentenceValid (const QString &sentence)
-{
-	// $GPRMC,103400.00,A,5256.58562,N,01247.34325,E,0.002,,100911,,,A*77
-
-	// Remove whitespace from the beginning and end of the string
-	QString s=sentence.trimmed ();
-	int l=s.length ();
-
-	// The string must be long enough to contain the $ and the checksum.
-	if (s.length ()<4) return false;
-
-	// The string must begin with a $ and contain a * at the third place from
-	// the end
-	if (s[0]  .toAscii ()!='$') return false;
-	if (s[l-3].toAscii ()!='*') return false;
-
-	// Extract the data part and the checksum
-	QString data    =s.mid (1  , l-4);
-	QString checksum=s.mid (l-2, 2  );
-
-	// The extracted checksum must match the calculated checksum
-	uint8_t calculatedChecksum=calculateChecksum (data);
-	uint8_t extractedChecksum=checksum.toUShort (NULL, 16);
-	qDebug () << calculatedChecksum << extractedChecksum;
-	if (calculatedChecksum!=extractedChecksum) return false;
-
-	// Everything seems to be in order
-	return true;
-}
-
-/**
- * Returns the parts of a sentence, including the name part (e. g. "GPRMC")
- *
- * The result is undefined if the sentence is not valid (as checked by
- * sentenceValid).
- */
-QStringList Nmea::sentenceParts (const QString &sentence)
-{
-	QString s=sentence.trimmed ();
-	int l=s.length ();
-
-	return s.mid (1, l-4).split (',');
 }
 
 /**

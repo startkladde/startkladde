@@ -20,9 +20,9 @@ class Nmea
 	public:
 		virtual ~Nmea ();
 
+		static bool isType (const QString &type, const QString &line);
+
 	    static uint8_t calculateChecksum (const QString &data);
-	    static bool sentenceValid (const QString &sentence);
-	    static QStringList sentenceParts (const QString &sentence);
 
 	    static Angle parseLatitude  (const QString &value, const QString &sign);
 	    static Angle parseLongitude (const QString &value, const QString &sign);

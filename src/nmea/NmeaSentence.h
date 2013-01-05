@@ -7,30 +7,33 @@
 /**
  * An NMEA sentence
  *
- * The primary use of this class is to be inherited by a concrete NMEA sentence
- * class (e. g. GprmcSentence). It can also be used directly, although that's
- * probably not very useful.
+ * This class serves as a base class for concrete NMEA sentence implementations.
  *
- * Implementation notes: after calling the constructor, call isValid() to make
- * sure that the sentence is valid. If isValid() returns true, use getParts() to
- * access the individual parts of the sentence. The parts list is guaranteed to
- * contain at least the specified number of parts in this case. If isValid()
- * returns false, the parts list may shorter. In this case, you should abort.
+ * To create an NMEA sentence implementation, inherit from this class. In the
+ * constructor, pass the expected sentence type and the expected number of
+ * parts. Then, parse the parts returned by parts (), calling setValid (false)
+ * if a parse error occurs.
  */
 class NmeaSentence
 {
 	public:
-		NmeaSentence (const QString &line, const QString &sentenceType, int numParts);
-		virtual ~NmeaSentence ();
+		NmeaSentence (const QString &line, const QString &expectedType, int expectedNumberOfParts);
+		~NmeaSentence ();
 
-		QString getLine () const;
-		QStringList getParts () const;
+		QString line () const;
+
 		bool isValid () const;
 
+		QStringList parts () const;
+		QString type () const;
+
+	protected:
+		void setValid (bool valid);
+
 	private:
-		QString line;
-		QStringList parts;
-		bool valid;
+		QString _line;
+		QStringList _parts;
+		bool _valid;
 };
 
 #endif

@@ -8,6 +8,8 @@
 
 class QString;
 
+
+
 /**
  * GPS recommended minimum sentence C
  *

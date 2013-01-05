@@ -2,6 +2,7 @@
 
 #include "src/io/dataStream/DataStream.h"
 
+#include "src/nmea/Nmea.h"
 #include "src/nmea/GprmcSentence.h"
 #include "src/nmea/PflaaSentence.h"
 
@@ -20,7 +21,14 @@ NmeaDecoder::~NmeaDecoder ()
  */
 void NmeaDecoder::lineReceived (const QString &line)
 {
-	// FIXME if not valid (checksum missing or truncated), don't emit
-	if      (line.startsWith ("$GPRMC")) emit gprmcSentence (GprmcSentence (line));
-	else if (line.startsWith ("$PFLAA")) emit pflaaSentence (PflaaSentence (line));
+	if (Nmea::isType ("GPRMC", line))
+	{
+		GprmcSentence sentence (line);
+		if (sentence.isValid ()) emit gprmcSentence (sentence);
+	}
+	else if (Nmea::isType ("PFLAA", line))
+	{
+		PflaaSentence sentence (line);
+		if (sentence.isValid ()) emit pflaaSentence (sentence);
+	}
 }
