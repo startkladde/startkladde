@@ -499,8 +499,6 @@ void MainWindow::writeSettings ()
 	settings.endGroup ();
 
 	settings.endGroup ();
-
-	settings.sync ();
 }
 
 void MainWindow::readColumnWidths ()
