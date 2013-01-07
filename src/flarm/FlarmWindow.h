@@ -5,6 +5,8 @@
 
 #include "src/gui/SkDialog.h"
 
+class QCloseEvent;
+
 class FlarmList;
 class GpsTracker;
 class QStatusBar;
@@ -26,6 +28,15 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 
 		void showFlarmMap ();
 		void showPlaneList ();
+
+		virtual void accept ();
+		virtual void reject ();
+
+	protected:
+		void closeEvent (QCloseEvent *event);
+
+		void saveState ();
+		void loadState ();
 
 	private slots:
 		void on_mapOrientationInput_valueChanged (int value);

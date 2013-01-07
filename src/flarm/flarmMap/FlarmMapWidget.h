@@ -9,6 +9,7 @@
 #include "src/numeric/GeoPosition.h"
 
 class QModelIndex;
+class QSettings;
 
 class FlarmRecord;
 class FlarmList;
@@ -64,6 +65,10 @@ class FlarmMapWidget: public PlotWidget
 
 		FlarmMapWidget (QWidget *parent);
 		virtual ~FlarmMapWidget ();
+
+		// State
+		void loadState (QSettings &settings);
+		void saveState (QSettings &settings);
 
 		// Static data
 		void setOwnPositionLabel (const QString &text, const QColor &color);

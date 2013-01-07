@@ -111,6 +111,31 @@ FlarmMapWidget::~FlarmMapWidget ()
 }
 
 
+// ***********
+// ** State **
+// ***********
+
+void FlarmMapWidget::saveState (QSettings &settings)
+{
+	PlotWidget::saveState (settings);
+
+	settings.setValue ("showImages" , showImagesAction .isChecked ());
+	settings.setValue ("showGrid"   , showGridAction   .isChecked ());
+	settings.setValue ("showCircles", showCirclesAction.isChecked ());
+}
+
+void FlarmMapWidget::loadState (QSettings &settings)
+{
+	PlotWidget::loadState (settings);
+
+	showImagesAction .setChecked (settings.value ("showImages" , true).toBool ());
+	showGridAction   .setChecked (settings.value ("showGrid"   , true).toBool ());
+	showCirclesAction.setChecked (settings.value ("showCircles", true).toBool ());
+
+	update ();
+}
+
+
 // ****************
 // ** Flarm list **
 // ****************

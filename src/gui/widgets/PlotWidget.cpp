@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QSettings>
 #include <QWheelEvent>
 
 // Notes:
@@ -53,6 +54,39 @@ PlotWidget::PlotWidget (QWidget *parent): QFrame (parent),
 
 PlotWidget::~PlotWidget ()
 {
+}
+
+
+// ***********
+// ** State **
+// ***********
+
+void PlotWidget::saveState (QSettings &settings)
+{
+	settings.setValue ("centerX"    , _center_p.x ());
+	settings.setValue ("centerY"    , _center_p.y ());
+	settings.setValue ("diameter"   , _diameter_p);
+	settings.setValue ("orientation", _orientation.toDegrees ());
+}
+
+void PlotWidget::loadState (QSettings &settings)
+{
+	if (settings.contains ("centerX") && settings.contains ("centerY"))
+	{
+		double centerX=settings.value ("centerX").toDouble ();
+		double centerY=settings.value ("centerY").toDouble ();
+		setCenter_p (QPointF (centerX, centerY));
+	}
+	if (settings.contains ("diameter"))
+	{
+		setDiameter_p (settings.value ("diameter").toDouble ());
+	}
+	if (settings.contains ("orientation"))
+	{
+		setOrientation (Angle::fromDegrees (settings.value ("orientation").toDouble ()));
+	}
+
+	_transforms.invalidate ();
 }
 
 

@@ -11,6 +11,7 @@ class QEvent;
 class QKeyEvent;
 class QMouseEvent;
 class QResizeEvent;
+class QSettings;
 class QWheelEvent;
 
 /**
@@ -54,6 +55,9 @@ class PlotWidget: public QFrame
 		PlotWidget (QWidget *parent);
 		virtual ~PlotWidget ();
 
+		// State
+		void loadState (QSettings &settings);
+		void saveState (QSettings &settings);
 
 		// Position
 		QPointF center_p () const;

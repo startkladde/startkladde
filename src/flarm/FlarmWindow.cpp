@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include <QDebug>
 #include <QtCore/QSettings>
 #include <QSortFilterProxyModel>
 #include <QPen>
@@ -59,12 +60,52 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	// set and the FlarmMapWidget pulls the position.
 	QString kmlFileName=Settings::instance ().flarmMapKmlFileName;
 	ui.flarmMap->readKml (kmlFileName);
-
 	ui.flarmMap->setFocus ();
+
+	loadState ();
 }
 
-FlarmWindow::~FlarmWindow () {
+FlarmWindow::~FlarmWindow ()
+{
 } 
+
+void FlarmWindow::saveState ()
+{
+	QSettings settings;
+	settings.beginGroup (notr ("gui"));
+	settings.beginGroup (notr ("flarmMapWidget"));
+	ui.flarmMap->saveState (settings);
+	settings.endGroup ();
+	settings.endGroup ();
+}
+
+void FlarmWindow::loadState ()
+{
+	QSettings settings;
+	settings.beginGroup (notr ("gui"));
+	settings.beginGroup (notr ("flarmMapWidget"));
+	ui.flarmMap->loadState (settings);
+	settings.endGroup ();
+	settings.endGroup ();
+}
+
+void FlarmWindow::closeEvent (QCloseEvent *event)
+{
+	SkDialog<Ui::FlarmWindowClass>::closeEvent (event);
+	saveState ();
+}
+
+void FlarmWindow::accept ()
+{
+	SkDialog<Ui::FlarmWindowClass>::accept ();
+	saveState ();
+}
+
+void FlarmWindow::reject ()
+{
+	SkDialog<Ui::FlarmWindowClass>::reject ();
+	saveState ();
+}
 
 void FlarmWindow::showFlarmMap ()
 {
