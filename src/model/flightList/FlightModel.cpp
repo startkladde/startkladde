@@ -83,7 +83,7 @@ QVariant FlightModel::displayHeaderData (int column) const
 		case 16: return headerTextFlarmId;
 	}
 
-	// Apparantly, an unhandled column can happen when the last flight is deleted
+	// Apparently, an unhandled column can happen when the last flight is deleted
 	return QVariant ();
 }
 
