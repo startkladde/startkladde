@@ -41,17 +41,22 @@ namespace Kml
 			QString filename;
 			Angle north, south, east, west;
 			Angle rotation;
+			QColor color;
 	};
 
 	class Style
 	{
 		public:
 			QColor labelColor;
+			QColor polyColor;
 			QColor lineColor;
 			double lineWidth;
+			bool noOutline;
+			bool noFill;
 
 			Style ();
-			QPen linePen () const;
+			QPen   linePen   () const;
+			QBrush polyBrush () const;
 	};
 
 	class StyleMap

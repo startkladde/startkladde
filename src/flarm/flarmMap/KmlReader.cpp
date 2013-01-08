@@ -30,9 +30,12 @@ void KmlReader::readStyle (const QDomNode &styleNode)
 	QString styleId=styleElement.attribute ("id");
 
 	Kml::Style style;
-	style.labelColor=Kml::parseColor (styleElement.firstChildElement ("LabelStyle").firstChildElement ("color").text ());
-	style.lineColor =Kml::parseColor (styleElement.firstChildElement ("LineStyle" ).firstChildElement ("color").text ());
-	style.lineWidth =                 styleElement.firstChildElement ("LineStyle" ).firstChildElement ("width").text ().toDouble ();
+	style.labelColor=Kml::parseColor (styleElement.firstChildElement ("LabelStyle").firstChildElement ("color"  ).text ());
+	style.lineColor =Kml::parseColor (styleElement.firstChildElement ("LineStyle" ).firstChildElement ("color"  ).text ());
+	style.lineWidth =                 styleElement.firstChildElement ("LineStyle" ).firstChildElement ("width"  ).text ().toDouble ();
+	style.polyColor =Kml::parseColor (styleElement.firstChildElement ("PolyStyle" ).firstChildElement ("color"  ).text ());
+	style.noOutline =                (styleElement.firstChildElement ("PolyStyle" ).firstChildElement ("outline").text ()=="0");
+	style.noFill    =                (styleElement.firstChildElement ("PolyStyle" ).firstChildElement ("fill"   ).text ()=="0");
 
 	styles.insert (styleId, style);
 }
@@ -99,6 +102,11 @@ void KmlReader::readPath (const QString &name, const QString &styleUrl, const QD
 	 paths.append (path);
 }
 
+/**
+ * Note that the polygon will be closed, i. e. there will be one point more than
+ * the number of corners in the polygon and the last point will be identical to
+ * the first point.
+ */
 void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const QDomElement &polygonElement)
 {
 	QList<GeoPosition> points;
@@ -159,6 +167,9 @@ void KmlReader::readGroundOverlay (const QDomNode &groundOverlayNode, const QDir
 {
 	QString groundOverlayName=groundOverlayNode.firstChildElement ("name").text ();
 
+	QDomElement colorElement=groundOverlayNode.firstChildElement ("color");
+	QColor color=Kml::parseColor (colorElement.text ());
+
 	QDomElement iconElement=groundOverlayNode.firstChildElement ("Icon");
 	QString filename=iconElement.firstChildElement ("href").text ();
 
@@ -177,6 +188,7 @@ void KmlReader::readGroundOverlay (const QDomNode &groundOverlayNode, const QDir
 	groundOverlay.east =Angle::fromDegrees (east );
 	groundOverlay.west =Angle::fromDegrees (west );
 	groundOverlay.rotation=Angle::fromDegrees (rotation);
+	groundOverlay.color=color;
 
 	groundOverlays.append (groundOverlay);
 }

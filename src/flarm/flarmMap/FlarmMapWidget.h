@@ -23,14 +23,23 @@ class FlarmMapWidget: public PlotWidget
 	public:
 		enum KmlStatus { kmlNone, kmlNotFound, kmlReadError, kmlParseError, kmlEmpty, kmlOk };
 
-		struct StaticCurve
+		struct StaticPath
 		{
-			StaticCurve (const QVector<GeoPosition> &points, const QString &name, const QPen &pen);
-			StaticCurve (const Kml::Path    &path   , const Kml::Style &style);
-			StaticCurve (const Kml::Polygon &polygon, const Kml::Style &style);
+			StaticPath (const QVector<GeoPosition> &points, const QString &name, const QPen &pen);
+			StaticPath (const Kml::Path    &path   , const Kml::Style &style);
 			QVector<GeoPosition> points;
 			QString name;
 			QPen pen;
+		};
+
+		struct StaticPolygon
+		{
+			StaticPolygon (const QVector<GeoPosition> &points, const QString &name, const QPen &pen, const QBrush &brush);
+			StaticPolygon (const Kml::Polygon &polygon, const Kml::Style &style);
+			QVector<GeoPosition> points;
+			QString name;
+			QPen pen;
+			QBrush brush;
 		};
 
 		struct StaticMarker
@@ -50,6 +59,7 @@ class FlarmMapWidget: public PlotWidget
 			GeoPosition northEast, southWest;
 			GeoPosition northWest, southEast;
 			Angle rotation;
+			QColor color;
 		};
 
 		struct PlaneMarker
@@ -100,7 +110,8 @@ class FlarmMapWidget: public PlotWidget
 		virtual void paintNorthDirection (QPainter &painter);
 		virtual void paintDistanceCircles (QPainter &painter);
 		virtual void paintLatLonGrid (QPainter &painter);
-		virtual void paintStaticCurves (QPainter &painter);
+		virtual void paintStaticPaths (QPainter &painter);
+		virtual void paintStaticPolygons (QPainter &painter);
 		virtual void paintStaticMarkers (QPainter &painter);
 		virtual void paintImages (QPainter &painter);
 		virtual void paintPlanes (QPainter &painter);
@@ -122,7 +133,8 @@ class FlarmMapWidget: public PlotWidget
 		GeoPosition _ownPosition;
 
 		// Static curves and Flarm data
-		QList<StaticCurve> staticCurves;
+		QList<StaticPath> staticPaths;
+		QList<StaticPolygon> staticPolygons;
 		QList<StaticMarker> staticMarkers;
 		QList<Image> images;
 

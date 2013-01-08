@@ -36,24 +36,38 @@ FlarmMapWidget::StaticMarker::StaticMarker (const Kml::Marker &marker, const Kml
 {
 }
 
-// *************************
-// ** StaticCurve methods **
-// *************************
 
-FlarmMapWidget::StaticCurve::StaticCurve (const QVector<GeoPosition> &points, const QString &name, const QPen &pen):
+// ************************
+// ** StaticPath methods **
+// ************************
+
+FlarmMapWidget::StaticPath::StaticPath (const QVector<GeoPosition> &points, const QString &name, const QPen &pen):
 	points (points), name (name), pen (pen)
 {
 }
 
-FlarmMapWidget::StaticCurve::StaticCurve (const Kml::Path &path, const Kml::Style &style):
+FlarmMapWidget::StaticPath::StaticPath (const Kml::Path &path, const Kml::Style &style):
 	points (path.positions.toVector ()), name (path.name), pen (style.linePen ())
 {
 }
 
-FlarmMapWidget::StaticCurve::StaticCurve (const Kml::Polygon &polygon, const Kml::Style &style):
-	points (polygon.positions.toVector ()), name (polygon.name), pen (style.linePen ())
-{
 
+// ***************************
+// ** StaticPolygon methods **
+// ***************************
+
+FlarmMapWidget::StaticPolygon::StaticPolygon (const QVector<GeoPosition> &points, const QString &name, const QPen &pen, const QBrush &brush):
+	points (points), name (name), pen (pen), brush (brush)
+{
+}
+
+FlarmMapWidget::StaticPolygon::StaticPolygon (const Kml::Polygon &polygon, const Kml::Style &style):
+	points (polygon.positions.toVector ()), name (polygon.name),
+	pen (style.linePen ()), brush (style.polyBrush ())
+{
+	// The KML polygon contains a copy of the first point at the end; remove
+	// that.
+	points.remove (points.size ()-1);
 }
 
 // *******************
@@ -70,6 +84,7 @@ FlarmMapWidget::Image::Image (const Kml::GroundOverlay &groundOverlay)
 	northWest=GeoPosition (groundOverlay.north, groundOverlay.west);
 	southEast=GeoPosition (groundOverlay.south, groundOverlay.east);
 	rotation=groundOverlay.rotation;
+	color=groundOverlay.color;
 }
 
 
@@ -474,21 +489,21 @@ FlarmMapWidget::KmlStatus FlarmMapWidget::readKmlImplementation (const QString &
 		allStaticPositions.append (kmlMarker.position);
 	}
 
-	// For each KML path in the KML file, add a static curve
+	// For each KML path in the KML file, add a static path
 	foreach (const Kml::Path &path, kmlReader.paths)
 	{
 		Kml::Style style=kmlReader.findStyle (path.styleUrl);
-		StaticCurve staticCurve=StaticCurve (path, style);
-		staticCurves.append (staticCurve);
+		StaticPath staticCurve=StaticPath (path, style);
+		staticPaths.append (staticCurve);
 		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
-	// For each KML polygon in the KML file, add a static curve
+	// For each KML polygon in the KML file, add a static polygon
 	foreach (const Kml::Polygon &polygon, kmlReader.polygons)
 	{
 		Kml::Style style=kmlReader.findStyle (polygon.styleUrl);
-		StaticCurve staticCurve=StaticCurve (polygon, style);
-		staticCurves.append (staticCurve);
+		StaticPolygon staticCurve=StaticPolygon (polygon, style);
+		staticPolygons.append (staticCurve);
 		allStaticPositions.append (staticCurve.points.toList ());
 	}
 
@@ -678,6 +693,7 @@ void FlarmMapWidget::paintImages (QPainter &painter)
 
 		// Draw the whole pixmap in the draw coordinate system, into the
 		// rectangle determined earlier
+		painter.setOpacity (image.color.alphaF ());
 		painter.drawPixmap (imageRect_draw, image.pixmap, image.pixmap.rect ());
 		painter.restore ();
 	}
@@ -884,17 +900,32 @@ void FlarmMapWidget::paintOwnPosition (QPainter &painter)
 	drawCenteredText (painter, position_w, _ownPositionText);
 }
 
-void FlarmMapWidget::paintStaticCurves (QPainter &painter)
+void FlarmMapWidget::paintStaticPaths (QPainter &painter)
 {
 	if (!_ownPosition.isValid ())
 		return;
 
 	// Draw all static paths
-	foreach (const StaticCurve &curve, staticCurves)
+	foreach (const StaticPath &path, staticPaths)
 	{
-		QPolygonF p=transformGeographicToWidget (curve.points);
-		painter.setPen (curve.pen);
+		QPolygonF p=transformGeographicToWidget (path.points);
+		painter.setPen (path.pen);
 		painter.drawPolyline (p);
+	}
+}
+
+void FlarmMapWidget::paintStaticPolygons (QPainter &painter)
+{
+	if (!_ownPosition.isValid ())
+		return;
+
+	// Draw all static paths
+	foreach (const StaticPolygon &polygon, staticPolygons)
+	{
+		QPolygonF p=transformGeographicToWidget (polygon.points);
+		painter.setPen (polygon.pen);
+		painter.setBrush (polygon.brush);
+		painter.drawPolygon (p);
 	}
 }
 
@@ -949,9 +980,11 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	// Paint the frame
 	QFrame::paintEvent (event);
 
-	// Create the painter and turn antialiasing on
+	// Create the painter and turn anti-aliasing on
 	QPainter painter (this);
-	painter.setRenderHint (QPainter::Antialiasing, true);
+	painter.setRenderHint (QPainter::Antialiasing         , true);
+	painter.setRenderHint (QPainter::TextAntialiasing     , true);
+	painter.setRenderHint (QPainter::SmoothPixmapTransform, true);
 
 	// Paint the various items, in order from bottom to top. Note that some of
 	// the items can only be painted if the own position is valid. For example,
@@ -962,8 +995,8 @@ void FlarmMapWidget::paintEvent (QPaintEvent *event)
 	painter.save (); paintLatLonGrid       (painter); painter.restore ();
 	painter.save (); paintNorthDirection   (painter); painter.restore ();
 	painter.save (); paintOwnPosition      (painter); painter.restore ();
-	painter.save (); paintStaticCurves     (painter); painter.restore ();
+	painter.save (); paintStaticPaths      (painter); painter.restore ();
+	painter.save (); paintStaticPolygons   (painter); painter.restore ();
 	painter.save (); paintStaticMarkers    (painter); painter.restore ();
 	painter.save (); paintPlanes           (painter); painter.restore ();
 }
-
