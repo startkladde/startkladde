@@ -141,6 +141,7 @@ void FlarmWindow::setFlarmList (FlarmList *flarmList)
 	proxyModel->setSourceModel (objectListModel);
 	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
 	proxyModel->setDynamicSortFilter (true);
+	proxyModel->setSortRole (FlarmRecordModel::sortRole);
 	ui.flarmTable->setModel (proxyModel);
 }
 

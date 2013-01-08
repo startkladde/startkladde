@@ -45,6 +45,8 @@ QVariant FlarmRecordModel::data (const FlarmRecord &flarmRecord, int column, int
 		return displayData (flarmRecord, column);
 	else if (role==Qt::TextAlignmentRole)
 		return alignmentData (flarmRecord, column);
+	else if (role==FlarmRecordModel::sortRole)
+		return sortData (flarmRecord, column);
 	else
 		return QVariant ();
 }
@@ -76,6 +78,19 @@ QVariant FlarmRecordModel::alignmentData (const FlarmRecord &flarmRecord, int co
 		case 3: return Qt::AlignRight;
 		case 4: return Qt::AlignRight;
 		case 5: return Qt::AlignLeft;
+	}
+
+	return QVariant ();
+}
+
+QVariant FlarmRecordModel::sortData (const FlarmRecord &flarmRecord, int column) const
+{
+	switch (column)
+	{
+		case 2: return flarmRecord.getRelativeAltitude ();
+		case 3: return flarmRecord.getGroundSpeed      ();
+		case 4: return flarmRecord.getClimbRate        ();
+		default: return displayData (flarmRecord, column);
 	}
 
 	return QVariant ();
