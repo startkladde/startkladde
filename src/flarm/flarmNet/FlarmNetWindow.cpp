@@ -1,4 +1,4 @@
-#include "FlarmNetOverview.h"
+#include "FlarmNetWindow.h"
 
 #include <QSettings>
 #include <QSortFilterProxyModel>
@@ -12,8 +12,8 @@
 
 class FlarmNetRecord;
 
-FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
-	SkDialog<Ui::FlarmNetOverviewDialog> (parent),
+FlarmNetWindow::FlarmNetWindow (DbManager &dbManager, QWidget *parent):
+	SkDialog<Ui::FlarmNetWindowClass> (parent),
 	dbManager (dbManager)
 {
 	ui.setupUi (this);
@@ -73,39 +73,33 @@ FlarmNetOverview::FlarmNetOverview (DbManager &dbManager, QWidget *parent):
 	// Setup the table view
 	ui.flarmNetTable->setModel (proxyModel);
 
-	// FIXME row height, but autoResizeRows is very slow
-//	ui.flarmNetTable->resizeColumnsToContents ();
-//	ui.flarmNetTable->resizeRowsToContents ();
-//	ui.flarmNetTable->setAutoResizeColumns (true);
-//	ui.flarmNetTable->setAutoResizeRows (true);
-
 	// Context menu
 	contextMenu=new QMenu (this);
 	contextMenu->addAction (ui.createPlaneAction);
 	//contextMenu->addSeparator ();
 }
 
-FlarmNetOverview::~FlarmNetOverview ()
+FlarmNetWindow::~FlarmNetWindow ()
 {
 } 
 
-void FlarmNetOverview::searchClear () {
-        // qDebug () << "FlarmNetOverview::searchClear: " << endl;
+void FlarmNetWindow::searchClear () {
+        // qDebug () << "FlarmNetWindow::searchClear: " << endl;
         ui.searchEdit->clear();
 }
 
-void FlarmNetOverview::searchTextChanged (const QString& search) {
-        // qDebug () << "FlarmNetOverview::searchTextChanged: " << search << endl;
+void FlarmNetWindow::searchTextChanged (const QString& search) {
+        // qDebug () << "FlarmNetWindow::searchTextChanged: " << search << endl;
         proxyModel->setFilterRegExp (QRegExp (search, Qt::CaseInsensitive, QRegExp::FixedString));
         ui.clearButton->setVisible (!search.isEmpty());
 } 
 
-void FlarmNetOverview::on_flarmNetTable_customContextMenuRequested (const QPoint &pos)
+void FlarmNetWindow::on_flarmNetTable_customContextMenuRequested (const QPoint &pos)
 {
 	contextMenu->popup (ui.flarmNetTable->mapToGlobal (pos), 0);
 }
 
-void FlarmNetOverview::on_createPlaneAction_triggered ()
+void FlarmNetWindow::on_createPlaneAction_triggered ()
 {
 	QModelIndex proxyIndex=ui.flarmNetTable->currentIndex ();
 	QModelIndex sourceIndex=proxyModel->mapToSource (proxyIndex);

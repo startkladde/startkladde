@@ -58,7 +58,6 @@ class Settings: public QObject
 		QString flarmMapKmlFileName;
 		// FlarmNet
 		bool flarmNetEnabled;
-		bool flarmNetOverview;
 		// Permissions
 		bool protectSettings;
 		bool protectLaunchMethods;

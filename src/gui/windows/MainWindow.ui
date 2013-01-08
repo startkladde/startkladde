@@ -504,7 +504,7 @@
     <addaction name="actionFlarmRadar"/>
     <addaction name="actionFlarmPlaneList"/>
     <addaction name="separator"/>
-    <addaction name="actionFlarmNetOverview"/>
+    <addaction name="actionFlarmNetWindow"/>
     <addaction name="flarmNetImportFileAction"/>
     <addaction name="flarmNetImportWebAction"/>
    </widget>
@@ -929,7 +929,7 @@
     <string>Import FlarmNet database from &amp;file...</string>
    </property>
   </action>
-  <action name="actionFlarmNetOverview">
+  <action name="actionFlarmNetWindow">
    <property name="text">
     <string>Flarm&amp;Net overview...</string>
    </property>

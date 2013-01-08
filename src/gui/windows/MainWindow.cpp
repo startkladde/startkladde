@@ -61,7 +61,7 @@
 #include "src/nmea/GpsTracker.h"
 #include "src/flarm/FlarmWindow.h"
 #include "src/flarm/flarmNet/FlarmNetHandler.h"
-#include "src/flarm/flarmNet/FlarmNetOverview.h"
+#include "src/flarm/flarmNet/FlarmNetWindow.h"
 #include "src/gui/dialogs.h"
 #include "src/logging/messages.h"
 #include "src/util/qString.h"
@@ -569,7 +569,6 @@ void MainWindow::settingsChanged ()
 	ui.flarmStateCaptionLabel->setEnabled (s.flarmEnabled);
 	ui.flarmStateLabel       ->setEnabled (s.flarmEnabled);
 	// FlarmNet
-	ui.actionFlarmNetOverview  ->setEnabled (s.flarmNetEnabled && s.flarmNetOverview);
 	ui.flarmNetImportFileAction->setEnabled (s.flarmNetEnabled);
 	ui.flarmNetImportWebAction ->setEnabled (s.flarmNetEnabled);
 
@@ -1748,9 +1747,9 @@ void MainWindow::on_actionFlarmRadar_triggered ()
 	dialog->showFlarmMap ();
 }
 
-void MainWindow::on_actionFlarmNetOverview_triggered ()
+void MainWindow::on_actionFlarmNetWindow_triggered ()
 {
-	FlarmNetOverview *dialog = new FlarmNetOverview (dbManager, this);
+	FlarmNetWindow *dialog = new FlarmNetWindow (dbManager, this);
 	dialog->setAttribute (Qt::WA_DeleteOnClose, true);
 	dialog->show ();
 }

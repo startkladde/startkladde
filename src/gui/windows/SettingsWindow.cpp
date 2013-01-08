@@ -183,7 +183,6 @@ void SettingsWindow::readSettings ()
 	ui.flarmMapKmlFileNameInput->setText    (s.flarmMapKmlFileName);
 	// FlarmNet
 	ui.flarmNetBox           ->setChecked (s.flarmNetEnabled);
-	ui.checkFlarmNetOverview ->setChecked (s.flarmNetOverview);
 	// Permissions
 	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
@@ -270,7 +269,6 @@ void SettingsWindow::writeSettings ()
 	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput->text ();
 	// FlarmNet
 	s.flarmNetEnabled	=ui.flarmNetBox			->isChecked ();
-	s.flarmNetOverview	=ui.checkFlarmNetOverview	->isChecked ();
 	// Permissions
 	s.protectSettings      =ui.protectSettingsCheckbox      ->isChecked ();
 	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();

@@ -242,7 +242,6 @@ void Settings::readSettings ()
 	flarmMapKmlFileName  =s.value (notr("flarmMapKmlFileName"),    ""     ).toString ();
 	// FlarmNet
 	flarmNetEnabled      =s.value (notr("flarmNetEnabled"),        true   ).toBool ();
-	flarmNetOverview     =s.value (notr("flarmNetOverview"),       true   ).toBool ();
 	// Permissions
 	protectSettings      =s.value (notr ("protectSettings"      ), false).toBool ();
 	protectLaunchMethods =s.value (notr ("protectLaunchMethods" ), false).toBool ();
@@ -326,7 +325,6 @@ void Settings::writeSettings ()
 	s.setValue (notr ("flarmMapKmlFileName"  ), flarmMapKmlFileName);
 	// FlarmNet
 	s.setValue (notr ("flarmNetEnabled"      ), flarmNetEnabled);
-	s.setValue (notr ("flarmNetOverview"     ), flarmNetOverview);
 	// Permissions
 	s.setValue (notr ("protectSettings"      ), protectSettings      );
 	s.setValue (notr ("protectLaunchMethods" ), protectLaunchMethods );

@@ -1,7 +1,7 @@
-#ifndef FLARMNETOVERVIEW_H
-#define FLARMNETOVERVIEW_H
+#ifndef FLARMNETWINDOW_H
+#define FLARMNETWINDOW_H
 
-#include "ui_FlarmNetOverview.h"
+#include "ui_FlarmNetWindow.h"
 #include "src/gui/SkDialog.h"
 
 class DbManager;
@@ -9,13 +9,13 @@ class QSortFilterProxyModel;
 class FlarmNetRecord;
 template<class T> class ObjectListModel;
 
-class FlarmNetOverview: public SkDialog<Ui::FlarmNetOverviewDialog>
+class FlarmNetWindow: public SkDialog<Ui::FlarmNetWindowClass>
 {
 	Q_OBJECT
 
 	public:
-		FlarmNetOverview (DbManager &dbManager, QWidget *parent);
-		virtual ~FlarmNetOverview ();
+		FlarmNetWindow (DbManager &dbManager, QWidget *parent);
+		virtual ~FlarmNetWindow ();
 
 	private:
 		DbManager &dbManager;
