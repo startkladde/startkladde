@@ -2463,6 +2463,9 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 		flight.setLaunchMethodId (preselectedLaunchMethod);
 		flight.departNow (Settings::instance ().location);
 		dbId flightId=dbManager.createObject (flight, this);
+		// Since the flight is newly created, it is not updated and we can't
+		// detect the change automatically.
+		flightDeparted (flightId);
 
 		if (idValid (flightId))
 			ui.flightTable->showNotification (
@@ -2530,6 +2533,9 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 		flight.setMode (FlightBase::modeComing);
 		flight.landNow (Settings::instance ().location);
 		dbId flightId=dbManager.createObject (flight, this);
+		// Since the flight is newly created, it is not updated and we can't
+		// detect the change automatically.
+		flightLanded (flightId);
 
 		if (idValid(flightId))
 			ui.flightTable->showNotification (
@@ -2553,7 +2559,7 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 		std::cout <<
 			qnotr ("Ignored touch-and-go of %1 because it performed a touch-and-go %2 minutes ago")
 			.arg (flarmId)
-			.arg (departureTracker.timeSinceEvent (flarmId).toString ("m:ss"))
+			.arg (touchAndGoTracker.timeSinceEvent (flarmId).toString ("m:ss"))
 			<< std::endl;
 
 		return;
@@ -2591,6 +2597,9 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 		flight.setMode (FlightBase::modeComing);
 		flight.performTouchngo ();
 		dbId flightId=dbManager.createObject (flight, this);
+		// Since the flight is newly created, it is not updated and we can't
+		// detect the change automatically.
+		touchAndGoPerformed (flightId);
 
 		if (idValid(flightId))
 			ui.flightTable->showNotification (
