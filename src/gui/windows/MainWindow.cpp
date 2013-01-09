@@ -571,7 +571,9 @@ void MainWindow::settingsChanged ()
 	ui.actionFlarmRadar	     ->setEnabled (s.flarmEnabled);
 	ui.flarmStateCaptionLabel->setEnabled (s.flarmEnabled);
 	ui.flarmStateLabel       ->setEnabled (s.flarmEnabled);
-	// FlarmNet
+	// Also disabled the FlarmNet menu entries to indicate to the user that
+	// FlarmNet is not used.
+	ui.actionFlarmNetWindow    ->setEnabled (s.flarmNetEnabled);
 	ui.flarmNetImportFileAction->setEnabled (s.flarmNetEnabled);
 	ui.flarmNetImportWebAction ->setEnabled (s.flarmNetEnabled);
 
@@ -2416,7 +2418,8 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutoDepartures)
+	Settings &s=Settings::instance ();
+	if (!(s.flarmEnabled && s.flarmAutoDepartures))
 		return;
 
 	if (departureTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
@@ -2500,7 +2503,8 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutoDepartures)
+	Settings &s=Settings::instance ();
+	if (!(s.flarmEnabled && s.flarmAutoDepartures))
 		return;
 
 	if (landingTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
@@ -2570,7 +2574,8 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutoDepartures)
+	Settings &s=Settings::instance ();
+	if (!(s.flarmEnabled && s.flarmAutoDepartures))
 		return;
 
 	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
