@@ -72,7 +72,6 @@ void TranslationManager::install (QApplication *application)
  * @return the locale name, or an empty string if the filename does not
  *         represent a known translation file pattern
  */
-// FIXME required?
 QString TranslationManager::localeNameFromFilename (const QString &filename)
 {
 	QRegExp regexp (notr ("startkladde_(.*)\\.qm"));

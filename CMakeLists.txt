@@ -172,7 +172,7 @@ if (WIN32 AND QT_BINARY_DIR AND MYSQL_INCLUDE_DIR)
 
 	copy_library (${MYSQL_LIBRARY_DIR} libmysql.dll)
 
-#	# FIXME should not be hardcoded
+#	# TODO should not be hardcoded
 #    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
 #		message (STATUS "Copying library ${Qwt6_Qt4_DEBUG_LIBRARY}")
 #		file (COPY ${Qwt6_Qt4_DEBUG_LIBRARY} DESTINATION ${PROJECT_BINARY_DIR})
