@@ -51,7 +51,7 @@ class Settings: public QObject
 		bool checkMedicals;
 		// Flarm
 		bool flarmEnabled;
-		bool flarmAutoDepartures;
+		bool flarmAutoDepartures; // Also landings and touch-and-gos
 		bool flarmDataViewable;
 		QString flarmMapKmlFileName;
 		// FlarmNet
