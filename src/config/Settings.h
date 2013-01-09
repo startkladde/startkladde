@@ -51,14 +51,12 @@ class Settings: public QObject
 		bool checkMedicals;
 		// Flarm
 		bool flarmEnabled;
-		bool flarmAutostart;
-		bool flarmEditor;
-		bool flarmOverview; // FIXME rename flarmPlaneList
-		bool flarmRadar; // FIXME rename flarmMap?
+		bool flarmAutoDepartures;
+		bool flarmDataViewable;
 		QString flarmMapKmlFileName;
 		// FlarmNet
 		bool flarmNetEnabled;
-		// Permissions
+		// Database permissions
 		bool protectSettings;
 		bool protectLaunchMethods;
 		bool protectMergePeople;

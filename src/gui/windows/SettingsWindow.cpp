@@ -175,14 +175,12 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Flarm
-	ui.flarmBox                ->setChecked (s.flarmEnabled);
-	ui.checkFlarmAutostart     ->setChecked (s.flarmAutostart);
-	ui.checkFlarmEditor        ->setChecked (s.flarmEditor);
-	ui.checkFlarmOverview      ->setChecked (s.flarmOverview);
-	ui.checkFlarmRadar         ->setChecked (s.flarmRadar);
-	ui.flarmMapKmlFileNameInput->setText    (s.flarmMapKmlFileName);
+	ui.flarmGroupBox              ->setChecked (s.flarmEnabled);
+	ui.flarmAutoDeparturesCheckbox->setChecked (s.flarmAutoDepartures);
+	ui.flarmDataViewableCheckbox  ->setChecked (s.flarmDataViewable);
+	ui.flarmMapKmlFileNameInput   ->setText    (s.flarmMapKmlFileName);
 	// FlarmNet
-	ui.flarmNetBox           ->setChecked (s.flarmNetEnabled);
+	ui.flarmNetEnabledCheckbox    ->setChecked (s.flarmNetEnabled);
 	// Permissions
 	ui.protectSettingsCheckbox      ->setChecked (s.protectSettings);
 	ui.protectLaunchMethodsCheckbox ->setChecked (s.protectLaunchMethods);
@@ -261,14 +259,12 @@ void SettingsWindow::writeSettings ()
 	s.recordTowpilot=ui.recordTowpilotCheckbox->isChecked ();
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Flarm
-	s.flarmEnabled	     =ui.flarmBox		         ->isChecked ();
-	s.flarmAutostart     =ui.checkFlarmAutostart     ->isChecked ();
-	s.flarmEditor	     =ui.checkFlarmEditor	     ->isChecked ();
-	s.flarmOverview	     =ui.checkFlarmOverview	     ->isChecked ();
-	s.flarmRadar	     =ui.checkFlarmRadar	     ->isChecked ();
-	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput->text ();
+	s.flarmEnabled	     =ui.flarmGroupBox              ->isChecked ();
+	s.flarmAutoDepartures=ui.flarmAutoDeparturesCheckbox->isChecked ();
+	s.flarmDataViewable  =ui.flarmDataViewableCheckbox  ->isChecked ();
+	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput   ->text ();
 	// FlarmNet
-	s.flarmNetEnabled	=ui.flarmNetBox			->isChecked ();
+	s.flarmNetEnabled	=ui.flarmNetEnabledCheckbox     ->isChecked ();
 	// Permissions
 	s.protectSettings      =ui.protectSettingsCheckbox      ->isChecked ();
 	s.protectLaunchMethods =ui.protectLaunchMethodsCheckbox ->isChecked ();

@@ -564,8 +564,11 @@ void MainWindow::settingsChanged ()
 	ui.actionNetworkDiagnostics     ->setVisible (!isBlank (s.diagCommand));
 	
 	// Flarm
-	ui.actionFlarmPlaneList  ->setEnabled (s.flarmEnabled && s.flarmOverview);
-	ui.actionFlarmRadar	     ->setEnabled (s.flarmEnabled && s.flarmRadar);
+	// Note that we enable the flarmPlaneList and flarmRadar actions even if
+	// s.flarmDataViewable is off, so we can show a message to the user as to
+	// why it's disabled.
+	ui.actionFlarmPlaneList  ->setEnabled (s.flarmEnabled);
+	ui.actionFlarmRadar	     ->setEnabled (s.flarmEnabled);
 	ui.flarmStateCaptionLabel->setEnabled (s.flarmEnabled);
 	ui.flarmStateLabel       ->setEnabled (s.flarmEnabled);
 	// FlarmNet
@@ -1731,6 +1734,14 @@ void MainWindow::on_actionLaunchMethodStatistics_triggered ()
 
 void MainWindow::on_actionFlarmPlaneList_triggered ()
 {
+	if (!Settings::instance ().flarmDataViewable)
+	{
+		QString text=tr ("Viewing Flarm data is disabled. It can be enabled in"
+			" the configuration.");
+		showWarning ("Flarm plane list disabled", text, this);
+		return;
+	}
+
 	FlarmWindow* dialog = new FlarmWindow (this);
 	dialog->setGpsTracker (flarm.gpsTracker ());
 	dialog->setFlarmList (flarm.flarmList ());
@@ -1740,6 +1751,14 @@ void MainWindow::on_actionFlarmPlaneList_triggered ()
 
 void MainWindow::on_actionFlarmRadar_triggered ()
 {
+	if (!Settings::instance ().flarmDataViewable)
+	{
+		QString text=tr ("Viewing Flarm data is disabled. It can be enabled in"
+			" the configuration.");
+		showWarning ("Flarm radar disabled", text, this);
+		return;
+	}
+
 	FlarmWindow* dialog = new FlarmWindow (this);
 	dialog->setGpsTracker (flarm.gpsTracker ());
 	dialog->setFlarmList (flarm.flarmList ());
@@ -2397,7 +2416,7 @@ Flight MainWindow::createFlarmFlight (const FlightLookup::Result &lookupResult, 
 void MainWindow::flarmList_departureDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutostart)
+	if (!Settings::instance ().flarmAutoDepartures)
 		return;
 
 	if (departureTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
@@ -2481,7 +2500,7 @@ void MainWindow::flarmList_departureDetected (const QString &flarmId)
 void MainWindow::flarmList_landingDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutostart)
+	if (!Settings::instance ().flarmAutoDepartures)
 		return;
 
 	if (landingTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))
@@ -2551,7 +2570,7 @@ void MainWindow::flarmList_landingDetected (const QString &flarmId)
 void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 {
 	// Ignore the event if handling of Flarm events is disabled
-	if (!Settings::instance ().flarmAutostart)
+	if (!Settings::instance ().flarmAutoDepartures)
 		return;
 
 	if (touchAndGoTracker.eventWithin (flarmId, ignoreDuplicateFlarmEventInterval))

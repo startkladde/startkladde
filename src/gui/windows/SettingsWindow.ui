@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>515</width>
+    <width>461</width>
     <height>528</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -94,7 +94,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>&lt;html&gt;The name of the airfield this program is used at (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</string>
+             <string>&lt;html&gt;The name of the airfield this program is used at&lt;/html&gt;</string>
             </property>
            </widget>
           </item>
@@ -469,9 +469,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QGroupBox" name="flarmBox">
+        <widget class="QGroupBox" name="flarmGroupBox">
          <property name="toolTip">
-          <string>&lt;html&gt;If enabled, Flarm related functions are availabe&lt;/html&gt;</string>
+          <string>&lt;html&gt;If enabled, Flarm related funktionality is availabe&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Flarm enabled</string>
@@ -480,14 +480,18 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="4" column="2">
+          <item row="2" column="1">
            <widget class="QWidget" name="widget_6" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="margin">
               <number>0</number>
              </property>
              <item>
-              <widget class="QLineEdit" name="flarmMapKmlFileNameInput"/>
+              <widget class="QLineEdit" name="flarmMapKmlFileNameInput">
+               <property name="toolTip">
+                <string>&lt;html&gt;The name of a KML (Google Earth) file to show in the background of the flarm radar view&lt;/html&gt;</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="browseKmlFileButton">
@@ -499,47 +503,27 @@
             </layout>
            </widget>
           </item>
-          <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkFlarmAutostart">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="flarmAutoDeparturesCheckbox">
             <property name="toolTip">
-             <string>&lt;html&gt;If enabled, data from attached flarm device will be used to detect starts and landings&lt;/html&gt;</string>
+             <string>&lt;html&gt;If enabled, data from the connected flarm device will be used to automatically detect departures, landings and touch-and-gos.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Automatic launch detection</string>
+             <string>Automatic detection of departures, landings and touch-and-gos</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkFlarmEditor">
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="flarmDataViewableCheckbox">
             <property name="toolTip">
-             <string>&lt;html&gt;If enabled, the flight editor will be opened automatically when incomplete flights are detected&lt;/html&gt;</string>
+             <string>&lt;html&gt;If enabled, the Flarm radar and a list of received planes can be viewed.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Flight editor</string>
+             <string>Flarm data viewable</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkFlarmOverview">
-            <property name="toolTip">
-             <string>&lt;html&gt;If enabled, the Flarm overview can be opened&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>Flarm overview</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkFlarmRadar">
-            <property name="toolTip">
-             <string>&lt;html&gt;If enabled, the Flarm Radar window can be opened&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>Flarm Radar</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Flarm radar &amp;KML file:</string>
@@ -549,8 +533,11 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="QCheckBox" name="flarmNetBox">
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="flarmNetEnabledCheckbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, the FlarmNet database may be used to automatically identify planes. Note that you will have to download a copy of the FlarmNet database for this to work.&lt;/html&gt;</string>
+            </property>
             <property name="text">
              <string>FlarmNet enabled</string>
             </property>
