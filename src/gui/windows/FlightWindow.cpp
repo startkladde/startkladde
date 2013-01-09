@@ -1718,6 +1718,13 @@ void FlightWindow::cacheChanged (DbEvent event)
 				// automatically on user input
 				on_towflightLandingLocationInput_editingFinished (newFlight.getTowflightLandingLocation ());
 			}
+
+			// Number of landings changed
+			if (newFlight.getNumLandings ()!=originalFlight.getNumLandings ())
+			{
+				ui.numLandingsInput->setValue (newFlight.getNumLandings ());
+				originalFlight.setNumLandings (newFlight.getNumLandings ());
+			}
 		}
 		else if (event.getType ()==DbEvent::typeDelete)
 		{
