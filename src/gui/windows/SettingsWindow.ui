@@ -20,7 +20,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="documentMode">
       <bool>false</bool>
@@ -474,7 +474,7 @@
           <string>&lt;html&gt;If enabled, Flarm related funktionality is availabe&lt;/html&gt;</string>
          </property>
          <property name="title">
-          <string>Flarm enabled</string>
+          <string>Flarm &amp;enabled</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -509,7 +509,7 @@
              <string>&lt;html&gt;If enabled, data from the connected flarm device will be used to automatically detect departures, landings and touch-and-gos.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Automatic detection of departures, landings and touch-and-gos</string>
+             <string>&amp;Automatic detection of departures, landings and touch-and-gos</string>
             </property>
            </widget>
           </item>
@@ -519,7 +519,7 @@
              <string>&lt;html&gt;If enabled, the Flarm radar and a list of received planes can be viewed.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>Flarm data viewable</string>
+             <string>Flarm data &amp;viewable</string>
             </property>
            </widget>
           </item>
@@ -539,7 +539,7 @@
              <string>&lt;html&gt;If enabled, the FlarmNet database may be used to automatically identify planes. Note that you will have to download a copy of the FlarmNet database for this to work.&lt;/html&gt;</string>
             </property>
             <property name="text">
-             <string>FlarmNet enabled</string>
+             <string>Flarm&amp;Net enabled</string>
             </property>
            </widget>
           </item>
@@ -739,7 +739,7 @@
        <item>
         <widget class="QGroupBox" name="weatherPluginBox">
          <property name="toolTip">
-          <string>&lt;html&gt;The weather plugins is displayed on the right of the upper part of the main window.&lt;/html&gt;</string>
+          <string>&lt;html&gt;The weather plugin is displayed on the right of the upper part of the main window.&lt;/html&gt;</string>
          </property>
          <property name="title">
           <string>Weather plugin &amp;enabled</string>
