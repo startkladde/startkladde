@@ -6,10 +6,12 @@
 #include "src/gui/SkDialog.h"
 
 class QCloseEvent;
+class QSortFilterProxyModel;
+class QStatusBar;
 
 class FlarmList;
 class GpsTracker;
-class QStatusBar;
+template<class T> class ObjectListModel;
 
 class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 {
@@ -55,6 +57,7 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		GpsTracker *gpsTracker;
 		QStatusBar *statusBar;
 		QLabel *mousePositionLabel;
+		ObjectListModel<FlarmRecord> *objectListModel;
 };
 
 #endif

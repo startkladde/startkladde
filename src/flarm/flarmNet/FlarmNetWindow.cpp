@@ -34,10 +34,9 @@ FlarmNetWindow::FlarmNetWindow (DbManager &dbManager, QWidget *parent):
 	ObjectModel<FlarmNetRecord> *flarmNetRecordModel = new FlarmNetRecordModel ();
 
 	// Create the object list model. It will be deleted by its parent, this.
-	objectListModel = new ObjectListModel<FlarmNetRecord> (
-		flarmNetRecords, true,
-		flarmNetRecordModel, true,
-		this);
+	objectListModel = new ObjectListModel<FlarmNetRecord> (this);
+	objectListModel->setList  (flarmNetRecords    , true);
+	objectListModel->setModel (flarmNetRecordModel, true);
 
 	// The default row height is too big. Resizing the rows to the contents
 	// (using resizeRowsToContents or setautoResizeRows) is very slow for larger
@@ -55,7 +54,9 @@ FlarmNetWindow::FlarmNetWindow (DbManager &dbManager, QWidget *parent):
 	EntityList<FlarmNetRecord> dummyList;
 	dummyList.append (FlarmNetRecord ());
 	FlarmNetRecordModel dummyObjectModel;
-	ObjectListModel<FlarmNetRecord> dummyListModel (&dummyList, false, &dummyObjectModel, false);
+	ObjectListModel<FlarmNetRecord> dummyListModel (false);
+	dummyListModel.setList  (&dummyList       , false);
+	dummyListModel.setModel (&dummyObjectModel, false);
 	ui.flarmNetTable->setModel (&dummyListModel);
 	ui.flarmNetTable->resizeRowsToContents ();
 	int rowHeight=ui.flarmNetTable->verticalHeader ()->sectionSize (0);

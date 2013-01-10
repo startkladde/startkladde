@@ -85,7 +85,9 @@ void FlightTableView::init (DbManager *dbManager)
 	_flightModel = new FlightModel (dbManager->getCache ());
 
 	// Create the flight list model - deleted by this
-	_flightListModel = new ObjectListModel<Flight> (_proxyList, false, _flightModel, true, this);
+	_flightListModel = new ObjectListModel<Flight> (this);
+	_flightListModel->setList  (_proxyList  , false);
+	_flightListModel->setModel (_flightModel, true );
 
 	// Create and setup the flight sort filter proxy model (we'll use this as
 	// the table's model) - deleted by this

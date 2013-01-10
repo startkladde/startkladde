@@ -49,7 +49,10 @@ template<class T> ObjectListWindow<T>::ObjectListWindow (DbManager &manager, QWi
 
 	// Create the object model and object list model
 	objectModel=new typename T::DefaultObjectModel ();
-	listModel = new ObjectListModel<T> (list, false, objectModel, true, this);
+	listModel = new ObjectListModel<T> (this);
+	listModel->setList  (list       , false);
+	listModel->setModel (objectModel, true );
+
 
 	// Set the list model as the table's model with a sort proxy
 	proxyModel=new QSortFilterProxyModel (this);

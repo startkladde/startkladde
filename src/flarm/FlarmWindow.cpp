@@ -60,6 +60,15 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	ui.flarmMap->readKml (kmlFileName);
 	ui.flarmMap->setFocus ();
 
+	objectListModel = new ObjectListModel<FlarmRecord> (this);
+	objectListModel->setModel (new FlarmRecordModel (), true);
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
+	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
+	proxyModel->setDynamicSortFilter (true);
+	proxyModel->setSortRole (FlarmRecordModel::sortRole);
+	proxyModel->setSourceModel (objectListModel);
+	ui.flarmTable->setModel (proxyModel);
+
 	loadState ();
 }
 
@@ -124,23 +133,11 @@ void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 
 void FlarmWindow::setFlarmList (FlarmList *flarmList)
 {
-	// Setup the flarm radar
+	// Setup the Flarm map
 	ui.flarmMap->setFlarmList (flarmList);
 
-	// Setup the list
-	const AbstractObjectList<FlarmRecord> *objectList = flarmList;
-	ObjectModel<FlarmRecord> *objectModel = new FlarmRecordModel ();
-	ObjectListModel<FlarmRecord> *objectListModel = new ObjectListModel<FlarmRecord> (objectList, false,
-			objectModel, true, this);
-
-	// FIXME! create & set the proxy model in the constructor
-	// Set the list model as the table's model with a sort proxy
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
-	proxyModel->setSourceModel (objectListModel);
-	proxyModel->setSortCaseSensitivity (Qt::CaseInsensitive);
-	proxyModel->setDynamicSortFilter (true);
-	proxyModel->setSortRole (FlarmRecordModel::sortRole);
-	ui.flarmTable->setModel (proxyModel);
+	// Setup the plane list
+	objectListModel->setList (flarmList, false);
 }
 
 

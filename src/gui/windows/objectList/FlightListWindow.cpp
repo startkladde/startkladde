@@ -45,7 +45,9 @@ FlightListWindow::FlightListWindow (DbManager &manager, QWidget *parent):
 	flightList=new MutableObjectList<Flight> ();
 	flightModel=new FlightModel (manager.getCache ());
 	flightModel->setColorEnabled (false);
-	flightListModel=new ObjectListModel<Flight> (flightList, true, flightModel, true, this);
+	flightListModel=new ObjectListModel<Flight> (this);
+	flightListModel->setList  (flightList , true);
+	flightListModel->setModel (flightModel, true);
 
 	// Set up the sorting proxy model
 	proxyModel=new QSortFilterProxyModel (this);
