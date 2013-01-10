@@ -28,7 +28,14 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 
 	// Add the mouse position label to the status bar
 	mousePositionLabel=new QLabel (this);
+	mousePositionLabel->hide ();
+
+	gpsTimeLabel=new QLabel (this);
+	gpsTimeLabel->hide ();
+	gpsTimeLabel->setToolTip (tr ("The current GPS time. May slightly differ from the system time."));
+
 	statusBar->addPermanentWidget (mousePositionLabel);
+	statusBar->addPermanentWidget (gpsTimeLabel);
 
 	ui.kmlWarning->hide ();
 	ui.gpsWarning->hide ();
@@ -129,6 +136,15 @@ void FlarmWindow::showPlaneList ()
 void FlarmWindow::setGpsTracker (GpsTracker *gpsTracker)
 {
 	ui.flarmMap->setGpsTracker (gpsTracker);
+
+	if (gpsTracker==this->gpsTracker)
+		return;
+
+	gpsTracker->disconnect (this);
+
+	this->gpsTracker=gpsTracker;
+
+	connect (gpsTracker, SIGNAL (gpsTimeChanged (QDateTime)), this, SLOT (gpsTimeChanged (QDateTime)));
 }
 
 void FlarmWindow::setFlarmList (FlarmList *flarmList)
@@ -315,15 +331,29 @@ void FlarmWindow::on_flarmMap_mouseMoved_p (QPointF position_p)
 		.arg (eastText)
 		.arg (round (direction.toDegrees ()))
 		.arg (Distance::format (distance, 2)));
+	mousePositionLabel->show ();
 }
 
 void FlarmWindow::on_flarmMap_mouseLeft ()
 {
-	mousePositionLabel->clear ();
+	mousePositionLabel->hide ();
 }
 
 void FlarmWindow::on_flarmMap_orientationChanged ()
 {
 	int degrees=round (ui.flarmMap->orientation ().toDegrees ());
 	ui.mapOrientationInput->setValue (degrees);
+}
+
+void FlarmWindow::gpsTimeChanged (QDateTime gpsTime)
+{
+	if (gpsTime.isNull ())
+	{
+		gpsTimeLabel->hide ();
+	}
+	else
+	{
+		gpsTimeLabel->setText (gpsTime.time ().toString ());
+		gpsTimeLabel->show ();
+	}
 }

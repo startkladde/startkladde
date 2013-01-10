@@ -55,7 +55,7 @@ void GpsTracker::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
  */
 void GpsTracker::setTimeout (int milliseconds)
 {
-	timer->setInterval (4000);
+	timer->setInterval (milliseconds);
 }
 
 /**
@@ -91,14 +91,16 @@ void GpsTracker::gprmcSentence (const GprmcSentence &sentence)
 
 	if (positionHasChanged)
 		emit positionChanged (this->position);
+
+	// The GPS time typically changes with every GPRMC sentence
+	emit gpsTimeChanged (this->gpsTime);
 }
 
 void GpsTracker::timeout ()
 {
-	bool positionHasChanged=this->position.isValid ();
-
 	this->position=GeoPosition ();
+	this->gpsTime =QDateTime ();
 
-	if (positionHasChanged)
-		emit positionChanged (this->position);
+	emit positionChanged (this->position);
+	emit gpsTimeChanged  (this->gpsTime );
 }

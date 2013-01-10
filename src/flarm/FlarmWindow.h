@@ -48,15 +48,16 @@ class FlarmWindow: public SkDialog<Ui::FlarmWindowClass>
 		void on_flarmMap_mouseLeft ();
 		void on_flarmMap_orientationChanged ();
 
+		void gpsTimeChanged (QDateTime gpsTime);
+
 		void linkActivated (const QString &link);
-
-
 		void updateWarnings ();
 
 	private:
 		GpsTracker *gpsTracker;
 		QStatusBar *statusBar;
 		QLabel *mousePositionLabel;
+		QLabel *gpsTimeLabel;
 		ObjectListModel<FlarmRecord> *objectListModel;
 };
 

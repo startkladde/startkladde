@@ -35,6 +35,7 @@ class GpsTracker: public QObject
 		 * received for a given time.
 		 */
 		void positionChanged (const GeoPosition &position);
+		void gpsTimeChanged (QDateTime gpsTime);
 
 	public slots:
 		void gprmcSentence (const GprmcSentence &sentence);
