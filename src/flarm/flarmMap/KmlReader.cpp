@@ -13,6 +13,10 @@
 
 #include "src/util/qString.h"
 
+// Note that methods like QDomNode::firstChildElement return a null QDomElement
+// if there is no such element, and we can safely access the null element's
+// attributes.
+
 KmlReader::KmlReader ()
 {
 }
@@ -21,12 +25,8 @@ KmlReader::~KmlReader ()
 {
 }
 
-void KmlReader::readStyle (const QDomNode &styleNode)
+void KmlReader::readStyle (const QDomElement &styleElement)
 {
-	QDomElement styleElement=styleNode.toElement ();
-	if (styleElement.isNull ())
-		return;
-
 	QString styleId=styleElement.attribute ("id");
 
 	Kml::Style style;
@@ -40,12 +40,8 @@ void KmlReader::readStyle (const QDomNode &styleNode)
 	styles.insert (styleId, style);
 }
 
-void KmlReader::readStyleMap (const QDomNode &styleMapNode)
+void KmlReader::readStyleMap (const QDomElement &styleMapElement)
 {
-	QDomElement styleMapElement=styleMapNode.toElement ();
-	if (styleMapElement.isNull ())
-		return;
-
 	QString styleMapId=styleMapElement.attribute ("id");
 
 	Kml::StyleMap styleMap;
@@ -84,14 +80,16 @@ void KmlReader::readPath (const QString &name, const QString &styleUrl, const QD
 	 foreach (const QString &pointCoordinates, coordinatesElement.text ().trimmed ().split (" "))
 	 {
 		 QStringList parts=pointCoordinates.split (",");
-		 // FIXME only if exists
-		 double longitude=parts[0].toDouble ();
-		 double latitude =parts[1].toDouble ();
-		 GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
+		 if (parts.size ()>=2)
+		 {
+			 double longitude=parts[0].toDouble ();
+			 double latitude =parts[1].toDouble ();
+			 GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
 
-		 points.append (position);
+			 points.append (position);
 
-		 addToBoundingRect (position);
+			 addToBoundingRect (position);
+		 }
 	 }
 
 	 Kml::Path path;
@@ -117,14 +115,17 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 	foreach (const QString &pointCoordinates, coordinatesElemnt.text ().trimmed ().split (" "))
 	{
 		QStringList parts=pointCoordinates.split (",");
-		// FIXME only if exists
-		double longitude=parts[0].toDouble ();
-		double latitude =parts[1].toDouble ();
-		GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
+		if (parts.size ()>=2)
+		{
+			double longitude=parts[0].toDouble ();
+			double latitude =parts[1].toDouble ();
+			qDebug () << parts.size() << "parts in the coordinates:" << longitude << latitude;
+			GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
 
-		points.append (position);
+			points.append (position);
 
-		addToBoundingRect (position);
+			addToBoundingRect (position);
+		}
 	}
 
 	Kml::Polygon polygon;
@@ -138,47 +139,45 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 /**
  * A placemark is either a marker (LookAt element), a path (LineString element)
  * or a polygon (Polygon element).
- *
- * @param placemarkNode
  */
-void KmlReader::readPlacemark (const QDomNode &placemarkNode)
+void KmlReader::readPlacemark (const QDomElement &placemarkElement)
 {
-	// FIXME is it possible that the node is not an element?
-	 // FIXME only if it exists, or can we use it as a null element if not?
-	 QString placemarkName=placemarkNode.firstChildElement ("name").text ();
-	 QString styleUrl=placemarkNode.firstChildElement ("styleUrl").text ();
+	 QString placemarkName=placemarkElement.firstChildElement ("name").text ();
+	 QString styleUrl=placemarkElement.firstChildElement ("styleUrl").text ();
 
-	 QDomElement lookAtElement=placemarkNode.firstChildElement ("LookAt");
+	 QDomElement lookAtElement=placemarkElement.firstChildElement ("LookAt");
 	 if (!lookAtElement.isNull ())
 		 readMarker (placemarkName, styleUrl, lookAtElement);
 
-	 QDomElement lineStringElement=placemarkNode.firstChildElement ("LineString");
+	 QDomElement lineStringElement=placemarkElement.firstChildElement ("LineString");
 	 if (!lineStringElement.isNull ())
 		 readPath (placemarkName, styleUrl, lineStringElement);
 
-	 QDomElement polygonElement=placemarkNode.firstChildElement ("Polygon");
+	 QDomElement polygonElement=placemarkElement.firstChildElement ("Polygon");
 	 if (!polygonElement.isNull ())
 		 readPolygon (placemarkName, styleUrl, polygonElement);
 }
 
-// FIXME documentation
-// FIXME should also support LatLonQuad (non-rectangular quadrilaterals)
-void KmlReader::readGroundOverlay (const QDomNode &groundOverlayNode, const QDir &dir)
+// TODO should also support LatLonQuad (non-rectangular quadrilaterals), but
+// that is probably not easy to draw
+void KmlReader::readGroundOverlay (const QDomElement &groundOverlayElement, const QDir &dir)
 {
-	QString groundOverlayName=groundOverlayNode.firstChildElement ("name").text ();
+	QString groundOverlayName=groundOverlayElement.firstChildElement ("name").text ();
 
-	QDomElement colorElement=groundOverlayNode.firstChildElement ("color");
+	QDomElement colorElement=groundOverlayElement.firstChildElement ("color");
 	QColor color=Kml::parseColor (colorElement.text ());
 
-	QDomElement iconElement=groundOverlayNode.firstChildElement ("Icon");
+	QDomElement iconElement=groundOverlayElement.firstChildElement ("Icon");
 	QString filename=iconElement.firstChildElement ("href").text ();
 
-	QDomElement latLonBoxElement=groundOverlayNode.firstChildElement ("LatLonBox");
+	QDomElement latLonBoxElement=groundOverlayElement.firstChildElement ("LatLonBox");
 	double north=latLonBoxElement.firstChildElement ("north").text ().toDouble ();
 	double south=latLonBoxElement.firstChildElement ("south").text ().toDouble ();
 	double east =latLonBoxElement.firstChildElement ("east" ).text ().toDouble ();
 	double west =latLonBoxElement.firstChildElement ("west" ).text ().toDouble ();
-	double rotation=latLonBoxElement.firstChildElement ("rotation").text ().toDouble (); // FIXME set to 0 if not present
+	// If there is no rotation element, the string will be empty and toDouble
+	// will return 0.
+	double rotation=latLonBoxElement.firstChildElement ("rotation").text ().toDouble ();
 
 	Kml::GroundOverlay groundOverlay;
 	groundOverlay.name=groundOverlayName;
@@ -222,22 +221,22 @@ KmlReader::ReadResult KmlReader::read (const QString &filename)
 	 // DOM structure
 	 QDomNodeList placemarkNodes=document.elementsByTagName ("Placemark");
 	 for (int i=0, n=placemarkNodes.size (); i<n; ++i)
-		 readPlacemark (placemarkNodes.at (i));
+		 readPlacemark (placemarkNodes.at (i).toElement ());
 
 	 // Extract the ground overlays
 	 QDomNodeList groundOverlayNodes=document.elementsByTagName ("GroundOverlay");
 	 for (int i=0, n=groundOverlayNodes.size (); i<n; ++i)
-		 readGroundOverlay (groundOverlayNodes.at (i), QFileInfo (filename).dir ());
+		 readGroundOverlay (groundOverlayNodes.at (i).toElement (), QFileInfo (filename).dir ());
 
 	 // Extract the styles from the DOM structure
 	 QDomNodeList styleNodes=document.elementsByTagName ("Style");
 	 for (int i=0, n=styleNodes.size (); i<n; ++i)
-		 readStyle (styleNodes.at (i));
+		 readStyle (styleNodes.at (i).toElement ());
 
 	 // Extract the style maps from the DOM structure
 	 QDomNodeList styleMapNodes=document.elementsByTagName ("StyleMap");
 	 for (int i=0, n=styleMapNodes.size (); i<n; ++i)
-		 readStyleMap (styleMapNodes.at (i));
+		 readStyleMap (styleMapNodes.at (i).toElement ());
 
 	 return readOk;
 }

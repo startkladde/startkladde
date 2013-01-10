@@ -10,7 +10,6 @@
 #include "src/flarm/flarmMap/Kml.h"
 #include "src/numeric/GeoPosition.h"
 
-class QDomNode;
 class QDomElement;
 
 /**
@@ -50,14 +49,14 @@ class KmlReader
 	private:
 		void addToBoundingRect (const GeoPosition &position);
 
-		void readStyle    (const QDomNode &styleNode);
-		void readStyleMap (const QDomNode &styleMapNode);
+		void readStyle    (const QDomElement &styleElement);
+		void readStyleMap (const QDomElement &styleMapelement);
 
-		void readPlacemark (const QDomNode &placemarkNode);
+		void readPlacemark (const QDomElement &placemarkElement);
 		void readMarker  (const QString &name, const QString &styleUrl, const QDomElement &lookAtElement);
 		void readPath    (const QString &name, const QString &styleUrl, const QDomElement &lineStringElement);
 		void readPolygon (const QString &name, const QString &styleUrl, const QDomElement &polygonElement);
-		void readGroundOverlay (const QDomNode &groundOverlayNode, const QDir &dir);
+		void readGroundOverlay (const QDomElement &groundOverlayElement, const QDir &dir);
 };
 
 #endif
