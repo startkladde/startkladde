@@ -512,6 +512,10 @@ template<class T> ObjectListWindow<T> *ObjectListWindow<T>::create (DbManager &m
 	return new ObjectListWindow<T> (manager, parent);
 }
 
+template<class T> void ObjectListWindow<T>::refreshColumn (int column)
+{
+	listModel->refreshColumn (column);
+}
 
 // **********************************
 // ** Create method specialization **
@@ -536,3 +540,4 @@ template<> ObjectListWindow<Person> *ObjectListWindow<Person>::create (DbManager
 template class ObjectListWindow<Plane>;
 template class ObjectListWindow<Person>;
 template class ObjectListWindow<LaunchMethod>;
+
