@@ -5,6 +5,8 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GprmcSentence.h"
 
+const int defaultTimeoutMilliseconds=4000; // Update documentation: setTimeout()
+
 /**
  * Creates a GpsTracker instance
  *
@@ -15,7 +17,7 @@ GpsTracker::GpsTracker (QObject *parent): QObject (parent),
 	nmeaDecoder (NULL)
 {
 	timer=new QTimer (this); // Will be deleted by its parent (this)
-	timer->setInterval (4000); // FIXME! configurable? At least symbolic constant.
+	timer->setInterval (defaultTimeoutMilliseconds);
 	connect (timer, SIGNAL (timeout ()), this, SLOT (timeout ()));
 }
 
@@ -43,6 +45,17 @@ void GpsTracker::setNmeaDecoder (NmeaDecoder *nmeaDecoder)
 	{
 		connect (this->nmeaDecoder, SIGNAL (gprmcSentence (const GprmcSentence &)), this, SLOT (gprmcSentence (const GprmcSentence &)));
 	}
+}
+
+/**
+ * Sets the timeout (in milliseconds)
+ *
+ * After the timeout, the own position will be set to invalid. The default
+ * timeout is 4000 milliseconds.
+ */
+void GpsTracker::setTimeout (int milliseconds)
+{
+	timer->setInterval (4000);
 }
 
 /**

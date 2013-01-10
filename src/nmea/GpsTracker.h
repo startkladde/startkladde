@@ -24,6 +24,8 @@ class GpsTracker: public QObject
 
 		void setNmeaDecoder (NmeaDecoder *nmeaDecoder);
 
+		void setTimeout (int milliseconds);
+
 		GeoPosition getPosition () const;
 		QDateTime getGpsTime () const;
 
