@@ -96,15 +96,19 @@ EntityList<Flight> Cache::getPreparedFlights (bool includeTowflights)
 
 EntityList<Flight> Cache::getFlyingFlights (bool includeTowflights)
 {
-	// FIXME must also consider coming prepared flights
-	// Don't directly access the preparedFlights property - the access must be
-	// synchronized.
+	// Add flying flights to the list. Prepared flights can also be flying if
+	// their mode is "coming". Don't directly access the preparedFlights
+	// property - the access must be synchronized. We don't add the towflights
+	// for prepared flights - coming flights don't have a launch method, and
+	// therefore no towflights.
 
+	QList<Flight> candidates;
+	candidates.append (getFlightsToday    (includeTowflights).getList ());
+	candidates.append (getPreparedFlights (false            ).getList ());
+
+	// Only keep flying flights
 	EntityList<Flight> result;
-
-	// Add flying flights to the list
-	QList<Flight> flightsToday=getFlightsToday (includeTowflights).getList ();
-	foreach (const Flight &flight, flightsToday)
+	foreach (const Flight &flight, candidates)
 		if (flight.isFlying ())
 			result.append (flight);
 
