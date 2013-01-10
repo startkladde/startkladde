@@ -119,7 +119,6 @@ void KmlReader::readPolygon (const QString &name, const QString &styleUrl, const
 		{
 			double longitude=parts[0].toDouble ();
 			double latitude =parts[1].toDouble ();
-			qDebug () << parts.size() << "parts in the coordinates:" << longitude << latitude;
 			GeoPosition position=GeoPosition::fromDegrees (latitude, longitude);
 
 			points.append (position);
