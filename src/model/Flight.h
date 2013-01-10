@@ -76,9 +76,9 @@ class Flight: public FlightBase
 
 
 		// *** Status
-		// TODO fliegt and isFlying are probably not correct
+		// FIXME get rid of "fliegt"
 		virtual bool fliegt () const { return happened () && !finished (); }
-		virtual bool isFlying () const { return departsHere () && landsHere () && getDeparted () && !getLanded (); }
+		virtual bool isFlying () const;
 		virtual bool sfz_fliegt () const { return happened () && !getTowflightLanded (); }
 //		TODO: !((departs_here and departed) or (lands_here and landed))
 		virtual bool isPrepared () const { return !happened (); }

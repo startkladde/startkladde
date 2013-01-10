@@ -156,6 +156,11 @@ bool Flight::finished () const
 		return (landsHere ()?getLanded ():getDeparted ());
 }
 
+bool Flight::isFlying () const
+{
+	return landsHere () && !getLanded ();
+}
+
 
 // **********
 // ** Crew **
@@ -234,7 +239,11 @@ bool Flight::isAirtow (Cache &cache) const
 {
 	try
 	{
-		if (idInvalid (getLaunchMethodId ())) return false;
+		if (!departsHere ())
+			return false;
+
+		if (idInvalid (getLaunchMethodId ()))
+			return false;
 
 		LaunchMethod launchMethod=cache.getObject<LaunchMethod> (getLaunchMethodId ());
 		return launchMethod.isAirtow ();
@@ -1304,3 +1313,4 @@ void Flight::databaseChanged (const DbEvent &event) const
 		// No default - compiler warning on unhandled case
 	}
 }
+
