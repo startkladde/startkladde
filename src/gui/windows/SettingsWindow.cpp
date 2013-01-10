@@ -35,6 +35,7 @@
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"
+#include "src/util/fileSystem.h"
 #include "src/util/qString.h"
 #include "src/util/qList.h"
 #include "src/gui/dialogs.h"
@@ -519,11 +520,13 @@ void SettingsWindow::on_browseWeatherWindowCommandButton_clicked ()
 
 void SettingsWindow::on_browseKmlFileButton_clicked ()
 {
-	// FIXME if already set, use that directory
+	QString currentFileName=ui.flarmMapKmlFileNameInput->text ();
+
+
 	QString fileName=QFileDialog::getOpenFileName (
 		this,
 		tr ("Select KML file"),
-		".",
+		existingParentDirectory (currentFileName, QDir ()).absolutePath (),
 		notr ("*.kml"),
 		NULL,
 		0
