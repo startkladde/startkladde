@@ -139,17 +139,18 @@ QList<FlarmNetRecord> FlarmNetRecord::createListFromResult (Result &result)
 // ** Conversion **
 // ****************
 
-Plane FlarmNetRecord::toPlane () const
+Plane FlarmNetRecord::toPlane (bool guessCategory) const
 {
 	Plane plane;
 
-	plane.registration=registration;
-	plane.club=owner;
-	plane.numSeats=-1;
-	plane.type=type;
-	plane.category=Plane::categoryFromRegistration (registration);
-	plane.callsign=callsign;
-	plane.flarmId=flarmId;
+	plane.registration = registration;
+	plane.club         = owner;
+	plane.type         = type;
+	plane.callsign     = callsign;
+	plane.flarmId      = flarmId;
+
+	if (guessCategory)
+		plane.category = Plane::categoryFromRegistration (registration);
 
 	return plane;
 }

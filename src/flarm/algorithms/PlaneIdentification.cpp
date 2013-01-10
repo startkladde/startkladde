@@ -159,7 +159,7 @@ dbId PlaneIdentification::interactiveCreatePlane (const FlarmNetRecord &flarmNet
 	paneData.flarmIdReadOnly=true;
 
 	return ObjectEditorWindow<Plane>::createObjectPreset (parent,
-		dbManager, flarmNetRecord.toPlane (), &paneData, NULL);
+		dbManager, flarmNetRecord.toPlane (true), &paneData, NULL);
 }
 
 /**

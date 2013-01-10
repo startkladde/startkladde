@@ -50,7 +50,7 @@ class FlarmNetRecord: public Entity
 		static QList<FlarmNetRecord> createListFromResult (Result &query);
 
 		// *** Conversion
-		Plane toPlane () const;
+		Plane toPlane (bool guessCategory) const;
 
 	private:
 		void initialize ();

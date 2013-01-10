@@ -96,6 +96,7 @@ void FlarmNetWindow::searchTextChanged (const QString& search) {
 
 void FlarmNetWindow::on_flarmNetTable_customContextMenuRequested (const QPoint &pos)
 {
+	// TODO the position seems to be off
 	contextMenu->popup (ui.flarmNetTable->mapToGlobal (pos), 0);
 }
 
@@ -106,18 +107,10 @@ void FlarmNetWindow::on_createPlaneAction_triggered ()
 
 	FlarmNetRecord record=objectListModel->at (sourceIndex.row ());
 
-	// FIXME use record.toPlane
-	Plane preset;
-	preset.registration=record.registration;
-	preset.club        =record.owner;
-	preset.type        =record.type;
-	preset.numSeats    =-1; // Unknown
-	//preset.category
-	preset.callsign    =record.callsign;
-	preset.flarmId     =record.flarmId;
-	preset.comments    ="Created from FlarmNet record";
+	Plane preset=record.toPlane (true);
+	preset.comments=tr ("Created from FlarmNet record");
 
-	// FIXME don't create if a plane with that registration already exists; offer to update instead
-	// FIXME the category isn't guessed until the user changes the focus
+	// TODO if a plane with that registration already exists, offer to update it
+	// instead.
 	ObjectEditorWindow<Plane>::createObjectPreset (this, dbManager, preset, NULL, NULL);
 }
