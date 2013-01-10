@@ -199,7 +199,7 @@ void FlightTableView::languageChanged ()
 {
 	// See the FlightModel class documentation
 	_flightModel->updateTranslations ();
-	_flightListModel->reset ();
+	_flightListModel->refreshAll ();
 }
 
 
@@ -221,7 +221,7 @@ void FlightTableView::minuteChanged ()
 		dynamic_cast<TableButton *> (QApplication::focusWidget ()));
 
 	int durationColumn=_flightModel->durationColumn ();
-	_flightListModel->columnChanged (durationColumn);
+	_flightListModel->refreshColumn (durationColumn);
 
 	// TODO why do we do this? Is it still required?
 	setCurrentIndex (oldIndex);

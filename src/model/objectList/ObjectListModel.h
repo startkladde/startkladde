@@ -89,8 +89,8 @@ template<class T> class ObjectListModel: public ObjectListModelBase
 		virtual void modelDestroyed ();
 
 		// Other changes
-		virtual void columnChanged (int column);
-		virtual void reset () { QAbstractTableModel::reset (); } // FIXME what we need is allColumnsChanged, but rename them to refreshXxx
+		virtual void refreshColumn (int column);
+		virtual void refreshAll ();
 
 		virtual int mapToSource (const QModelIndex &index);
 		virtual QModelIndex mapFromSource (int sourceIndex, int column);
@@ -352,10 +352,22 @@ template<class T> void ObjectListModel<T>::listDataChanged (const QModelIndex &t
  *
  * @param column the number of the column; must be >=0 and <columnCount
  */
-template<class T> void ObjectListModel<T>::columnChanged (int column)
+template<class T> void ObjectListModel<T>::refreshColumn (int column)
 {
 	QModelIndex topLeft=createIndex (0, column);
 	QModelIndex bottomRight=createIndex (rowCount ()-1, column);
+
+	emit dataChanged (topLeft, bottomRight);
+}
+
+/**
+ * Emits a change of all values. This may be useful to refresh the data when
+ * something fundamental changes, for example the program language.
+ */
+template<class T> void ObjectListModel<T>::refreshAll ()
+{
+	QModelIndex topLeft=createIndex (0, 0);
+	QModelIndex bottomRight=createIndex (rowCount ()-1, columnCount () -1);
 
 	emit dataChanged (topLeft, bottomRight);
 }
