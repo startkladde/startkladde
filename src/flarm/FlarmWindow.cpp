@@ -46,8 +46,6 @@ FlarmWindow::FlarmWindow (QWidget *parent): SkDialog<Ui::FlarmWindowClass> (pare
 	connect (ui.flarmMap, SIGNAL (showMessage (QString)), statusBar, SLOT (showMessage (const QString &)));
 	connect (ui.flarmMap, SIGNAL (clearMessage ()), statusBar, SLOT (clearMessage ()));
 
-	// FIXME load default orientation
-
 	// Setup the table
 	ui.flarmTable->resizeColumnsToContents ();
 	ui.flarmTable->resizeRowsToContents ();
@@ -135,7 +133,7 @@ void FlarmWindow::setFlarmList (FlarmList *flarmList)
 	ObjectListModel<FlarmRecord> *objectListModel = new ObjectListModel<FlarmRecord> (objectList, false,
 			objectModel, true, this);
 
-	// FIXME create & set the proxy model in the constructor
+	// FIXME! create & set the proxy model in the constructor
 	// Set the list model as the table's model with a sort proxy
 	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel (this);
 	proxyModel->setSourceModel (objectListModel);
@@ -237,12 +235,11 @@ void FlarmWindow::linkActivated (const QString &link)
 
 void FlarmWindow::updateWarnings ()
 {
-	// FIXME test all cases
-	// FIXME proper messages
-	// FIXME is it possible that by moving the origin out of the window, the
-	// layout changes in such a way that the origin is moved in again?
-	// => yes, move it out to the right or left, when the widget is wider than
-	//    high
+	// FIXME! test all cases
+	// Note that it is possible that by moving the origin out of the window,
+	// the layout changes in a way such that the origin is moved inside the
+	// window again: move the origin out of the shorter side of the widget. In
+	// this case, it layout oscillates. TODO can we do something about that?
 
 	switch (ui.flarmMap->getKmlStatus ())
 	{

@@ -41,7 +41,6 @@
 #include "src/db/DbManager.h"
 #include "src/io/dataStream/TcpDataStream.h"
 #include "src/gui/SkMainWindow.h"
-//#include "src/flarm/FlarmRecord.h" // FIXME replace with forward declaration if possible
 #include "src/model/FlightBase.h"
 #include "src/flarm/algorithms/FlightLookup.h" // For FlightLookup::Result
 #include "src/FlightReference.h"
@@ -313,11 +312,10 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		QString debugFlarmId;
 //		bool flarmStreamValid;
 
-		// TODO: This is used for Flarm and should be integrated with the Flarm
-		// handling (e. g. receive signals from the flight controller).
-		// TODO this must be called whenever the respective action is performed,
-		// this stinks.
-		// FIXME must also handle flights departed/landed "now" when created
+		// TODO: This is only used for Flarm and should be integrated with the
+		// Flarm handling (e. g. receive signals from the flight controller).
+		// TODO this must be called whenever the respective action is
+		// performed, this stinks.
 		// TODO should also handle manual edits
 		EventTimeTracker departureTracker;
 		EventTimeTracker landingTracker;

@@ -89,7 +89,7 @@ void PersonListWindow::displayMedicalDataAction_triggered ()
 		personModel->setDisplayMedicalData (false);
 	}
 
-	// FIXME refresh the model
+	// FIXME! refresh the model
 }
 
 void PersonListWindow::mergeAction_triggered ()

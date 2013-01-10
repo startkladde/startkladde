@@ -26,8 +26,6 @@ QVariant FlarmRecordModel::displayHeaderData (int column) const
 {
 	switch (column)
 	{
-		// This does not use tr() because ObjectModel is not a QObject.
-		// FIXME this note is relevant for other classes, add it there.
 		case 0: return qApp->translate ("FlarmRecordModel", "Flarm ID"); break;
 		case 1: return qApp->translate ("FlarmRecordModel", "Registration"); break;
 		case 2: return qApp->translate ("FlarmRecordModel", "Altitude"); break;

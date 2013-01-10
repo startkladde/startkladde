@@ -43,9 +43,6 @@ FlarmRecord::~FlarmRecord ()
 // ** Properties **
 // ****************
 
-// FIXME when setRegistration and setCategory are called, we must update the
-// model views
-
 void FlarmRecord::setRegistration (const QString &registration)
 {
 	this->registration=registration;

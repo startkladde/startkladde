@@ -32,7 +32,7 @@ class FlarmRecord: public QObject
 		Q_OBJECT
 
 	public:
-		// FIXME temporary, remove after FlarmList is fully implemented
+		// FIXME! temporary, remove after FlarmList is fully implemented
 		friend class FlarmList;
 
 		// Types

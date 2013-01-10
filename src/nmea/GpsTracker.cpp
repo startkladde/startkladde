@@ -15,7 +15,7 @@ GpsTracker::GpsTracker (QObject *parent): QObject (parent),
 	nmeaDecoder (NULL)
 {
 	timer=new QTimer (this); // Will be deleted by its parent (this)
-	timer->setInterval (4000); // FIXME configurable? At least symbolic constant.
+	timer->setInterval (4000); // FIXME! configurable? At least symbolic constant.
 	connect (timer, SIGNAL (timeout ()), this, SLOT (timeout ()));
 }
 

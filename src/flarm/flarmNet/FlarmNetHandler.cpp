@@ -70,7 +70,7 @@ void FlarmNetHandler::interactiveImport (const QByteArray &data)
 			+tr (" Do you want to import the records into the database? This"
 			" will remove all records and replace them with the new records.");
 	else
-		// FIXME test
+		// FIXME! test
 		message=tr ("%1 FlarmNet record(s) were found.", NULL, numGood).arg (numGood)
 			+tr ("Additionally, %1 invalid record(s) were found.", NULL, numBad).arg (numBad)
 			+tr (" Do you want to import the records into the database? This"

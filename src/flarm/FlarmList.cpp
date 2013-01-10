@@ -9,6 +9,9 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/flarm/flarmNet/FlarmNetRecord.h"
 
+// FIXME: the data structures (including FlarmRecord and this list) stink, we
+// should have a proper model/view/controller architecture
+
 // TODO: we have to take care not to let the list and the map get inconsistent.
 // We might want to encapsulate that, either in a base class or by placing the
 // modification stuff in a controller class.
@@ -111,7 +114,7 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 		}
 
                                                                                                         
-		// FIXME
+		// FIXME! enable or remove
 		//		// try get info from flarmnet database
 		//		/*
 		//		 FlarmNetRecord* flarmnet_record = FlarmNetDb::getInstance()->getData (flarmid);
@@ -194,8 +197,7 @@ const FlarmRecord &FlarmList::at (int index) const
 
 QList<FlarmRecord> FlarmList::getList () const
 {
-	// FIXME we cannot implement this because we cannot store FlarmRecord in a
-	// Qt container. This list stores pointer to FlarmRecord. Get rid of
-	// AbstractObjectList::getList
+	// We cannot implement this because we cannot store FlarmRecord in a
+	// Qt container. This list stores pointer to FlarmRecord.
 	assert (!"Not supported");
 }

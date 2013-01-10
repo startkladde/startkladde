@@ -110,8 +110,8 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	ui.setupUi (this);
 
 	// Create and setup the advanced plane operations menu
-	// FIXME: show menu on button push, hide button when inappropriate,
-	// implement methods
+	// FIXME!: show menu on button push, hide button when inappropriate,
+	// implement methods (or remove the button)
 	advancedPlaneOperationsMenu=new QMenu (this);
 	advancedPlaneOperationsMenu->addAction (ui.lookupPlaneAction);
 	advancedPlaneOperationsMenu->addAction (ui.updateFlarmIdAction);
