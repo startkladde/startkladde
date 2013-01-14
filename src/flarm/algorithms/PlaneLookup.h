@@ -17,6 +17,9 @@ class Plane;
  *   2. The Flarm ID matches the Flarm ID of a FlarmNet record whose
  *      registration matches the registration of a plane
  *
+ * Usage:
+ *   PlaneLookup::Result result=PlaneLookup (cache).lookupPlane (flarmId);
+ *
  * Note that plane lookup is not the same thing as plane identification. The
  * difference is explained in the documentation of the PlaneIdentification
  * class.

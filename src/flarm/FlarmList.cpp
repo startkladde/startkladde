@@ -3,10 +3,11 @@
 #include <cassert>
 #include <iostream>
 
-#include "src/numeric/Velocity.h"
-#include "src/nmea/PflaaSentence.h"
-#include "src/util/qString.h"
 #include "src/nmea/NmeaDecoder.h"
+#include "src/nmea/PflaaSentence.h"
+#include "src/numeric/Velocity.h"
+#include "src/util/qString.h"
+#include "src/flarm/algorithms/PlaneLookup.h"
 #include "src/flarm/flarmNet/FlarmNetRecord.h"
 
 // FIXME: the data structures (including FlarmRecord and this list) stink, we
@@ -74,7 +75,7 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 
 	if (recordIndex.isValid ())
 	{
-		// A flarm record was found
+		// A Flarm record was found
 		flarmRecords[recordIndex.row ()]->processPflaaSentence (sentence);
 		QAbstractItemModel::dataChanged (recordIndex, recordIndex);
 	}
@@ -91,48 +92,21 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 
 		record->processPflaaSentence (sentence);
 
-		// try get info from flarmnet database
-		dbId flarmNetRecordId = dbManager->getCache ().getFlarmNetRecordIdByFlarmId (sentence.flarmId);  
-		if (idValid (flarmNetRecordId)) {
-                	FlarmNetRecord* flarmNetRecord = new FlarmNetRecord (dbManager->getCache().getObject<FlarmNetRecord> (flarmNetRecordId));
-                	QString registration = flarmNetRecord->registration;
-                	//qDebug () << "registration: " << registration << endl;    
-                	record->setRegistration (flarmNetRecord->registration);
-                	record->setFrequency (flarmNetRecord->frequency);
-                	delete flarmNetRecord;
-
-		}
-
-		// Try to get the registration from own database, FlarmNet may be unreliable
-		Plane *plane;
-		dbId planeId = dbManager->getCache ().getPlaneIdByFlarmId (sentence.flarmId);
-		if (idValid (planeId))
+		// Let's see if we can find out anything about this plane
+		PlaneLookup::Result result=PlaneLookup (dbManager->getCache ()).lookupPlane (sentence.flarmId);
+		if (result.plane.isValid ())
 		{
-			plane = dbManager->getCache ().getNewObject<Plane> (planeId);
-			record->setRegistration (plane->registration);
-			record->setCategory (plane->category);
-		}
+			record->setRegistration (result.plane.getValue ().registration);
+			record->setCategory (result.plane.getValue ().category);
 
-                                                                                                        
-		// FIXME! enable or remove
-		//		// try get info from flarmnet database
-		//		/*
-		//		 FlarmNetRecord* flarmnet_record = FlarmNetDb::getInstance()->getData (flarmid);
-		//		 if (flarmnet_record) {
-		//		 record->freq = flarmnet_record->freq;
-		//		 record->reg  = flarmnet_record->registration;
-		//		 }
-		//		 */
-		//
-		//		// Try to get the registration from own database
-		//		Plane *plane;
-		//		dbId planeId = dbManager->getCache ().getPlaneIdByFlarmId (flarmId);
-		//		if (idValid (planeId))
-		//		{
-		//			plane = dbManager->getCache ().getNewObject<Plane> (planeId);
-		//			record->setRegistration (plane->registration);
-		//			record->setCategory (plane->category);
-		//		}
+			if (result.flarmNetRecord.isValid ())
+				record->setFrequency (result.flarmNetRecord.getValue ().frequency);
+		}
+		else if (result.flarmNetRecord.isValid ())
+		{
+			record->setRegistration (result.flarmNetRecord.getValue ().registration);
+			record->setFrequency (result.flarmNetRecord.getValue ().frequency);
+		}
 
 		// FIXME separate method for adding/removing, updating the cache
 		// Add it to the list and hash
@@ -149,7 +123,7 @@ void FlarmList::pflaaSentence (const PflaaSentence &sentence)
 
 		QAbstractItemModel::endInsertRows ();
 
-		// FIXME when the flarm record changes, emit a signal, or only do changes
+		// FIXME when the Flarm record changes, emit a signal, or only do changes
 		// from here
 	}
 }
