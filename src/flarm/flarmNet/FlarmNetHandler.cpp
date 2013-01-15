@@ -5,13 +5,13 @@
 #include <QMessageBox>
 
 #include "src/text.h"
+#include "src/concurrent/monitor/OperationCanceledException.h"
 #include "src/concurrent/monitor/SignalOperationMonitor.h"
 #include "src/db/DbManager.h"
-#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/flarm/flarmNet/FlarmNetFile.h"
+#include "src/flarm/flarmNet/FlarmNetRecord.h"
 #include "src/gui/windows/MonitorDialog.h"
-#include "src/concurrent/monitor/OperationCanceledException.h"
-
+#include "src/util/fileSystem.h"
 
 static const char *flarmNetFileUrl="http://www.flarmnet.org/files/data.fln";
 
@@ -20,7 +20,8 @@ static const char *flarmNetFileUrl="http://www.flarmnet.org/files/data.fln";
 // ****************************
 
 FlarmNetHandler::FlarmNetHandler (DbManager &dbManager, QWidget *parent): QObject (parent),
-	parent (parent), dbManager (dbManager), operationMonitorInterface (NULL)
+	parent (parent), dbManager (dbManager), operationMonitorInterface (NULL),
+	downloadSuccess (false), downloadAborted (false), downloadFailure (false)
 {
 	monitor=new SignalOperationMonitor ();
 	downloader.connectSignals (this);
@@ -62,7 +63,7 @@ void FlarmNetHandler::interactiveImport (QList<FlarmNetRecord> &records)
 void FlarmNetHandler::interactiveImport (const QByteArray &data)
 {
 	int numGood=0, numBad=0;
-	QList<FlarmNetRecord> records=FlarmNetFile::createRecordsFromFile (data, &numGood, &numBad);
+	QList<FlarmNetRecord> records=FlarmNetFile::createRecords (data, &numGood, &numBad);
 
 	QString message;
 	if (numBad==0)
@@ -70,9 +71,8 @@ void FlarmNetHandler::interactiveImport (const QByteArray &data)
 			+tr (" Do you want to import the records into the database? This"
 			" will remove all records and replace them with the new records.");
 	else
-		// FIXME! test
 		message=tr ("%1 FlarmNet record(s) were found.", NULL, numGood).arg (numGood)
-			+tr ("Additionally, %1 invalid record(s) were found.", NULL, numBad).arg (numBad)
+			+tr (" Additionally, %1 invalid record(s) were found.", NULL, numBad).arg (numBad)
 			+tr (" Do you want to import the records into the database? This"
 			" will remove all records and replace them with the new records."
 			" The invalid entries will be ignored.");
@@ -171,4 +171,88 @@ void FlarmNetHandler::finishProgress ()
 	// "ended" automatically.
 	delete operationMonitorInterface;
 	operationMonitorInterface=NULL;
+}
+
+void FlarmNetHandler::interactiveDecodeFile ()
+{
+	// Get the input file name
+	QString inputFileName=QFileDialog::getOpenFileName (parent, "Open FlarmNet file");
+	if (inputFileName.isEmpty ()) return;
+
+	// Open the input file
+	QFile inputFile (inputFileName);
+	if (!inputFile.open (QIODevice::ReadOnly))
+	{
+		QMessageBox::warning (parent, tr ("Error opening input file"), inputFile.errorString ());
+		return;
+	}
+
+	// Get the output file name
+	// TODO use directory of input file
+	QString outputFileName=QFileDialog::getSaveFileName (parent, "Save decoded FlarmNet file");
+	if (outputFileName.isEmpty ()) return;
+
+	// Open the output file
+	QFile outputFile (outputFileName);
+	if (!outputFile.open (QIODevice::WriteOnly))
+	{
+		QMessageBox::warning (parent, tr ("Error opening output file"), outputFile.errorString ());
+		return;
+	}
+
+	// Both files are now open
+	decode (inputFile, outputFile);
+}
+
+void FlarmNetHandler::interactiveEncodeFile ()
+{
+	// Get the input file name
+	QString inputFileName=QFileDialog::getOpenFileName (parent, "Open decoded FlarmNet file");
+	if (inputFileName.isEmpty ()) return;
+
+	// Open the input file
+	QFile inputFile (inputFileName);
+	if (!inputFile.open (QIODevice::ReadOnly))
+	{
+		QMessageBox::warning (parent, tr ("Error opening input file"), inputFile.errorString ());
+		return;
+	}
+
+	// Get the output file name
+	// TODO use directory of input file
+	QString outputFileName=QFileDialog::getSaveFileName (parent, "Save FlarmNet file");
+	if (outputFileName.isEmpty ()) return;
+
+	// Open the output file
+	QFile outputFile (outputFileName);
+	if (!outputFile.open (QIODevice::WriteOnly))
+	{
+		QMessageBox::warning (parent, tr ("Error opening output file"), outputFile.errorString ());
+		return;
+	}
+
+	// Both files are now open
+	encode (inputFile, outputFile);
+}
+
+/**
+ * Both files must already be open
+ */
+void FlarmNetHandler::decode (QFile &inputFile, QFile &outputFile)
+{
+	QByteArray rawData=inputFile.readAll ();
+	QStringList lines=FlarmNetFile::decodeRawFile (rawData);
+	QString decodedData=lines.join ("\n");
+	outputFile.write (decodedData.toUtf8 ());
+}
+
+/**
+ * Both files must already be open
+ */
+void FlarmNetHandler::encode (QFile &inputFile, QFile &outputFile)
+{
+	QString data=QString::fromUtf8 (inputFile.readAll ());
+	QStringList lines=data.split ('\n');
+	QByteArray rawData=FlarmNetFile::encodeFileRaw (lines);
+	outputFile.write (rawData);
 }

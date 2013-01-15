@@ -213,6 +213,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_lookupPlaneAction_triggered ();
 		void on_lookupFlightAction_triggered ();
 		void on_showNotificationAction_triggered ();
+		void on_decodeFlarmNetFileAction_triggered ();
+		void on_encodeFlarmNetFileAction_triggered ();
 
 		// Menu: Help
 		void on_actionInfo_triggered ();

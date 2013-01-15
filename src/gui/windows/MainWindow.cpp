@@ -77,6 +77,7 @@
 #include "src/flarm/algorithms/FlarmIdUpdate.h"
 #include "src/gui/windows/input/ChoiceDialog.h"
 #include "src/flarm/Flarm.h"
+#include "src/flarm/flarmNet/FlarmNetHandler.h"
 
 template <class T> class MutableObjectList;
 
@@ -2721,4 +2722,14 @@ QString MainWindow::determineFlarmId (dbId flightId, bool ofTowflight)
 	catch (Cache::NotFoundException &ex) {}
 
 	return QString ();
+}
+
+void MainWindow::on_decodeFlarmNetFileAction_triggered ()
+{
+	FlarmNetHandler (dbManager, this).interactiveDecodeFile ();
+}
+
+void MainWindow::on_encodeFlarmNetFileAction_triggered ()
+{
+	FlarmNetHandler (dbManager, this).interactiveEncodeFile ();
 }

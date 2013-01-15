@@ -6,12 +6,15 @@
 
 #include "src/net/Downloader.h"
 
+class QByteArray;
+class QFile;
+class QWidget;
+
 class DbManager;
 class FlarmNetRecord;
-class QByteArray;
-class SignalOperationMonitor;
 class MonitorDialog;
 class OperationMonitorInterface;
+class SignalOperationMonitor;
 
 class FlarmNetHandler: public QObject
 {
@@ -26,9 +29,16 @@ class FlarmNetHandler: public QObject
 		void interactiveImportFromFile ();
 		void interactiveImportFromWeb ();
 
+		// *** Converting
+		void interactiveDecodeFile ();
+		void interactiveEncodeFile ();
+
 	protected:
 		void interactiveImport (const QByteArray &data);
 		void interactiveImport (QList<FlarmNetRecord> &records);
+
+		void decode (QFile &inputFile, QFile &outputFile);
+		void encode (QFile &inputFile, QFile &outputFile);
 
 	protected slots:
 		void downloadSucceeded (int state, QNetworkReply *reply);
@@ -42,7 +52,7 @@ class FlarmNetHandler: public QObject
 		DbManager &dbManager;
 		Downloader downloader;
 
-		SignalOperationMonitor *monitor; // FIXME need this?
+		SignalOperationMonitor *monitor;
 		OperationMonitorInterface *operationMonitorInterface;
 
 		bool downloadSuccess;
