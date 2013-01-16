@@ -11,7 +11,7 @@
 //   * we can perform the layout automatically, by adding a geometryChanged
 //     event to NotificationWidget
 
-// FIXME! remove automatically when deleted, and document
+// TODO remove widgets automatically when they are deleted (and document)
 
 /**
  * Creates a new NotificationsLayout without any notifications to lay out

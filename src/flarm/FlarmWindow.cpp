@@ -248,11 +248,11 @@ void FlarmWindow::linkActivated (const QString &link)
 
 void FlarmWindow::updateWarnings ()
 {
-	// FIXME! test all cases
 	// Note that it is possible that by moving the origin out of the window,
 	// the layout changes in a way such that the origin is moved inside the
-	// window again: move the origin out of the shorter side of the widget. In
-	// this case, it layout oscillates. TODO can we do something about that?
+	// window again: move the origin out of the widget to the side while the
+	// widget is wider than high. In this case, it layout oscillates. TODO can
+	// we do something about that?
 
 	switch (ui.flarmMap->getKmlStatus ())
 	{
