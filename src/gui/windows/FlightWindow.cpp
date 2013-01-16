@@ -67,7 +67,10 @@
  *     checking, the values are always read from the input widgets.
  */
 
-//using namespace std;
+// TODO:
+//   * we should have a way to perform plane identification (and potentially
+//     Flarm ID update) from this window, for example by a button that opens a
+//     menu next to the registration field
 
 // ***************
 // ** Constants **
@@ -108,13 +111,6 @@ FlightWindow::FlightWindow (QWidget *parent, FlightWindow::Mode mode, DbManager 
 	selectedTowpilot (invalidId)
 {
 	ui.setupUi (this);
-
-	// Create and setup the advanced plane operations menu
-	// FIXME!: show menu on button push, hide button when inappropriate,
-	// implement methods (or remove the button)
-	advancedPlaneOperationsMenu=new QMenu (this);
-	advancedPlaneOperationsMenu->addAction (ui.lookupPlaneAction);
-	advancedPlaneOperationsMenu->addAction (ui.updateFlarmIdAction);
 
 	// Create, add and connect the "now" button
 	nowButton=new QPushButton (notr ("[Now]"));
