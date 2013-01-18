@@ -44,12 +44,12 @@ void TcpDataStream::setHost (const QString &host)
 	this->host=host;
 }
 
-void TcpDataStream::setPort (const uint16_t port)
+void TcpDataStream::setPort (uint16_t port)
 {
 	this->port=port;
 }
 
-void TcpDataStream::setTarget (const QString &host, const uint16_t port)
+void TcpDataStream::setTarget (const QString &host, uint16_t port)
 {
 	this->host=host;
 	this->port=port;
