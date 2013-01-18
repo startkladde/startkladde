@@ -3,6 +3,7 @@
 #include "src/config/Settings.h"
 #include "src/flarm/FlarmList.h"
 #include "src/io/dataStream/TcpDataStream.h"
+//#include "src/io/dataStream/SerialDataStream.h"
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 
@@ -13,6 +14,10 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	// Flarm stream
 	_dataStream=new TcpDataStream ();
 	_dataStream->setTarget ("localhost", 4711);
+
+//	SerialDataStream *dataStream=new SerialDataStream ();
+//	dataStream->setPort ("COM9", 19200);
+//	_dataStream=dataStream;
 
 	// NMEA decoder
 	_nmeaDecoder=new NmeaDecoder ();
@@ -85,3 +90,29 @@ bool Flarm::isDataValid ()
 
 GeoPosition Flarm::getPosition () const { return _gpsTracker->getPosition (); }
 QDateTime   Flarm::getGpsTime  () const { return _gpsTracker->getGpsTime  (); }
+
+
+// *********************
+// ** Connection type **
+// *********************
+
+QString Flarm::ConnectionType_toString (ConnectionType type)
+{
+	switch (type)
+	{
+		case noConnection     : return "none";
+		case serialConnection : return "serial";
+		case tcpConnection    : return "tcp";
+		// no default
+	}
+
+	return "unknown";
+}
+
+Flarm::ConnectionType Flarm::ConnectionType_fromString (const QString &string, ConnectionType defaultValue)
+{
+	if      (string=="none"  ) return noConnection;
+	else if (string=="serial") return serialConnection;
+	else if (string=="tcp"   ) return tcpConnection;
+	else                       return defaultValue;
+}
