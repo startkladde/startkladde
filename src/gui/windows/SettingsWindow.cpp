@@ -49,6 +49,9 @@ const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
 
+// FIXME! DOING implement Flarm connection settings:
+//   * write/read
+//   * hide fields depending on type
 
 // ******************
 // ** Construction **

@@ -3,8 +3,6 @@
  *   - allow setting some settings by both the config file and the command line
  */
 
-
-
 #include "Settings.h"
 
 #include <iostream>
@@ -235,9 +233,15 @@ void Settings::readSettings ()
 	checkMedicals =s.value (notr ("checkMedicals") , true            ).toBool ();
 	// Flarm
 	flarmEnabled         =s.value (notr("flarmEnabled"),           true   ).toBool ();
-	flarmAutoDepartures  =s.value (notr("flarmAutoDepartures"),    true   ).toBool ();
-	flarmDataViewable    =s.value (notr("flarmDataViewable"),      true   ).toBool ();
-	flarmMapKmlFileName  =s.value (notr("flarmMapKmlFileName"),    ""     ).toString ();
+	QString flarmConnectionTypeString=s.value (notr ("flarmConnectionType"  ), "").toString ();
+	flarmConnectionType  =Flarm::ConnectionType_fromString (flarmConnectionTypeString, Flarm::noConnection);
+	flarmSerialPort      =s.value (notr ("flarmSerialPort"      ), ""         ).toString ();
+	flarmSerialBaudRate  =s.value (notr ("flarmSerialBaudRate"  ), 19200      ).toInt    ();
+	flarmTcpHost         =s.value (notr ("flarmTcpHost"         ), "localhost").toString ();
+	flarmTcpPort         =s.value (notr ("flarmTcpPort"         ), 1024       ).toInt    ();
+	flarmAutoDepartures  =s.value (notr ("flarmAutoDepartures"  ), true       ).toBool   ();
+	flarmDataViewable    =s.value (notr ("flarmDataViewable"    ), true       ).toBool   ();
+	flarmMapKmlFileName  =s.value (notr ("flarmMapKmlFileName"  ), ""         ).toString ();
 	// FlarmNet
 	flarmNetEnabled      =s.value (notr("flarmNetEnabled"),        true   ).toBool ();
 	// Permissions
@@ -316,6 +320,11 @@ void Settings::writeSettings ()
 	s.setValue (notr ("checkMedicals") , checkMedicals );
 	// Flarm
 	s.setValue (notr ("flarmEnabled"         ), flarmEnabled       );
+	s.setValue (notr ("flarmConnectionType"  ), Flarm::ConnectionType_toString (flarmConnectionType));
+	s.setValue (notr ("flarmSerialPort"      ), flarmSerialPort);
+	s.setValue (notr ("flarmSerialBaudRate"  ), flarmSerialBaudRate);
+	s.setValue (notr ("flarmTcpHost"         ), flarmTcpHost);
+	s.setValue (notr ("flarmTcpPort"         ), flarmTcpPort);
 	s.setValue (notr ("flarmAutoDepartures"  ), flarmAutoDepartures);
 	s.setValue (notr ("flarmDataViewable"    ), flarmDataViewable  );
 	s.setValue (notr ("flarmMapKmlFileName"  ), flarmMapKmlFileName);

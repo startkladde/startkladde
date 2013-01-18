@@ -14,6 +14,7 @@
 
 #include "src/db/DatabaseInfo.h"
 #include "src/i18n/LanguageConfiguration.h"
+#include "src/flarm/Flarm.h"
 
 class InfoPlugin;
 
@@ -51,6 +52,11 @@ class Settings: public QObject
 		bool checkMedicals;
 		// Flarm
 		bool flarmEnabled;
+		Flarm::ConnectionType flarmConnectionType;
+		QString  flarmSerialPort;
+		int      flarmSerialBaudRate;
+		QString  flarmTcpHost;
+		uint16_t flarmTcpPort;
 		bool flarmAutoDepartures; // Also landings and touch-and-gos
 		bool flarmDataViewable;
 		QString flarmMapKmlFileName;
