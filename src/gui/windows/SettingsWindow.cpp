@@ -76,6 +76,13 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	ui.languageInput->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 	ui.languageInput->setLanguageItems (TranslationManager::instance ().listLanguages ());
 
+	// Populate the Flarm connection type list
+	foreach (Flarm::ConnectionType type, Flarm::ConnectionType_list ())
+	{
+		QString text=Flarm::ConnectionType_text (type);
+		ui.flarmConnectionTypeInput->addItem (text, type);
+	 }
+
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
 	// value to the plugin after editing it so the plugin settings dialog show

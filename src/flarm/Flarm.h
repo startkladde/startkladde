@@ -1,16 +1,17 @@
 #ifndef FLARM_H_
 #define FLARM_H_
 
-#include <QObject>
 #include <QDateTime>
+#include <QList>
+#include <QObject>
 
 #include "src/numeric/GeoPosition.h"
 
+class DataStream;
 class DbManager;
 class FlarmList;
 class GpsTracker;
 class NmeaDecoder;
-class DataStream;
 
 /**
  * A container for all non-GUI Flarm related functionality
@@ -24,6 +25,8 @@ class Flarm: public QObject
 		enum ConnectionType { noConnection, serialConnection, tcpConnection };
 		static QString        ConnectionType_toString   (ConnectionType type);
 		static ConnectionType ConnectionType_fromString (const QString &string, ConnectionType defaultValue);
+		static QString        ConnectionType_text       (ConnectionType type);
+		static QList<ConnectionType> ConnectionType_list ();
 
 		Flarm (QObject *parent, DbManager &dbManager);
 		virtual ~Flarm ();

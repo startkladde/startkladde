@@ -12,8 +12,10 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_open (false)
 {
 	// Flarm stream
-	_dataStream=new TcpDataStream ();
-	_dataStream->setTarget ("localhost", 4711);
+	TcpDataStream *dataStream=new TcpDataStream ();
+	dataStream=new TcpDataStream ();
+	dataStream->setTarget ("localhost", 4711);
+	_dataStream=dataStream;
 
 //	SerialDataStream *dataStream=new SerialDataStream ();
 //	dataStream->setPort ("COM9", 19200);
@@ -116,3 +118,28 @@ Flarm::ConnectionType Flarm::ConnectionType_fromString (const QString &string, C
 	else if (string=="tcp"   ) return tcpConnection;
 	else                       return defaultValue;
 }
+
+QString Flarm::ConnectionType_text (ConnectionType type)
+{
+	switch (type)
+	{
+		case noConnection     : return tr ("None");
+		case serialConnection : return tr ("Serial/USB/Bluetooth");
+		case tcpConnection    : return tr ("Network (TCP)");
+		// no default
+	}
+
+	return "unknown";
+}
+
+QList<Flarm::ConnectionType> Flarm::ConnectionType_list ()
+{
+	QList<ConnectionType> list;
+
+	list << noConnection;
+	list << serialConnection;
+	list << tcpConnection;
+
+	return list;
+}
+
