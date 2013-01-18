@@ -5,7 +5,7 @@
 
 // According to XCSoar's FlarmNetReader.cpp, FlarmNet files are "ISO-Latin-1,
 // which is kind of short-sighted". The number in the first line seems to be a
-// release version number.
+// release version number which is incremented on each change.
 
 
 // **********************
@@ -112,7 +112,7 @@ QStringList FlarmNetFile::decodeFile (const QString &encodedFile)
 	// Split the data into lines (also split on \r for robustness)
 	QStringList encodedLines=encodedFile.split (QRegExp ("[\r\n]"), QString::SkipEmptyParts);
 
-	// The first line is some kind of header, ignore it
+	// Ignore the header line
 	encodedLines.removeFirst ();
 
 	// Decode the (remaining) lines
