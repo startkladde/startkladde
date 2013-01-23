@@ -544,7 +544,7 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="flarmSerialBaudRateLabel">
             <property name="text">
              <string>Ba&amp;ud rate:</string>
             </property>
@@ -554,17 +554,17 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="label_8">
+           <widget class="QLabel" name="flarmTcpHostLabel">
             <property name="text">
              <string>&amp;Host:</string>
             </property>
             <property name="buddy">
-             <cstring>flarmNetworkHostInput</cstring>
+             <cstring>flarmTcpHostInput</cstring>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="flarmSerialPortLabel">
             <property name="text">
              <string>Po&amp;rt:</string>
             </property>
@@ -574,12 +574,12 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="label_9">
+           <widget class="QLabel" name="flarmTcpPortLabel">
             <property name="text">
              <string>Po&amp;rt:</string>
             </property>
             <property name="buddy">
-             <cstring>flarmNetworkPortInput</cstring>
+             <cstring>flarmTcpPortInput</cstring>
             </property>
            </widget>
           </item>
@@ -590,7 +590,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QComboBox" name="flarmConnectionTypeInput"/>
+              <widget class="SkComboBox" name="flarmConnectionTypeInput"/>
              </item>
              <item>
               <spacer name="horizontalSpacer_7">
@@ -609,7 +609,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QWidget" name="widget_8" native="true">
+           <widget class="QWidget" name="flarmSerialBaudRatePane" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <property name="margin">
               <number>0</number>
@@ -678,16 +678,16 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="flarmNetworkHostInput"/>
+           <widget class="QLineEdit" name="flarmTcpHostInput"/>
           </item>
           <item row="4" column="1">
-           <widget class="QWidget" name="widget_9" native="true">
+           <widget class="QWidget" name="flarmTcpPortPane" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <property name="margin">
               <number>0</number>
              </property>
              <item>
-              <widget class="QSpinBox" name="flarmNetworkPortInput">
+              <widget class="QSpinBox" name="flarmTcpPortInput">
                <property name="minimum">
                 <number>1</number>
                </property>
@@ -1391,8 +1391,8 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
   <tabstop>flarmConnectionTypeInput</tabstop>
   <tabstop>flarmSerialPortInput</tabstop>
   <tabstop>flarmSerialBaudRateInput</tabstop>
-  <tabstop>flarmNetworkHostInput</tabstop>
-  <tabstop>flarmNetworkPortInput</tabstop>
+  <tabstop>flarmTcpHostInput</tabstop>
+  <tabstop>flarmTcpPortInput</tabstop>
   <tabstop>flarmAutoDeparturesCheckbox</tabstop>
   <tabstop>flarmDataViewableCheckbox</tabstop>
   <tabstop>flarmMapKmlFileNameInput</tabstop>

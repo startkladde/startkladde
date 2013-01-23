@@ -26,6 +26,10 @@
 #include <QShowEvent>
 #include <QFileDialog>
 
+#include <QtAddOnSerialPort/serialportinfo.h>
+
+QT_USE_NAMESPACE_SERIALPORT
+
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/plugin/info/InfoPlugin.h"
@@ -49,9 +53,6 @@ const int    nameColumn=1;
 const int enabledColumn=2;
 const int  configColumn=3;
 
-// FIXME! DOING implement Flarm connection settings:
-//   * write/read
-//   * hide fields depending on type
 
 // ******************
 // ** Construction **
@@ -81,7 +82,23 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 	{
 		QString text=Flarm::ConnectionType_text (type);
 		ui.flarmConnectionTypeInput->addItem (text, type);
-	 }
+	}
+
+	// Populate the serial ports list
+	foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
+	{
+		// TODO also indicate .isBusy (); however: (a) don't indicate a port
+		// as busy if we're using it ourselves, and (b) update the list when
+		// the status of a port changes.
+		QString portName=portInfo.portName ();
+		QString portDescription=portInfo.description ();
+
+		QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
+
+		ui.flarmSerialPortInput->addItem (text);
+		// FIXME method in SkComboBox for setting both the value and the item data
+		ui.flarmSerialPortInput->setItemData (ui.flarmSerialPortInput->count ()-1, portName);
+	}
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -186,10 +203,17 @@ void SettingsWindow::readSettings ()
 	ui.recordTowpilotCheckbox->setChecked (s.recordTowpilot);
 	ui.checkMedicalsCheckbox ->setChecked (s.checkMedicals);
 	// Flarm
-	ui.flarmGroupBox              ->setChecked (s.flarmEnabled);
-	ui.flarmAutoDeparturesCheckbox->setChecked (s.flarmAutoDepartures);
-	ui.flarmDataViewableCheckbox  ->setChecked (s.flarmDataViewable);
-	ui.flarmMapKmlFileNameInput   ->setText    (s.flarmMapKmlFileName);
+	ui.flarmGroupBox              ->setChecked  (s.flarmEnabled);
+	ui.flarmConnectionTypeInput   ->setCurrentItemByItemData (
+	                                             s.flarmConnectionType, 0);
+	ui.flarmSerialPortInput       ->setEditText (s.flarmSerialPort);
+	ui.flarmSerialBaudRateInput   ->setEditText(QString::number (
+	                                             s.flarmSerialBaudRate));
+	ui.flarmTcpHostInput          ->setText     (s.flarmTcpHost);
+	ui.flarmTcpPortInput          ->setValue    (s.flarmTcpPort);
+	ui.flarmAutoDeparturesCheckbox->setChecked  (s.flarmAutoDepartures);
+	ui.flarmDataViewableCheckbox  ->setChecked  (s.flarmDataViewable);
+	ui.flarmMapKmlFileNameInput   ->setText     (s.flarmMapKmlFileName);
 	// FlarmNet
 	ui.flarmNetEnabledCheckbox    ->setChecked (s.flarmNetEnabled);
 	// Permissions
@@ -271,6 +295,12 @@ void SettingsWindow::writeSettings ()
 	s.checkMedicals =ui.checkMedicalsCheckbox ->isChecked ();
 	// Flarm
 	s.flarmEnabled	     =ui.flarmGroupBox              ->isChecked ();
+	s.flarmConnectionType=(Flarm::ConnectionType)
+	                      ui.flarmConnectionTypeInput   ->currentItemData ().toInt ();
+	s.flarmSerialPort    =ui.flarmSerialPortInput       ->currentText ();
+	s.flarmSerialBaudRate=ui.flarmSerialBaudRateInput   ->currentText ().toInt ();
+	s.flarmTcpHost       =ui.flarmTcpHostInput          ->text ();
+	s.flarmTcpPort       =ui.flarmTcpPortInput          ->value ();
 	s.flarmAutoDepartures=ui.flarmAutoDeparturesCheckbox->isChecked ();
 	s.flarmDataViewable  =ui.flarmDataViewableCheckbox  ->isChecked ();
 	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput   ->text ();
@@ -687,6 +717,32 @@ void SettingsWindow::on_languageInput_activated (int index)
 }
 void SettingsWindow::updateWidgets ()
 {
+	// MySQL
 	ui.mysqlPortInput->setEnabled (!ui.mysqlDefaultPortCheckBox->isChecked ());
+
+	// Flarm
+	QVariant connectionTypeValue=ui.flarmConnectionTypeInput->currentItemData ();
+	Flarm::ConnectionType connectionType=(Flarm::ConnectionType)connectionTypeValue.toInt ();
+
+	ui.flarmSerialPortLabel    ->setVisible (connectionType==Flarm::serialConnection);
+	ui.flarmSerialPortInput    ->setVisible (connectionType==Flarm::serialConnection);
+	ui.flarmSerialBaudRateLabel->setVisible (connectionType==Flarm::serialConnection);
+	ui.flarmSerialBaudRatePane ->setVisible (connectionType==Flarm::serialConnection);
+
+	ui.flarmTcpHostLabel->setVisible (connectionType==Flarm::tcpConnection);
+	ui.flarmTcpHostInput->setVisible (connectionType==Flarm::tcpConnection);
+	ui.flarmTcpPortLabel->setVisible (connectionType==Flarm::tcpConnection);
+	ui.flarmTcpPortPane ->setVisible (connectionType==Flarm::tcpConnection);
 }
 
+
+void SettingsWindow::on_flarmConnectionTypeInput_activated (int index)
+{
+	(void)index;
+	updateWidgets ();
+}
+
+void SettingsWindow::on_flarmSerialPortInput_activated (int index)
+{
+	ui.flarmSerialPortInput->setEditText (ui.flarmSerialPortInput->itemData (index).toString ());
+}

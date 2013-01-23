@@ -3,29 +3,18 @@
 #include "src/config/Settings.h"
 #include "src/flarm/FlarmList.h"
 #include "src/io/dataStream/TcpDataStream.h"
-//#include "src/io/dataStream/SerialDataStream.h"
+#include "src/io/dataStream/SerialDataStream.h"
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 
 Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_dbManager (dbManager),
-	_open (false)
+	_dataStream (NULL), _open (false)
 {
-	// Flarm stream
-	TcpDataStream *dataStream=new TcpDataStream ();
-	dataStream=new TcpDataStream ();
-	dataStream->setTarget ("localhost", 4711);
-	_dataStream=dataStream;
-
-//	SerialDataStream *dataStream=new SerialDataStream ();
-//	dataStream->setPort ("COM9", 19200);
-//	_dataStream=dataStream;
-
 	// NMEA decoder
+	// The data stream will be created and connected to the NMEA decoder later,
+	// because the kind of stream may change.
 	_nmeaDecoder=new NmeaDecoder ();
-	connect (
-		_dataStream , SIGNAL (lineReceived (const QString &)),
-		_nmeaDecoder, SLOT   (lineReceived (const QString &)));
 
 	// GPS tracker
 	_gpsTracker=new GpsTracker (this);
@@ -57,10 +46,65 @@ void Flarm::setOpen (bool o)
 	updateOpen ();
 }
 
+template<class T> T *Flarm::ensureTypedDataStream ()
+{
+	T *typedDataStream=dynamic_cast<T *> (_dataStream);
+
+	if (!typedDataStream)
+	{
+		// Either there is no data stream, or it has the wrong type. Delete the
+		// old stream (if any), then create a new one with the correct type and
+		// store it in the class property.
+		delete _dataStream;
+		typedDataStream=new T ();
+		_dataStream=typedDataStream;
+	}
+
+	return typedDataStream;
+}
+
 void Flarm::updateOpen ()
 {
 	Settings &s=Settings::instance ();
-	_dataStream->setOpen (_open && s.flarmEnabled);
+
+	if (_open && s.flarmEnabled)
+	{
+		// Flarm stream
+		switch (s.flarmConnectionType)
+		{
+			case Flarm::noConnection:
+				// Delete the stream, if any. This will also disconnect its
+				// signals.
+				delete _dataStream;
+				_dataStream=NULL;
+				break;
+			case Flarm::serialConnection:
+				// FIXME! if the parameters changed, reopen the port (should be
+				// done in the data stream implementation?)
+				ensureTypedDataStream<SerialDataStream> ()->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
+				break;
+			case Flarm::tcpConnection:
+				// FIXME! if the parameters changed, reopen the port (should be
+				// done in the data stream implementation?)
+				ensureTypedDataStream<TcpDataStream> ()->setTarget (s.flarmTcpHost, s.flarmTcpPort);
+				break;
+		}
+
+		if (_dataStream)
+		{
+			connect (
+				_dataStream , SIGNAL (lineReceived (const QString &)),
+				_nmeaDecoder, SLOT   (lineReceived (const QString &)));
+
+			_dataStream->open ();
+		}
+	}
+	else
+	{
+		delete _dataStream;
+		_dataStream=NULL;
+	}
+
 }
 
 
@@ -71,7 +115,7 @@ void Flarm::updateOpen ()
 void Flarm::settingsChanged ()
 {
 	// The "Flarm enabled" setting may have changed, so we may have to open or
-	// close the connection
+	// close the connection. Same for the connection type and parameters.
 	updateOpen ();
 }
 

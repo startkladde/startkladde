@@ -1,7 +1,6 @@
 #include "NmeaDecoder.h"
 
 #include "src/io/dataStream/DataStream.h"
-
 #include "src/nmea/Nmea.h"
 #include "src/nmea/GprmcSentence.h"
 #include "src/nmea/PflaaSentence.h"

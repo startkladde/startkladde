@@ -109,9 +109,10 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 	ui.flightTable->init (&dbManager);
 
 	// Flarm
-	connect (flarm.dataStream (), SIGNAL (stateChanged (DataStream::State)),
-		this, SLOT (flarmStream_stateChanged (DataStream::State)));
-	flarmStream_stateChanged (flarm.dataStream ()->getState ());
+	// FIXME! the stream does not exist yet, and may change
+//	connect (flarm.dataStream (), SIGNAL (stateChanged (DataStream::State)),
+//		this, SLOT (flarmStream_stateChanged (DataStream::State)));
+//	flarmStream_stateChanged (flarm.dataStream ()->getState ());
 	ui.connectFlarmAction->setChecked (true);
 	on_connectFlarmAction_triggered ();
 

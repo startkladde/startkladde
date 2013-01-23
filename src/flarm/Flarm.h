@@ -12,6 +12,8 @@ class DbManager;
 class FlarmList;
 class GpsTracker;
 class NmeaDecoder;
+class SerialDataStream;
+class TcpDataStream;
 
 /**
  * A container for all non-GUI Flarm related functionality
@@ -23,9 +25,9 @@ class Flarm: public QObject
 	public:
 		// Connection type
 		enum ConnectionType { noConnection, serialConnection, tcpConnection };
-		static QString        ConnectionType_toString   (ConnectionType type);
-		static ConnectionType ConnectionType_fromString (const QString &string, ConnectionType defaultValue);
-		static QString        ConnectionType_text       (ConnectionType type);
+		static QString               ConnectionType_toString   (ConnectionType type);
+		static ConnectionType        ConnectionType_fromString (const QString &string, ConnectionType defaultValue);
+		static QString               ConnectionType_text       (ConnectionType type);
 		static QList<ConnectionType> ConnectionType_list ();
 
 		Flarm (QObject *parent, DbManager &dbManager);
@@ -43,7 +45,6 @@ class Flarm: public QObject
 		QDateTime getGpsTime () const;
 
 
-
 	public slots:
 		void open  ();
 		void close ();
@@ -56,6 +57,8 @@ class Flarm: public QObject
 		void settingsChanged ();
 
 	private:
+		template<class T> T *ensureTypedDataStream ();
+
 		DbManager &_dbManager;
 
 		//TcpDataStream *_dataStream;

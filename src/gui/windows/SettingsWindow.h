@@ -45,6 +45,9 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 
 		void on_languageInput_activated (int index);
 
+		void on_flarmConnectionTypeInput_activated (int index);
+		void on_flarmSerialPortInput_activated (int index);
+
 		void on_addPluginPathButton_clicked ();
 		void on_removePluginPathButton_clicked ();
 		void on_pluginPathUpButton_clicked ();

@@ -46,11 +46,11 @@ SET (RUBY_INCLUDE_DIR        "not_required")
 SET (RUBY_CONFIG_INCLUDE_DIR "not_required")
 
 # Find packages
-FIND_PACKAGE (Qt4       REQUIRED)
-FIND_PACKAGE (MySQL 5.0 REQUIRED)
-FIND_PACKAGE (Acpi              )
-FIND_PACKAGE (Ruby      REQUIRED)
-#FIND_PACKAGE (Qwt6	REQUIRED)
+FIND_PACKAGE (Qt4          REQUIRED)
+FIND_PACKAGE (MySQL 5.0    REQUIRED)
+FIND_PACKAGE (Acpi                 )
+FIND_PACKAGE (Ruby         REQUIRED)
+#FIND_PACKAGE (Qwt6	        REQUIRED)
 
 # Setup the Qt library
 SET(QT_USE_QTSQL     TRUE)
@@ -78,6 +78,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 	set (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXX_FLAGS_RELEASE}        -DQT_NO_DEBUG") # Disable QT debug code
 	set (CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s"           ) # Strip binary
 endif ()
+
 
 
 ######################
@@ -117,6 +118,10 @@ if (${ACPI_FOUND})
 else ()
 	SET (AcpiWidget dummy)
 endif ()
+
+# Serial
+# FIXME! release library
+SET (libs ${libs} ${QT_LIBRARY_DIR}/libSerialPortd0.a)
 
 # Tweak source lists
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_libacpi.cpp)
