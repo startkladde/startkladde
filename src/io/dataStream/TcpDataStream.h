@@ -16,8 +16,6 @@ class TcpDataStream: public DataStream
 		TcpDataStream ();
 		virtual ~TcpDataStream ();
 
-		void setHost (const QString &host);
-		void setPort (uint16_t port);
 		void setTarget (const QString &host, uint16_t port);
 
 	protected:

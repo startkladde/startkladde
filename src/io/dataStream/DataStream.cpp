@@ -65,6 +65,21 @@ void DataStream::close ()
 	}
 }
 
+/**
+ * Closes and reopens the connection if it is open
+ *
+ * Call this method from a subclass when the connection parameters changed and
+ * the connection may have to be reopened.
+ */
+void DataStream::parametersChanged ()
+{
+	if (state.isOpen ())
+	{
+		close ();
+		open ();
+	}
+}
+
 void DataStream::setOpen (bool o)
 {
 	if (o)

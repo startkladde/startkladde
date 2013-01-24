@@ -13,8 +13,6 @@ class SerialDataStream: public DataStream
 		SerialDataStream ();
 		virtual ~SerialDataStream ();
 
-		void setPortName (const QString &portName);
-		void setBaudRate (const int baudRate);
 		void setPort (const QString &portName, int port);
 
 	protected:

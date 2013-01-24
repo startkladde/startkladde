@@ -13,7 +13,8 @@
 // ** Construction **
 // ******************
 
-TcpDataStream::TcpDataStream ()
+TcpDataStream::TcpDataStream ():
+	port (0)
 {
 	// Note that we don't send a signal for the initial connection state. This
 	// is the constructor, so no connection can have been made at this point.
@@ -39,20 +40,17 @@ TcpDataStream::~TcpDataStream ()
 // ** Properties **
 // ****************
 
-void TcpDataStream::setHost (const QString &host)
-{
-	this->host=host;
-}
-
-void TcpDataStream::setPort (uint16_t port)
-{
-	this->port=port;
-}
-
 void TcpDataStream::setTarget (const QString &host, uint16_t port)
 {
+	bool changed=false;
+	if (host!=this->host) changed=true;
+	if (port!=this->port) changed=true;
+
 	this->host=host;
 	this->port=port;
+
+	if (changed)
+		parametersChanged ();
 }
 
 

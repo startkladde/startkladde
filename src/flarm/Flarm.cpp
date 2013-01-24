@@ -79,13 +79,9 @@ void Flarm::updateOpen ()
 				_dataStream=NULL;
 				break;
 			case Flarm::serialConnection:
-				// FIXME! if the parameters changed, reopen the port (should be
-				// done in the data stream implementation?)
 				ensureTypedDataStream<SerialDataStream> ()->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
 				break;
 			case Flarm::tcpConnection:
-				// FIXME! if the parameters changed, reopen the port (should be
-				// done in the data stream implementation?)
 				ensureTypedDataStream<TcpDataStream> ()->setTarget (s.flarmTcpHost, s.flarmTcpPort);
 				break;
 		}

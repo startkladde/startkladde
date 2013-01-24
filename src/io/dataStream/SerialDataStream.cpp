@@ -38,20 +38,17 @@ SerialDataStream::~SerialDataStream ()
 // ** Properties **
 // ****************
 
-void SerialDataStream::setPortName (const QString &portName)
-{
-	port->setPort (portName);
-}
-
-void SerialDataStream::setBaudRate (const int baudRate)
-{
-	port->setRate (baudRate);
-}
-
 void SerialDataStream::setPort (const QString &portName, int baudRate)
 {
+	bool changed=false;
+	if (baudRate!=port->rate     ()) changed=true;
+	if (portName!=port->portName ()) changed=true;
+
 	port->setPort (portName);
 	port->setRate (baudRate);
+
+	if (changed)
+		parametersChanged ();
 }
 
 

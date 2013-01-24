@@ -90,6 +90,7 @@ class DataStream: public QObject
 		virtual void closeImplementation ()=0;
 
 		// Subclass interface
+		virtual void parametersChanged ();
 		virtual void dataReceived ();
 		virtual void connectionOpening ();
 		virtual void connectionEstablished ();
