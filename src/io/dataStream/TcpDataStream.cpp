@@ -14,25 +14,23 @@
 // ******************
 
 TcpDataStream::TcpDataStream ():
-	port (0)
+	_port (0)
 {
 	// Note that we don't send a signal for the initial connection state. This
 	// is the constructor, so no connection can have been made at this point.
 
-	// Create the socket and connect the required signals
-	socket=new QTcpSocket (this);
-	connect (socket, SIGNAL (readyRead    ()                            ), this, SLOT (socketDataReceived ()                            ));
-    connect (socket, SIGNAL (error        (QAbstractSocket::SocketError)), this, SLOT (socketError        (QAbstractSocket::SocketError)));
-    connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)), this, SLOT (socketStateChanged (QAbstractSocket::SocketState)));
-
+	// Create the socket and connect the required signals. _socket will be
+	// deleted automatically by its parent.
+	_socket=new QTcpSocket (this);
+	connect (_socket, SIGNAL (readyRead    ()                            ), this, SLOT (socketDataReceived ()                            ));
+    connect (_socket, SIGNAL (error        (QAbstractSocket::SocketError)), this, SLOT (socketError        (QAbstractSocket::SocketError)));
+    connect (_socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)), this, SLOT (socketStateChanged (QAbstractSocket::SocketState)));
 }
 
 TcpDataStream::~TcpDataStream ()
 {
 	// Close the connection (nothing will happen if it is already closed)
 	close ();
-
-    delete socket;
 }
 
 
@@ -43,11 +41,11 @@ TcpDataStream::~TcpDataStream ()
 void TcpDataStream::setTarget (const QString &host, uint16_t port)
 {
 	bool changed=false;
-	if (host!=this->host) changed=true;
-	if (port!=this->port) changed=true;
+	if (host!=_host) changed=true;
+	if (port!=_port) changed=true;
 
-	this->host=host;
-	this->port=port;
+	_host=host;
+	_port=port;
 
 	if (changed)
 		parametersChanged ();
@@ -61,9 +59,9 @@ void TcpDataStream::setTarget (const QString &host, uint16_t port)
 void TcpDataStream::openImplementation ()
 {
 	// Nothing to do if the connection is already open or currently opening
-	if (socket->state ()==QAbstractSocket::UnconnectedState)
+	if (_socket->state ()==QAbstractSocket::UnconnectedState)
 	{
-		socket->connectToHost (host, port, QIODevice::ReadOnly);
+		_socket->connectToHost (_host, _port, QIODevice::ReadOnly);
 		connectionOpening ();
 	}
 }
@@ -71,7 +69,7 @@ void TcpDataStream::openImplementation ()
 void TcpDataStream::closeImplementation ()
 {
 	// We can do this even if the connection is not open
-	socket->abort ();
+	_socket->abort ();
 }
 
 
@@ -89,9 +87,9 @@ void TcpDataStream::socketDataReceived ()
 	dataReceived ();
 
 	// Read lines from the socket and emit them
-	while (socket->canReadLine ())
+	while (_socket->canReadLine ())
 	{
-		QString line = socket->readLine ().trimmed ();
+		QString line = _socket->readLine ().trimmed ();
 		emit lineReceived (line);
 	}
 }
@@ -117,7 +115,7 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 
 	//qDebug () << "TcpDataStream: socket error:" << error << "in socket state" << socket->state () ;
 
-	if (socket->state ()==QAbstractSocket::ConnectedState)
+	if (_socket->state ()==QAbstractSocket::ConnectedState)
 		// We were connected
 		connectionLost ();
 	else
@@ -125,5 +123,5 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 
 	// Make sure that the socket is really closed, and close it immediately,
 	// without waiting for any buffers
-	socket->abort ();
+	_socket->abort ();
 }

@@ -23,10 +23,10 @@ class TcpDataStream: public DataStream
 		void closeImplementation ();
 
 	private:
-		QString host;
-		uint16_t port;
+	    QTcpSocket *_socket;
 
-	    QTcpSocket *socket;
+		QString _host;
+		uint16_t _port;
 
 	private slots:
     	void socketDataReceived ();

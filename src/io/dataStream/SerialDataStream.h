@@ -13,17 +13,21 @@ class SerialDataStream: public DataStream
 		SerialDataStream ();
 		virtual ~SerialDataStream ();
 
-		void setPort (const QString &portName, int port);
+		void setPort (const QString &portName, int baudRate);
 
 	protected:
 		void openImplementation ();
 		void closeImplementation ();
 
 	private:
-		QtAddOn::SerialPort::SerialPort *port;
+		QtAddOn::SerialPort::SerialPort *_port;
+
+		QString _portName;
+		int _baudRate;
 
 	private slots:
     	void portDataReceived ();
+    	void checkPort ();
 };
 
 #endif
