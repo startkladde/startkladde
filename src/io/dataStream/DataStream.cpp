@@ -3,9 +3,18 @@
 #include <QDebug>
 #include <QTimer>
 
+
+// ******************
+// ** Construction **
+// ******************
+
 DataStream::DataStream ()
 {
-    // Create the timers
+	// Initialize the state to closed. The other parameters are irrelevant.
+	_state.open=false;
+
+    // Create the timers. The timers will be deleted automatically by their
+	// parent, this.
     dataTimer      = new QTimer (this);
     reconnectTimer = new QTimer (this);
 
@@ -16,68 +25,55 @@ DataStream::DataStream ()
     // Connect the timers' signals
     connect (dataTimer     , SIGNAL (timeout ()), this, SLOT (dataTimerTimeout      ()));
     connect (reconnectTimer, SIGNAL (timeout ()), this, SLOT (reconnectTimerTimeout ()));
+
 }
 
 DataStream::~DataStream ()
 {
-    delete dataTimer;
-    delete reconnectTimer;
 }
 
 
-// ****************
-// ** Connection **
-// ****************
+// **********************
+// ** Public interface **
+// **********************
 
-DataStream::State DataStream::getState ()
+DataStream::State DataStream::state () const
 {
-	return state;
+	return _state;
 }
-
 
 void DataStream::open ()
 {
-	// Nothing to do if the stream is already open
-	if (!state.isOpen ())
-	{
-		//qDebug () << "DataStream: open";
+	// If the stream is already open, there's nothing to do.
+	if (_state.open)
+		return;
 
-		state.setOpen (true);
-		emit stateChanged (state);
+	// Update the state
+	_state.open=true;
+	_state.streamState=streamConnecting;
 
-		openImplementation ();
-	}
+	// Open the connection. When the connection succeeds (now or later),
+	// connectionOpened will be called. When the connection fails (now or later)
+	// or is closed (after it has been opened), connectionClosed will be called.
+	openConnection ();
 }
 
 void DataStream::close ()
 {
-	// Nothing to do if the stream is already closed
-	if (state.isOpen ())
-	{
-		//qDebug () << "DataStream: close";
+	// If the stream is already closed, there's nothing to do.
+	if (!_state.open)
+		return;
 
-		state.setOpen (false);
-		emit stateChanged (state);
+	// Update the state
+	_state.open=false;
 
-		dataTimer     ->stop ();
-		reconnectTimer->stop ();
-		closeImplementation ();
-	}
-}
+	// Stop the timers. Note that a timer event may still be in the event queue,
+	// so timer slots may be invoked even when the connection is closed.
+	dataTimer     ->stop ();
+	reconnectTimer->stop ();
 
-/**
- * Closes and reopens the connection if it is open
- *
- * Call this method from a subclass when the connection parameters changed and
- * the connection may have to be reopened.
- */
-void DataStream::parametersChanged ()
-{
-	if (state.isOpen ())
-	{
-		close ();
-		open ();
-	}
+	// Close the connection
+	closeConnection ();
 }
 
 void DataStream::setOpen (bool o)
@@ -89,76 +85,97 @@ void DataStream::setOpen (bool o)
 }
 
 
-// ************
-// ** Status **
-// ************
+// ******************************
+// ** Implementation interface **
+// ******************************
 
-void DataStream::dataReceived ()
+void DataStream::connectionOpened ()
 {
-	if (state.setDataReceived (true) || state.setDataTimeout (false))
-		emit stateChanged (state);
+	_state.streamState=streamConnected;
+	_state.dataState=dataNone;
 
+	dataTimer->start ();
+}
+
+void DataStream::connectionClosed ()
+{
+	// Stop the data timer. Note that a timer event may still be in the event
+	// queue, so the timer slot may be invoked even when the connection is
+	// closed.
+	dataTimer     ->stop ();
+
+	// Start the reconnect timer
+	reconnectTimer->start ();
+
+	if (_state.streamState==streamConnecting)
+	{
+		_state.streamState=streamConnectionFailed;
+	}
+	else if (_state.streamState==streamConnected)
+	{
+		_state.streamState=streamConnectionLost;
+	}
+}
+
+/**
+ * Closes and reopens the connection if it is open
+ *
+ * Call this method from a subclass when the connection parameters changed and
+ * the connection may have to be reopened. Don't call it if the parameter values
+ * were set, but did not actually change.
+ */
+void DataStream::parametersChanged ()
+{
+	if (_state.open)
+	{
+		close ();
+		open ();
+	}
+}
+
+void DataStream::dataReceived (const QByteArray &data)
+{
 	// Start or restart the data timer
 	dataTimer->start ();
-}
+	_state.dataState=dataOk;
 
-void DataStream::connectionOpening ()
-{
-	// Seems like we're currently connecting
-	state.setConnectionState (connecting);
-	emit stateChanged (state);
-}
+	// Process the data
+	// Example:
+	//   f o o \n b a r \n b
+	//   0 1 2 3  4 5 6 7  8
+	buffer.append (QString::fromUtf8 (data));
+	int pos=0;
+	while ((pos=buffer.indexOf ("\n"))>=0)
+	{
+		QString line=buffer.left (pos).trimmed ();
+		buffer.remove (0, pos+1);
+		emit lineReceived (line);
+	}
 
-
-void DataStream::connectionEstablished ()
-{
-	state.setConnectionState (connected);
-	state.setDataReceived (false);
-	state.setDataTimeout (false);
-	emit stateChanged (state);
-
-	dataTimer->start ();
-}
-
-void DataStream::connectionFailed ()
-{
-	dataTimer     ->stop ();
-	reconnectTimer->start ();
-
-	state.setConnectionState (notConnected);
-	emit stateChanged (state);
-}
-
-void DataStream::connectionLost ()
-{
-	dataTimer     ->stop ();
-	reconnectTimer->start ();
-
-	state.setConnectionState (notConnected);
-	emit stateChanged (state);
 }
 
 
-// ************
-// ** Timers **
-// ************
+
+
+// ******************
+// ** Timer events **
+// ******************
 
 // When closing the stream, the timers are stopped. Still, it is possible to
 // receive a timer event while the stream is closed, in the following case:
-//   * timer expires, timer even is enqueued
+//   * timer expires, timer event is enqueued
 //   * stream is closed
 //   * timer event is received
 // Therefore, it is necessary to check if the state is open in the timer slots.
 
 void DataStream::reconnectTimerTimeout ()
 {
-	if (state.isOpen ())
-	{
-		//qDebug () << "DataStream: automatic reconnect";
-		openImplementation ();
-	}
-}
+	// Don't reconnect if the stream is not open (see above)
+	if (!_state.open)
+		return;
 
+	openConnection ();
+}
 
 /**
  * Called when the timer for data reception expired. Updates the connection
@@ -166,50 +183,10 @@ void DataStream::reconnectTimerTimeout ()
  */
 void DataStream::dataTimerTimeout ()
 {
-	if (state.isOpen ())
-	{
-		//qDebug () << "DataStream: data timeout";
+	// Don't signal a timeout if the stream is not open (see above) or not
+	// connected
+	if (!_state.open || _state.streamState!=streamConnected)
+		return;
 
-		if (state.setDataTimeout (true))
-			emit stateChanged (state);
-	}
-}
-
-
-// *******************************
-// ** DataStream::State methods **
-// *******************************
-
-DataStream::State::State ():
-	open (false), connectionState (notConnected),
-	dataReceived (false), dataTimeout (false)
-{
-}
-
-bool DataStream::State::setOpen (bool open)
-{
-	bool result=(open!=this->open);
-	this->open=open;
-	return result;
-}
-
-bool DataStream::State::setConnectionState (DataStream::ConnectionState connectionState)
-{
-	bool result=(connectionState!=this->connectionState);
-	this->connectionState=connectionState;
-	return result;
-}
-
-bool DataStream::State::setDataReceived (bool dataReceived)
-{
-	bool result=(dataReceived!=this->dataReceived);
-	this->dataReceived=dataReceived;
-	return result;
-}
-
-bool DataStream::State::setDataTimeout (bool dataTimeout)
-{
-	bool result=(dataTimeout!=this->dataTimeout);
-	this->dataTimeout=dataTimeout;
-	return result;
+	_state.dataState=dataTimeout;
 }

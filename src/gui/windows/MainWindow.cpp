@@ -1975,16 +1975,33 @@ void MainWindow::flarmStream_stateChanged (DataStream::State state)
 {
 	QString text;
 
-	if (state.isOpen ())
+	if (state.open)
 	{
-		switch (state.getConnectionState ())
+		switch (state.streamState)
 		{
-			case TcpDataStream::notConnected: text=tr ("No connection"); break;
-			case TcpDataStream::connecting  : text=tr ("Connecting..."); break;
-			case TcpDataStream::connected:
-				if      ( state.getDataTimeout  ()) text=tr ("No data");
-				else if (!state.getDataReceived ()) text=tr ("Connected");
-				else                                text=tr ("OK");
+			case DataStream::streamConnecting:
+				text=tr ("Connecting...");
+				break;
+			case DataStream::streamConnected:
+				switch (state.dataState)
+				{
+					case DataStream::dataNone:
+						text=tr ("Connected");
+						break;
+					case DataStream::dataOk:
+						text=tr ("OK");
+						break;
+					case DataStream::dataTimeout:
+						text=tr ("No data");
+						break;
+					// No default
+				}
+				break;
+			case DataStream::streamConnectionFailed:
+				text=tr ("Connection failed");
+				break;
+			case DataStream::streamConnectionLost:
+				text=tr ("Connection lose");
 				break;
 			// No default
 		}

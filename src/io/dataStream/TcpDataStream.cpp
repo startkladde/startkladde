@@ -3,12 +3,6 @@
 #include <QTcpSocket>
 #include <QTimer>
 
-/*
- * Implementation notes:
- *   - after updating state, emit stateChanged when the update method returned
- *     true
- */
-
 // ******************
 // ** Construction **
 // ******************
@@ -20,7 +14,7 @@ TcpDataStream::TcpDataStream ():
 	// is the constructor, so no connection can have been made at this point.
 
 	// Create the socket and connect the required signals. _socket will be
-	// deleted automatically by its parent.
+	// deleted automatically by its parent (this).
 	_socket=new QTcpSocket (this);
 	connect (_socket, SIGNAL (readyRead    ()                            ), this, SLOT (socketDataReceived ()                            ));
     connect (_socket, SIGNAL (error        (QAbstractSocket::SocketError)), this, SLOT (socketError        (QAbstractSocket::SocketError)));
@@ -29,8 +23,6 @@ TcpDataStream::TcpDataStream ():
 
 TcpDataStream::~TcpDataStream ()
 {
-	// Close the connection (nothing will happen if it is already closed)
-	close ();
 }
 
 
@@ -56,72 +48,53 @@ void TcpDataStream::setTarget (const QString &host, uint16_t port)
 // ** DataStream methods **
 // ************************
 
-void TcpDataStream::openImplementation ()
+void TcpDataStream::openConnection  ()
 {
-	// Nothing to do if the connection is already open or currently opening
-	if (_socket->state ()==QAbstractSocket::UnconnectedState)
-	{
-		_socket->connectToHost (_host, _port, QIODevice::ReadOnly);
-		connectionOpening ();
-	}
+	if (_socket->state () != QAbstractSocket::UnconnectedState)
+		_socket->abort ();
+
+	_socket->connectToHost (_host, _port, QIODevice::ReadOnly);
 }
 
-void TcpDataStream::closeImplementation ()
+void TcpDataStream::closeConnection ()
 {
-	// We can do this even if the connection is not open
 	_socket->abort ();
+	connectionClosed ();
 }
 
 
-// **********
-// ** Data **
-// **********
+// *******************
+// ** Socket events **
+// *******************
 
 /**
  * Called when data is received from the socket
- *
- * Updates the connection state, resets the data timer, and emits lines.
  */
 void TcpDataStream::socketDataReceived ()
 {
-	dataReceived ();
-
-	// Read lines from the socket and emit them
-	while (_socket->canReadLine ())
-	{
-		QString line = _socket->readLine ().trimmed ();
-		emit lineReceived (line);
-	}
+	dataReceived (_socket->readAll ());
 }
 
-
-// **********************
-// ** Connection state **
-// **********************
 
 void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState)
 {
 	//qDebug () << "TcpDataStream: socket state changed to" << socketState;
 
 	if (socketState == QAbstractSocket::ConnectedState)
-	{
-		connectionEstablished ();
-	}
+		connectionOpened ();
 }
 
+/**
+ * Invoked when the socket connection failed (while opening) or was lost (while
+ * open).
+ */
 void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 {
 	Q_UNUSED (error);
 
 	//qDebug () << "TcpDataStream: socket error:" << error << "in socket state" << socket->state () ;
 
-	if (_socket->state ()==QAbstractSocket::ConnectedState)
-		// We were connected
-		connectionLost ();
-	else
-		connectionFailed ();
-
-	// Make sure that the socket is really closed, and close it immediately,
-	// without waiting for any buffers
+	// Make sure that the socket is closed
 	_socket->abort ();
+	connectionClosed ();
 }

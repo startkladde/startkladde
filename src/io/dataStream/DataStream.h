@@ -1,6 +1,7 @@
 #ifndef DATASTREAM_H_
 #define DATASTREAM_H_
 
+#include <QBuffer>
 #include <QObject>
 
 class QTimer;
@@ -18,90 +19,74 @@ class QTimer;
  *   - errorMessage
  *   - dataState (noData, good, timeout)
  *
- * FIXME: the implementations should not emit the signals themselves
- *
  * FIXME: for debugging, dump the state on change (e. g. in MainWindow)
- *
- * TODO:
- *   - it would be better to have the implementation just send data and split
- *     it into lines in this class
  */
 class DataStream: public QObject
 {
 		Q_OBJECT
 
 	public:
-		enum ConnectionState
+		enum StreamState
 		{
-			notConnected,
-			connecting,
-			connected,
+			streamConnecting,
+			streamConnected,
+			streamConnectionFailed,
+			streamConnectionLost
 		};
 
-		/**
-		 * Represents the state of a DataStream
-		 */
-		class State
+		enum DataState
 		{
-			public:
-				State ();
-
-				bool isOpen          () const { return open;            }
-				DataStream::ConnectionState getConnectionState ()
-				                        const { return connectionState; }
-				bool getDataReceived () const { return dataReceived;    }
-				bool getDataTimeout  () const { return dataTimeout;     }
-				bool isDataValid     () const
-				{
-					if (connectionState!=connected) return false; // Connection not even opened
-					return dataReceived && !dataTimeout;
-				}
-
-				bool setOpen (bool open);
-				bool setConnectionState (DataStream::ConnectionState connectionState);
-				bool setDataReceived (bool dataReceived);
-				bool setDataTimeout (bool dataTimeout);
-
-			private:
-				// Whether the user has requested a connection to be established
-				bool open;
-				DataStream::ConnectionState connectionState;
-				bool dataReceived;
-				bool dataTimeout;
+			dataNone,
+			dataOk,
+			dataTimeout,
 		};
 
+		struct State
+		{
+			bool open;
+			StreamState streamState;
+			DataState dataState;
 
+			bool isDataOk () { return open && streamState==streamConnected && dataState==dataOk; }
+		};
+
+		// Construction
 		DataStream ();
 		virtual ~DataStream ();
 
-		virtual void open ();
-		virtual void close ();
+	public:
+		// Public interface
+		State state () const;
+
+	public slots:
+		// Public interface
+		void open ();
+		void close ();
 		void setOpen (bool o);
 
-		State getState ();
-
 	signals:
-		void stateChanged (DataStream::State state);
-		void lineReceived (const QString &line);
+		// Public interface
+		void stateChanged (State state);
+		void lineReceived (QString line);
 
 	protected:
 		// Stream implementation
-		virtual void openImplementation ()=0;
-		virtual void closeImplementation ()=0;
+		virtual void openConnection  ()=0;
+		virtual void closeConnection ()=0;
 
-		// Subclass interface
-		virtual void parametersChanged ();
-		virtual void dataReceived ();
-		virtual void connectionOpening ();
-		virtual void connectionEstablished ();
-		virtual void connectionFailed ();
-		virtual void connectionLost ();
+		// Implementation interface
+		void connectionOpened ();
+		void connectionClosed ();
+		void dataReceived (const QByteArray &data);
+		void parametersChanged ();
 
 	private:
+		State _state;
+
 	    QTimer *dataTimer;
 	    QTimer *reconnectTimer;
 
-	    State state;
+	    QString buffer;
 
 	private slots:
 		void dataTimerTimeout ();
