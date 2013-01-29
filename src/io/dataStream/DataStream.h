@@ -66,7 +66,7 @@ class DataStream: public QObject
 
 	signals:
 		// Public interface
-		void stateChanged (State state);
+		void stateChanged (DataStream::State state);
 		void lineReceived (QString line);
 
 	protected:

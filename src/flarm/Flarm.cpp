@@ -95,6 +95,11 @@ void Flarm::updateOpen ()
 				_dataStream , SIGNAL (lineReceived (const QString &)),
 				_nmeaDecoder, SLOT   (lineReceived (const QString &)));
 
+			connect (
+				_dataStream, SIGNAL (stateChanged       (DataStream::State)),
+				this       , SIGNAL (streamStateChanged (DataStream::State)));
+			emit streamStateChanged (_dataStream->state ());
+
 			_dataStream->open ();
 		}
 	}

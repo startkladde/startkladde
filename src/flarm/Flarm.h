@@ -6,8 +6,8 @@
 #include <QObject>
 
 #include "src/numeric/GeoPosition.h"
+#include "src/io/dataStream/DataStream.h" // For DataStream::State
 
-class DataStream;
 class DbManager;
 class FlarmList;
 class GpsTracker;
@@ -49,6 +49,9 @@ class Flarm: public QObject
 		void open  ();
 		void close ();
 		void setOpen (bool open);
+
+	signals:
+		void streamStateChanged (DataStream::State state);
 
 	protected:
 		void updateOpen ();

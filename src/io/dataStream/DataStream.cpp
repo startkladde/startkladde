@@ -51,6 +51,7 @@ void DataStream::open ()
 	// Update the state
 	_state.open=true;
 	_state.streamState=streamConnecting;
+	emit stateChanged (_state);
 
 	// Open the connection. When the connection succeeds (now or later),
 	// connectionOpened will be called. When the connection fails (now or later)
@@ -66,6 +67,7 @@ void DataStream::close ()
 
 	// Update the state
 	_state.open=false;
+	emit stateChanged (_state);
 
 	// Stop the timers. Note that a timer event may still be in the event queue,
 	// so timer slots may be invoked even when the connection is closed.
@@ -93,6 +95,7 @@ void DataStream::connectionOpened ()
 {
 	_state.streamState=streamConnected;
 	_state.dataState=dataNone;
+	emit stateChanged (_state);
 
 	dataTimer->start ();
 }
@@ -102,19 +105,17 @@ void DataStream::connectionClosed ()
 	// Stop the data timer. Note that a timer event may still be in the event
 	// queue, so the timer slot may be invoked even when the connection is
 	// closed.
-	dataTimer     ->stop ();
+	dataTimer->stop ();
 
 	// Start the reconnect timer
 	reconnectTimer->start ();
 
 	if (_state.streamState==streamConnecting)
-	{
 		_state.streamState=streamConnectionFailed;
-	}
 	else if (_state.streamState==streamConnected)
-	{
 		_state.streamState=streamConnectionLost;
-	}
+
+	emit stateChanged (_state);
 }
 
 /**
@@ -137,7 +138,11 @@ void DataStream::dataReceived (const QByteArray &data)
 {
 	// Start or restart the data timer
 	dataTimer->start ();
-	_state.dataState=dataOk;
+	if (_state.dataState!=dataOk)
+	{
+		_state.dataState=dataOk;
+		emit stateChanged (_state);
+	}
 
 	// Process the data
 	// Example:
@@ -189,4 +194,5 @@ void DataStream::dataTimerTimeout ()
 		return;
 
 	_state.dataState=dataTimeout;
+	emit stateChanged (_state);
 }
