@@ -197,22 +197,20 @@ QString FlarmRecord::stateText (flarmState state)
 
 void FlarmRecord::setState (flarmState state, const QString &comment)
 {
-	flarmState oldState=this->state;
+//	flarmState oldState=this->state;
 	this->state=state;
 
-	if (comment.isEmpty ())
-		qDebug () << qnotr ("%1: %2 -> %3")
-			.arg (flarmId)
-			.arg (stateText (oldState))
-			.arg (stateText (state))
-			.toAscii ().constData ();
-	else
-		qDebug () << qnotr ("%1: %2 -> %3 (%4)")
-			.arg (flarmId)
-			.arg (stateText (oldState))
-			.arg (stateText (state))
-			.arg (comment)
-			.toAscii ().constData ();
+//	if (comment.isEmpty ())
+//		qDebug () << qnotr ("%1: %2 -> %3")
+//			.arg (flarmId)
+//			.arg (stateText (oldState))
+//			.arg (stateText (state));
+//	else
+//		qDebug () << qnotr ("%1: %2 -> %3 (%4)")
+//			.arg (flarmId)
+//			.arg (stateText (oldState))
+//			.arg (stateText (state))
+//			.arg (comment);
 }
 
 
