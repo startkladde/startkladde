@@ -106,7 +106,7 @@ DataStream::State DataStream::state () const
 void DataStream::open ()
 {
 	// If the stream is already open, there's nothing to do.
-	if (_state.isOpen ())
+	if (_state.streamState!=streamClosed)
 		return;
 
 	// Update the state
@@ -121,7 +121,7 @@ void DataStream::open ()
 void DataStream::close ()
 {
 	// If the stream is already closed, there's nothing to do.
-	if (!_state.isOpen ())
+	if (_state.streamState==streamClosed)
 		return;
 
 	// Update the state
@@ -182,7 +182,7 @@ void DataStream::connectionClosed (const QString &message)
  */
 void DataStream::parametersChanged ()
 {
-	if (_state.isOpen ())
+	if (_state.streamState!=streamClosed)
 	{
 		close ();
 		open ();

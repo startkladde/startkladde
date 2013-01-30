@@ -79,10 +79,7 @@ void Flarm::updateOpen ()
 				_dataStream=NULL;
 				break;
 			case Flarm::serialConnection:
-				// FIXME enable
-//				ensureTypedDataStream<SerialDataStream> ()->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
-				delete _dataStream;
-				_dataStream=NULL;
+				ensureTypedDataStream<SerialDataStream> ()->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
 				break;
 			case Flarm::tcpConnection:
 				ensureTypedDataStream<TcpDataStream> ()->setTarget (s.flarmTcpHost, s.flarmTcpPort);
@@ -105,8 +102,8 @@ void Flarm::updateOpen ()
 	}
 	else
 	{
-		delete _dataStream;
-		_dataStream=NULL;
+		if (_dataStream)
+			_dataStream->close ();
 	}
 
 }
