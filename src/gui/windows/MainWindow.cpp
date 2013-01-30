@@ -119,6 +119,8 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 	connect (flarm.flarmList (), SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
 	connect (flarm.flarmList (), SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
 
+	connect (ui.flarmStateLabel, SIGNAL (linkActivated (const QString &)), this, SLOT (flarmStreamLinkActivated (const QString &)));
+
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
 	ui.menuDatabase->addSeparator ();
@@ -1970,47 +1972,87 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	}
 }
 
-void MainWindow::flarmStream_stateChanged (DataStream::State state)
+void MainWindow::flarmStreamLinkActivated (const QString &link)
 {
-	qDebug () << "flarm stream state changed";
+	(void)link;
+
 	QString text;
 
-	if (state.open)
+	switch (flarmStreamState.errorType)
 	{
-		switch (state.streamState)
-		{
-			case DataStream::streamConnecting:
-				text=tr ("Connecting...");
-				break;
-			case DataStream::streamConnected:
-				switch (state.dataState)
-				{
-					case DataStream::dataNone:
-						text=tr ("Connected");
-						break;
-					case DataStream::dataOk:
-						text=tr ("OK");
-						break;
-					case DataStream::dataTimeout:
-						text=tr ("No data");
-						break;
-					// No default
-				}
-				break;
-			case DataStream::streamConnectionFailed:
-				text=tr ("Connection failed");
-				break;
-			case DataStream::streamConnectionLost:
-				text=tr ("Connection lost");
-				break;
-			// No default
-		}
-	}
-	else
-	{
-		text=tr ("Disabled");
+		case DataStream::noError:
+			// Should not happen
+			if (flarmStreamState.errorMessage.isEmpty ())
+				text=tr ("The connection encountered an error and will be reopened automatically.");
+			else
+				text=tr ("The connection encountered an error: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+			break;
+		case DataStream::connectionFailedError:
+			if (flarmStreamState.errorMessage.isEmpty ())
+				text=tr ("The connection could not be established and will be reopened automatically.");
+			else
+				text=tr ("The connection could not be established: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+			break;
+		case DataStream::connectionLostError:
+			if (flarmStreamState.errorMessage.isEmpty ())
+				text=tr ("The connection was terminated and will be reopened automatically.");
+			else
+				text=tr ("The connection was terminated: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+			break;
 	}
 
+	QString title=tr ("Flarm stream error");
+	QMessageBox::information (this, title, text);
+}
+
+QString linkTo (const QString &target, const QString &text)
+{
+	return qnotr ("<a href=\"%1\">%2</a>").arg (target).arg (text);
+}
+
+void MainWindow::flarmStream_stateChanged (DataStream::State state)
+{
+	QString text;
+
+	QString linkTarget=notr ("flarmStreamErrorDetails");
+
+	switch (state.streamState)
+	{
+		case DataStream::streamClosed          : text=tr ("Disabled")         ; break;
+		case DataStream::streamNoData          : text=tr ("Connected")        ; break;
+		case DataStream::streamDataOk          : text=tr ("OK")               ; break;
+		case DataStream::streamDataTimeout     : text=tr ("No data")          ; break;
+		case DataStream::streamConnecting      :
+			switch (state.errorType)
+			{
+				case DataStream::noError:
+					text=tr ("Connecting"); break;
+				case DataStream::connectionFailedError:
+					text=linkTo (linkTarget, tr ("Connection failed"))+qnotr (" - ")+tr ("reconnecting"); break;
+				case DataStream::connectionLostError:
+					text=linkTo (linkTarget, tr ("Connection lost"  ))+qnotr (" - ")+tr ("reconnecting"); break;
+				// no default
+			}
+			break;
+		case DataStream::streamConnectionError :
+			// TODO add the timeout as " - reconnect in x s"
+			switch (state.errorType)
+			{
+				case DataStream::noError:
+					// Ehm...should not happen
+					text=linkTo (linkTarget, tr ("Connection error" )); break;
+				case DataStream::connectionFailedError:
+					text=linkTo (linkTarget, tr ("Connection failed")); break;
+				case DataStream::connectionLostError:
+					text=linkTo (linkTarget, tr ("Connection lost"  )); break;
+				// no default
+			}
+
+			break;
+		// no default
+	}
+
+	flarmStreamState=state;
 	ui.flarmStateLabel->setText (text);
 }
 

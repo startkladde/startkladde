@@ -59,7 +59,6 @@ void TcpDataStream::openConnection  ()
 void TcpDataStream::closeConnection ()
 {
 	_socket->abort ();
-	connectionClosed ();
 }
 
 
@@ -96,5 +95,5 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 
 	// Make sure that the socket is closed
 	_socket->abort ();
-	connectionClosed ();
+	connectionClosed (_socket->errorString ());
 }

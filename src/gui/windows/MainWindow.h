@@ -39,7 +39,7 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
-#include "src/io/dataStream/TcpDataStream.h"
+#include "src/io/dataStream/DataStream.h" // For DataStream::State
 #include "src/gui/SkMainWindow.h"
 #include "src/model/FlightBase.h"
 #include "src/flarm/algorithms/FlightLookup.h" // For FlightLookup::Result
@@ -138,6 +138,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void migrationEnded () { ui.logDockWidget->setVisible (oldLogVisible); }
 
 		void settingsChanged ();
+
+		void flarmStreamLinkActivated (const QString &link);
 
 	private slots:
 		// Menu: Program
@@ -313,6 +315,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 //		FlarmList *flarmList;
 		QString debugFlarmId;
 //		bool flarmStreamValid;
+
+		DataStream::State flarmStreamState;
 
 		// TODO: This is only used for Flarm and should be integrated with the
 		// Flarm handling (e. g. receive signals from the flight controller).

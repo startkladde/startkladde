@@ -7,19 +7,7 @@
 class QTimer;
 
 /**
-  * FIXME: the state is not good yet
- *   - it's too complex?
- *   - we would like to notify the user about connection failed/connection lost,
- *     with reconnect time ("reconnect in 4s") and the reason (click on label)
- * We should probably have
- *   - isOpen
- *   - connectionState (disconnected, connecting, connected, waitReconnect)
- *   - reconnectTime
- *   - error (noError, connectionFailed, connectionLost)
- *   - errorMessage
- *   - dataState (noData, good, timeout)
  *
- * FIXME: for debugging, dump the state on change (e. g. in MainWindow)
  */
 class DataStream: public QObject
 {
@@ -28,26 +16,40 @@ class DataStream: public QObject
 	public:
 		enum StreamState
 		{
+			streamClosed,
 			streamConnecting,
-			streamConnected,
-			streamConnectionFailed,
-			streamConnectionLost
+			streamNoData,
+			streamDataOk,
+			streamDataTimeout,
+			streamConnectionError
 		};
 
-		enum DataState
+		enum ErrorType
 		{
-			dataNone,
-			dataOk,
-			dataTimeout,
+			noError,
+			connectionFailedError,
+			connectionLostError
 		};
 
 		struct State
 		{
-			bool open;
+			// State
 			StreamState streamState;
-			DataState dataState;
 
-			bool isDataOk () { return open && streamState==streamConnected && dataState==dataOk; }
+			// Auxiliary data, state dependent
+			int timeRemaining;
+			ErrorType errorType;
+			QString errorMessage;
+
+			// State properties
+			bool isOpen      () { return streamState != streamClosed;      }
+			bool isConnected () { return streamState == streamNoData ||
+			                             streamState == streamDataOk ||
+			                             streamState == streamDataTimeout; }
+			bool isDataOk    () { return streamState == streamDataOk;      }
+
+			bool operator== (const State &other) const;
+			bool operator!= (const State &other) const;
 		};
 
 		// Construction
@@ -76,7 +78,7 @@ class DataStream: public QObject
 
 		// Implementation interface
 		void connectionOpened ();
-		void connectionClosed ();
+		void connectionClosed (const QString &message);
 		void dataReceived (const QByteArray &data);
 		void parametersChanged ();
 
@@ -87,6 +89,8 @@ class DataStream: public QObject
 	    QTimer *reconnectTimer;
 
 	    QString buffer;
+
+	    void setState (StreamState streamState, int timeRemaining=0, ErrorType errorType=noError, const QString &errorMessage=QString ());
 
 	private slots:
 		void dataTimerTimeout ();
