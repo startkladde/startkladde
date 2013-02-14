@@ -1,9 +1,14 @@
 #ifndef SERIALDATASTREAM_H_
 #define SERIALDATASTREAM_H_
 
+#include <QStringList>
+
 #include "src/io/dataStream/DataStream.h"
 
-namespace QtAddOn { namespace SerialPort { class SerialPort; } }
+// QtSerialPort
+//namespace QtAddOn { namespace SerialPort { class SerialPort; } }
+// QSerialDEvice
+class AbstractSerial;
 
 class SerialDataStream: public DataStream
 {
@@ -21,14 +26,17 @@ class SerialDataStream: public DataStream
 		virtual void closeConnection ();
 
 	private:
-		QtAddOn::SerialPort::SerialPort *_port;
+		// QtSerialPort
+		//QtAddOn::SerialPort::SerialPort *_port;
+		// QSerialDevice
+		AbstractSerial *_port;
 
 		QString _portName;
 		int _baudRate;
 
 	private slots:
+		void availablePortsChanged (const QStringList &ports);
     	void portDataReceived ();
-    	//void checkPort ();
 };
 
 #endif

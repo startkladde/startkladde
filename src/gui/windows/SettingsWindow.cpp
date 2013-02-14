@@ -26,9 +26,7 @@
 #include <QShowEvent>
 #include <QFileDialog>
 
-#include <QtAddOnSerialPort/serialportinfo.h>
-
-QT_USE_NAMESPACE_SERIALPORT
+#include "3rdparty/qserialdevice/src/qserialdeviceenumerator/serialdeviceenumerator.h"
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
@@ -84,21 +82,32 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 		ui.flarmConnectionTypeInput->addItem (text, type);
 	}
 
-	// Populate the serial ports list
-	foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
+	// TODO in the serial ports list, also indicate .isBusy (); however: (a)
+	// don't indicate a port as busy if we're using it ourselves, and (b) update
+	// the list when the status of a port changes.
+
+	// Populate the serial ports list - QSerialDevice library
+	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
+	foreach (const QString &deviceName, serialDeviceEnumerator->devicesAvailable ())
 	{
-		// TODO also indicate .isBusy (); however: (a) don't indicate a port
-		// as busy if we're using it ourselves, and (b) update the list when
-		// the status of a port changes.
-		QString portName=portInfo.portName ();
-		QString portDescription=portInfo.description ();
+		serialDeviceEnumerator->setDeviceName (deviceName);
+		QString deviceDescription=serialDeviceEnumerator->description ();
 
-		QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
+		QString text=tr ("%1 (%2)").arg (deviceName).arg (deviceDescription);
 
-		ui.flarmSerialPortInput->addItem (text);
-		// FIXME method in SkComboBox for setting both the value and the item data
-		ui.flarmSerialPortInput->setItemData (ui.flarmSerialPortInput->count ()-1, portName);
+		ui.flarmSerialPortInput->addItem (text, deviceName);
 	}
+
+	//// Populate the serial ports list - QtSerialPort library
+	//foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
+	//{
+	//	QString portName=portInfo.portName ();
+	//	QString portDescription=portInfo.description ();
+	//
+	//	QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
+	//
+	//	ui.flarmSerialPortInput->addItem (text, portName);
+	//}
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the

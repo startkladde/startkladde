@@ -121,7 +121,7 @@ endif ()
 
 # Serial
 # FIXME! release library
-SET (libs ${libs} ${QT_LIBRARY_DIR}/libSerialPortd0.a)
+#SET (libs ${libs} ${QT_LIBRARY_DIR}/libSerialPortd0.a)
 
 # Tweak source lists
 LIST (REMOVE_ITEM startkladde_SOURCES src/gui/widgets/AcpiWidget_libacpi.cpp)
@@ -238,6 +238,11 @@ ADD_EXECUTABLE(startkladde
     ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
 	${translation_files}
 )
+
+## Serial library
+add_subdirectory( 3rdparty/qserialdevice/src lib )
+target_link_libraries(startkladde qserialdevice)
+
 
 # TODO: on Unix, we used to link against mysql explicitly (even though it is
 # only used via the Qt plugin) to avoid "Error in my_thread_global_end(): 1
@@ -444,3 +449,7 @@ SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
 include (CPack)
 
 
+#get_cmake_property(_variableNames VARIABLES)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()

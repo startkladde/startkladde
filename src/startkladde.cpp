@@ -22,6 +22,7 @@
 #include "src/version.h"
 #include "src/i18n/TranslationManager.h"
 #include "src/flarm/Flarm.h"
+#include "src/i18n/LanguageConfiguration.h"
 
 // For test_database
 //#include "src/model/Plane.h"
