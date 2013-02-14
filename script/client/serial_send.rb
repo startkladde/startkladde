@@ -3,6 +3,7 @@
 def usage
 	puts "Sends one file/com port/... to another, one line at a time, with a configurable delay between lines"
 	puts "The delay is specified in seconds."
+	puts "Note that if you send to a com port, you must set the baud rate by some other means."
 	puts "Usage: #{$0} output delay input"
 	puts "Example: #{$0} COM8: 0.1 file.txt"
 	exit 1
