@@ -72,6 +72,8 @@ class SettingsWindow: public SkDialog<Ui::SettingsWindowClass>
 		void on_browseWeatherWindowCommandButton_clicked ();
 		void on_browseKmlFileButton_clicked ();
 
+		void populateSerialPortList ();
+
 	private:
 		bool warned;
 		QList<InfoPlugin *> infoPlugins;

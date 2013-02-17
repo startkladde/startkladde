@@ -15,36 +15,36 @@
  */
 #include "SettingsWindow.h"
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
-#include <QItemEditorFactory>
-#include <QSettings>
-#include <QInputDialog>
-#include <QPushButton>
 #include <QDebug>
-#include <QShowEvent>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QItemEditorFactory>
+#include <QPushButton>
+#include <QSettings>
+#include <QStringList>
+#include <QShowEvent>
 
 #include "3rdparty/qserialdevice/src/qserialdeviceenumerator/serialdeviceenumerator.h"
 
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
+#include "src/gui/dialogs.h"
+#include "src/gui/views/ReadOnlyItemDelegate.h"
+#include "src/gui/views/SpinBoxCreator.h"
+#include "src/gui/views/SpecialIntDelegate.h"
+#include "src/i18n/notr.h"
+#include "src/i18n/TranslationManager.h"
 #include "src/plugin/info/InfoPlugin.h"
 #include "src/plugin/factory/PluginFactory.h"
 #include "src/plugin/info/InfoPluginSelectionDialog.h"
 #include "src/plugin/settings/PluginSettingsDialog.h"
-#include "src/gui/views/ReadOnlyItemDelegate.h"
-#include "src/gui/views/SpinBoxCreator.h"
-#include "src/gui/views/SpecialIntDelegate.h"
+#include "src/plugins/weather/ExternalWeatherPlugin.h"
 #include "src/util/fileSystem.h"
 #include "src/util/qString.h"
 #include "src/util/qList.h"
-#include "src/gui/dialogs.h"
-#include "src/i18n/notr.h"
-#include "src/i18n/TranslationManager.h"
-
-#include "src/plugins/weather/ExternalWeatherPlugin.h"
 
 const int captionColumn=0;
 const int    nameColumn=1;
@@ -82,41 +82,9 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 		ui.flarmConnectionTypeInput->addItem (text, type);
 	}
 
-	// TODO in the serial ports list, also indicate .isBusy (); however: (a)
-	// don't indicate a port as busy if we're using it ourselves, and (b) update
-	// the list when the status of a port changes.
-
-	// Populate the serial ports list - QSerialDevice library
 	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
-	foreach (const QString &deviceName, serialDeviceEnumerator->devicesAvailable ())
-	{
-		serialDeviceEnumerator->setDeviceName (deviceName);
-		QString deviceDescription=serialDeviceEnumerator->description ();
-
-		QString text=tr ("%1 (%2)").arg (deviceName).arg (deviceDescription);
-
-		ui.flarmSerialPortInput->addItem (text, deviceName);
-	}
-
-	//// Populate the serial ports list - QtSerialPort library
-	//foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
-	//{
-	//	QString portName=portInfo.portName ();
-	//	QString portDescription=portInfo.description ();
-	//
-	//	QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
-	//
-	//	ui.flarmSerialPortInput->addItem (text, portName);
-	//}
-
-	// Make boolean columns and some other columns read-only
-	// The title column is read-only because we would have to write back the
-	// value to the plugin after editing it so the plugin settings dialog show
-	// it correctly.
-	ui.infoPluginList->setItemDelegateForColumn (   nameColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (captionColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
-	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	connect (serialDeviceEnumerator, SIGNAL (hasChanged (const QStringList &)), this, SLOT (populateSerialPortList ()));
+	populateSerialPortList ();
 
 	readSettings ();
 	updateWidgets ();
@@ -169,6 +137,60 @@ void SettingsWindow::setupText ()
 
 	// Required because we have a label with word wrap
 	adjustSize ();
+}
+
+void SettingsWindow::populateSerialPortList ()
+{
+	// The edit text will be replaced with the first entry added to the list, so
+	// we have to preserve it.
+	QString editText=ui.flarmSerialPortInput->currentText ();
+
+	// TODO in the serial ports list, also indicate .isBusy (); however: (a)
+	// don't indicate a port as busy if we're using it ourselves, and (b) update
+	// the list when the status of a port changes.
+
+	ui.flarmSerialPortInput->clear ();
+
+	// Populate the serial ports list - QSerialDevice library
+	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
+	foreach (const QString &deviceName, serialDeviceEnumerator->devicesAvailable ())
+	{
+		serialDeviceEnumerator->setDeviceName (deviceName);
+		QString deviceDescription=serialDeviceEnumerator->description ();
+
+		QString text=tr ("%1 (%2)").arg (deviceName).arg (deviceDescription);
+
+		ui.flarmSerialPortInput->addItem (text, deviceName);
+	}
+
+	//// Populate the serial ports list - QtSerialPort library
+	//foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
+	//{
+	//	QString portName=portInfo.portName ();
+	//	QString portDescription=portInfo.description ();
+	//
+	//	QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
+	//
+	//	ui.flarmSerialPortInput->addItem (text, portName);
+	//}
+
+	// Make boolean columns and some other columns read-only
+	// The title column is read-only because we would have to write back the
+	// value to the plugin after editing it so the plugin settings dialog show
+	// it correctly.
+	ui.infoPluginList->setItemDelegateForColumn (   nameColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (captionColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn (enabledColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+	ui.infoPluginList->setItemDelegateForColumn ( configColumn, new ReadOnlyItemDelegate (ui.infoPluginList));
+
+	// Restore the edit text. Note that the value will be restored even if the
+	// corresponding entry in the list (if any) does not exist any more. This is
+	// the correct behavior as the user may enter any port, even one that is not
+	// in the list.
+	// Note further that the cursor position and text selection may be changed.
+	// This only seems to be the case if the port that is currently entered in
+	// the text edit field is removed or added.
+	ui.flarmSerialPortInput->setEditText (editText);
 }
 
 
