@@ -31,7 +31,8 @@ SerialDataStream::SerialDataStream ():
 	connect (_port, SIGNAL (readyRead ()), this, SLOT (portDataReceived ()));
 
 	// QSerialDevice - not supported in QtSerialPort
-	connect (SerialDeviceEnumerator::instance (), SIGNAL (hasChanged (const QStringList &)), this, SLOT (availablePortsChanged (const QStringList &)));
+	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
+	connect (serialDeviceEnumerator, SIGNAL (hasChanged (const QStringList &)), this, SLOT (availablePortsChanged (const QStringList &)));
 }
 
 SerialDataStream::~SerialDataStream ()
@@ -83,8 +84,13 @@ void SerialDataStream::openConnection ()
 	//	connectionClosed (_port->errorString ());
 	//	return;
 	//}
-
 	_port->open (QIODevice::ReadOnly);
+	if (!_port->isOpen ())
+	{
+		connectionClosed (tr ("Connection did not open"));
+		return;
+	}
+
 	// QtSerialPort
 	//if (_port->error ()!=SerialPort::NoError)
 	//{
