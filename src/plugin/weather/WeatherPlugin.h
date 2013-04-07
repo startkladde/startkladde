@@ -27,7 +27,7 @@ class WeatherPlugin: public Plugin
 		class Descriptor
 		{
 			public:
-				virtual ~Descriptor ();
+				virtual ~Descriptor () {}
 
 				virtual WeatherPlugin *create () const=0;
 				virtual QUuid   getId          () const=0;
