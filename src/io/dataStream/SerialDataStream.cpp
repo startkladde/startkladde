@@ -12,6 +12,9 @@
 #include "3rdparty/qserialdevice/src/qserialdevice/abstractserial.h"
 #include "3rdparty/qserialdevice/src/qserialdeviceenumerator/serialdeviceenumerator.h"
 
+#include "src/i18n/notr.h"
+#include "src/text.h"
+
 // Improvements:
 //   * When "our" port becomes available again, we should attempt to reconnect
 //     immediately instead of waiting for the reconnect timer to expire.
@@ -67,11 +70,18 @@ void SerialDataStream::openConnection ()
 	// Open the port
 	//_port->clearError (); // QtSerialPort
 
+	if (isBlank (_portName))
+	{
+		qDebug () << qnotr ("No port specified");
+		connectionClosed (tr ("No port specified"));
+		return;
+	}
+
 	QStringList availableDevices=SerialDeviceEnumerator::instance ()->devicesAvailable ();
 	if (!availableDevices.contains (_portName, Qt::CaseInsensitive))
 	{
-		qDebug () << "The port does not exist";
-		connectionClosed (tr ("The port does not exist"));
+		qDebug () << qnotr ("The port %1 does not exist").arg (_portName);
+		connectionClosed (tr ("The port %1 does not exist").arg (_portName));
 		return;
 	}
 

@@ -197,6 +197,7 @@ QString FlarmRecord::stateText (flarmState state)
 
 void FlarmRecord::setState (flarmState state, const QString &comment)
 {
+	(void)comment;
 //	flarmState oldState=this->state;
 	this->state=state;
 
