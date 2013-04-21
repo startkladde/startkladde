@@ -28,13 +28,19 @@ TranslationManager *TranslationManager::theInstance;
 
 TranslationManager::TranslationManager ()
 {
-	// Set up the translation path
-	translationPath << QCoreApplication::applicationDirPath ()+notr ("/translations"); // Application directory/translations
-	translationPath << QLibraryInfo::location (QLibraryInfo::TranslationsPath); // Qt translations directory
-#ifdef Q_OS_UNIX
-	translationPath << QDir ("/usr/share/startkladde/translations");
-	translationPath << QDir ("/usr/local/share/startkladde/translations");
-#endif
+	// Load Qt translations from the Qt translations directory.
+	translationPath << QLibraryInfo::location (QLibraryInfo::TranslationsPath);
+
+	// Load application translations from one of two paths:
+	//   - the translations directory in the application directory
+	//   - the associated "share/startkladde/translations" directory for the
+	//     application directory. This also covers
+	//     /usr/share/startkladde/translations for the default installation.
+	// Note that this is unsatisfactory: there should be only one application
+	// translations path, configured by the build system.
+	QString appDir=QCoreApplication::applicationDirPath ();
+	translationPath << appDir+notr ("/translations");
+	translationPath << appDir+notr ("/../share/startkladde/translations");
 }
 
 TranslationManager::~TranslationManager ()
