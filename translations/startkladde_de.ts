@@ -1817,7 +1817,7 @@ Die Datei kann in den Einstellungen geändert werden.</translation>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="43"/>
         <source>Two-seated training</source>
-        <translation>Schulungsflug (einsitzig)</translation>
+        <translation type="unfinished">Schulungsflug (doppelsitzig)</translation>
     </message>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="44"/>
