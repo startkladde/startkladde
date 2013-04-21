@@ -15,7 +15,7 @@ class SerialDataStream: public DataStream
 		Q_OBJECT
 
 	public:
-		SerialDataStream ();
+		SerialDataStream (QObject *parent);
 		virtual ~SerialDataStream ();
 
 		void setPort (const QString &portName, int baudRate);

@@ -39,6 +39,7 @@
 #include "ui_MainWindow.h"
 
 #include "src/db/DbManager.h"
+#include "src/flarm/Flarm.h"
 #include "src/io/dataStream/DataStream.h" // For DataStream::State
 #include "src/gui/SkMainWindow.h"
 #include "src/model/FlightBase.h"
@@ -121,7 +122,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	protected slots:
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
-		void flarmStream_stateChanged (DataStream::State state);
+		void flarm_connectionStateChanged (Flarm::ConnectionState state);
 		void readTimeout ();
 		void readResumed ();
 
@@ -194,7 +195,6 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void on_flarmNetImportFileAction_triggered ();
 		void on_flarmNetImportWebAction_triggered ();
 		void on_actionFlarmNetWindow_triggered ();
-		void on_connectFlarmAction_triggered ();
 
 		// Menu: Database
 		void on_actionConnect_triggered ();
@@ -316,7 +316,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		QString debugFlarmId;
 //		bool flarmStreamValid;
 
-		DataStream::State flarmStreamState;
+		Flarm::ConnectionState flarmConnectionState;
 
 		// TODO: This is only used for Flarm and should be integrated with the
 		// Flarm handling (e. g. receive signals from the flight controller).

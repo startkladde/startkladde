@@ -53,7 +53,7 @@ class DataStream: public QObject
 		};
 
 		// Construction
-		DataStream ();
+		DataStream (QObject *parent);
 		virtual ~DataStream ();
 
 	public:

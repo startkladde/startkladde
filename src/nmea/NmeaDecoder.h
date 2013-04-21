@@ -21,7 +21,7 @@ class NmeaDecoder: public QObject
 		Q_OBJECT
 
 	public:
-		NmeaDecoder ();
+		NmeaDecoder (QObject *parent);
 		virtual ~NmeaDecoder ();
 
 	public slots:

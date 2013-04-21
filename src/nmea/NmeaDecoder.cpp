@@ -5,7 +5,7 @@
 #include "src/nmea/GprmcSentence.h"
 #include "src/nmea/PflaaSentence.h"
 
-NmeaDecoder::NmeaDecoder ()
+NmeaDecoder::NmeaDecoder (QObject *parent): QObject (parent)
 {
 }
 

@@ -110,10 +110,10 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 
 	// Flarm
 	connect (
-		&flarm, SIGNAL (streamStateChanged       (DataStream::State)),
-		this  , SLOT   (flarmStream_stateChanged (DataStream::State)));
-	ui.connectFlarmAction->setChecked (true);
-	on_connectFlarmAction_triggered ();
+		&flarm, SIGNAL (connectionStateChanged       (Flarm::ConnectionState)),
+		this  , SLOT   (flarm_connectionStateChanged (Flarm::ConnectionState)));
+	// This will cause a Flarm connection state change
+	flarm.open ();
 
 	connect (flarm.flarmList (), SIGNAL (departureDetected  (const QString &)), this, SLOT (flarmList_departureDetected  (const QString &)));
 	connect (flarm.flarmList (), SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
@@ -1978,26 +1978,32 @@ void MainWindow::flarmStreamLinkActivated (const QString &link)
 
 	QString text;
 
-	switch (flarmStreamState.errorType)
+	if (!flarmConnectionState.dataStreamState.isValid ())
+	{
+		// Oops
+		return;
+	}
+
+	switch (flarmConnectionState.dataStreamState->errorType)
 	{
 		case DataStream::noError:
 			// Should not happen
-			if (flarmStreamState.errorMessage.isEmpty ())
+			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
 				text=tr ("The connection encountered an error and will be reopened automatically.");
 			else
-				text=tr ("The connection encountered an error: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+				text=tr ("The connection encountered an error: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
 			break;
 		case DataStream::connectionFailedError:
-			if (flarmStreamState.errorMessage.isEmpty ())
+			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
 				text=tr ("The connection could not be established and will be reopened automatically.");
 			else
-				text=tr ("The connection could not be established: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+				text=tr ("The connection could not be established: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
 			break;
 		case DataStream::connectionLostError:
-			if (flarmStreamState.errorMessage.isEmpty ())
+			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
 				text=tr ("The connection was terminated and will be reopened automatically.");
 			else
-				text=tr ("The connection was terminated: %1. The connection will be reopened automatically.").arg (flarmStreamState.errorMessage);
+				text=tr ("The connection was terminated: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
 			break;
 	}
 
@@ -2010,49 +2016,56 @@ QString linkTo (const QString &target, const QString &text)
 	return qnotr ("<a href=\"%1\">%2</a>").arg (target).arg (text);
 }
 
-void MainWindow::flarmStream_stateChanged (DataStream::State state)
+void MainWindow::flarm_connectionStateChanged (Flarm::ConnectionState state)
 {
 	QString text;
 
 	QString linkTarget=notr ("flarmStreamErrorDetails");
 
-	switch (state.streamState)
+	if (state.enabled && state.dataStreamState.isValid ())
 	{
-		case DataStream::streamClosed          : text=tr ("Disabled")         ; break;
-		case DataStream::streamNoData          : text=tr ("Connected")        ; break;
-		case DataStream::streamDataOk          : text=tr ("OK")               ; break;
-		case DataStream::streamDataTimeout     : text=tr ("No data")          ; break;
-		case DataStream::streamConnecting      :
-			switch (state.errorType)
-			{
-				case DataStream::noError:
-					text=tr ("Connecting"); break;
-				case DataStream::connectionFailedError:
-					text=linkTo (linkTarget, tr ("Connection failed"))+qnotr (" - ")+tr ("reconnecting"); break;
-				case DataStream::connectionLostError:
-					text=linkTo (linkTarget, tr ("Connection lost"  ))+qnotr (" - ")+tr ("reconnecting"); break;
-				// no default
-			}
-			break;
-		case DataStream::streamConnectionError :
-			// TODO add the timeout as " - reconnect in x s"
-			switch (state.errorType)
-			{
-				case DataStream::noError:
-					// Ehm...should not happen
-					text=linkTo (linkTarget, tr ("Connection error" )); break;
-				case DataStream::connectionFailedError:
-					text=linkTo (linkTarget, tr ("Connection failed")); break;
-				case DataStream::connectionLostError:
-					text=linkTo (linkTarget, tr ("Connection lost"  )); break;
-				// no default
-			}
+		switch (state.dataStreamState->streamState)
+		{
+			case DataStream::streamClosed          : text=tr ("Disabled")         ; break;
+			case DataStream::streamNoData          : text=tr ("Connected")        ; break;
+			case DataStream::streamDataOk          : text=tr ("OK")               ; break;
+			case DataStream::streamDataTimeout     : text=tr ("No data")          ; break;
+			case DataStream::streamConnecting      :
+				switch (state.dataStreamState->errorType)
+				{
+					case DataStream::noError:
+						text=tr ("Connecting"); break;
+					case DataStream::connectionFailedError:
+						text=linkTo (linkTarget, tr ("Connection failed"))+qnotr (" - ")+tr ("reconnecting"); break;
+					case DataStream::connectionLostError:
+						text=linkTo (linkTarget, tr ("Connection lost"  ))+qnotr (" - ")+tr ("reconnecting"); break;
+					// no default
+				}
+				break;
+			case DataStream::streamConnectionError :
+				// TODO add the timeout as " - reconnect in x s"
+				switch (state.dataStreamState->errorType)
+				{
+					case DataStream::noError:
+						// Ehm...should not happen
+						text=linkTo (linkTarget, tr ("Connection error" )); break;
+					case DataStream::connectionFailedError:
+						text=linkTo (linkTarget, tr ("Connection failed")); break;
+					case DataStream::connectionLostError:
+						text=linkTo (linkTarget, tr ("Connection lost"  )); break;
+					// no default
+				}
 
-			break;
-		// no default
+				break;
+			// no default
+		}
+	}
+	else
+	{
+		text=tr ("Disabled");
 	}
 
-	flarmStreamState=state;
+	flarmConnectionState=state;
 	ui.flarmStateLabel->setText (text);
 }
 
@@ -2692,11 +2705,6 @@ void MainWindow::flarmList_touchAndGoDetected (const QString &flarmId)
 				tr ("The flight was created automatically"),
 				notificationDisplayTime);
 	}
-}
-
-void MainWindow::on_connectFlarmAction_triggered ()
-{
-	flarm.setOpen (ui.connectFlarmAction->isChecked ());
 }
 
 void MainWindow::on_showNotificationAction_triggered ()

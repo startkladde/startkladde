@@ -68,7 +68,7 @@
 // ** Construction **
 // ******************
 
-DataStream::DataStream ()
+DataStream::DataStream (QObject *parent): QObject (parent)
 {
 	// Initialize the state to closed
 	_state.streamState=streamClosed;

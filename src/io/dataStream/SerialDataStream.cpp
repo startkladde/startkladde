@@ -21,7 +21,7 @@
 //   * The time between plugging in a port and receiving the port changed signal
 //     is relatively long.
 
-SerialDataStream::SerialDataStream ():
+SerialDataStream::SerialDataStream (QObject *parent): DataStream (parent),
 	_baudRate (0)
 {
 	// Note that we don't send a signal for the initial connection state. This
@@ -72,7 +72,6 @@ void SerialDataStream::openConnection ()
 
 	if (isBlank (_portName))
 	{
-		qDebug () << qnotr ("No port specified");
 		connectionClosed (tr ("No port specified"));
 		return;
 	}
@@ -80,7 +79,6 @@ void SerialDataStream::openConnection ()
 	QStringList availableDevices=SerialDeviceEnumerator::instance ()->devicesAvailable ();
 	if (!availableDevices.contains (_portName, Qt::CaseInsensitive))
 	{
-		qDebug () << qnotr ("The port %1 does not exist").arg (_portName);
 		connectionClosed (tr ("The port %1 does not exist").arg (_portName));
 		return;
 	}

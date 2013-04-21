@@ -7,30 +7,36 @@
 #include "src/nmea/NmeaDecoder.h"
 #include "src/nmea/GpsTracker.h"
 
+// Data flow:
+//   Data stream --> NMEA decoder --.--> GPS tracker
+//                                  '--> Flarm list
+
 Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_dbManager (dbManager),
-	_dataStream (NULL), _open (false)
+	_p_dataStream (NULL), _open (false)
 {
-	// NMEA decoder
+	// Create the NMEA decoder
 	// The data stream will be created and connected to the NMEA decoder later,
-	// because the kind of stream may change.
-	_nmeaDecoder=new NmeaDecoder ();
+	// because the stream may change at runtime, depending on the configuration.
+	_nmeaDecoder=new NmeaDecoder (this);
 
-	// GPS tracker
+	// Create the GPS tracker and connect it to the NMEA decoder
 	_gpsTracker=new GpsTracker (this);
 	_gpsTracker->setNmeaDecoder (_nmeaDecoder);
 
-	// Flarm list
+	// Create the Flarm list and connect it to the NMEA decoder
 	_flarmList=new FlarmList (this);
 	_flarmList->setNmeaDecoder (_nmeaDecoder);
 	_flarmList->setDatabase (&dbManager);
 
+	// When the settings change, we may have to react
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 }
 
 Flarm::~Flarm ()
 {
-
+	// _dataStream, _nmeaDecoder, _gpsTracker and _flarmList will be removed
+	// automatically by Qt.
 }
 
 // ****************
@@ -46,66 +52,101 @@ void Flarm::setOpen (bool o)
 	updateOpen ();
 }
 
-template<class T> T *Flarm::ensureTypedDataStream ()
+Flarm::ConnectionState Flarm::connectionState ()
 {
-	T *typedDataStream=dynamic_cast<T *> (_dataStream);
+	ConnectionState state;
 
-	if (!typedDataStream)
+	if (dataStream ())
 	{
-		// Either there is no data stream, or it has the wrong type. Delete the
-		// old stream (if any), then create a new one with the correct type and
-		// store it in the class property.
-		delete _dataStream;
-		typedDataStream=new T ();
-		_dataStream=typedDataStream;
+		state.enabled=true;
+		state.dataStreamState=dataStream ()->state ();
+	}
+	else
+	{
+		state.enabled=false;
 	}
 
+	return state;
+}
+
+void Flarm::setDataStream (DataStream *dataStream)
+{
+	// Nothing to do if the data stream is already current (probably NULL).
+	if (_p_dataStream==dataStream)
+		return;
+
+	// Delete the old data stream, if any, and replace it with the new one.
+	delete _p_dataStream;
+	_p_dataStream=dataStream;
+
+	// If there is a data stream, connect its signals
+	if (_p_dataStream)
+	{
+		connect (
+			_p_dataStream , SIGNAL (lineReceived (const QString &)),
+			_nmeaDecoder  , SLOT   (lineReceived (const QString &)));
+
+		connect (
+			_p_dataStream, SIGNAL (stateChanged            (DataStream::State)),
+			this         , SLOT   (dataStream_stateChanged (DataStream::State)));
+	}
+
+	// The connection, and therefore, the connection state, changed
+	emit connectionStateChanged (connectionState ());
+}
+
+template<class T> T *Flarm::ensureTypedDataStream ()
+{
+	// Try to cast the existing data stream (if any) to the requested type.
+	T *typedDataStream=dynamic_cast<T *> (dataStream ());
+
+	// If the cast returned NULL, there is either no data stream, or it has the
+	// wrong type. In this case, create
+	if (!typedDataStream)
+	{
+		// Either there is no data stream, or it has the wrong type. Create a
+		// new one data stream with the correct type and store it.
+		typedDataStream=new T (this);
+		setDataStream (typedDataStream);
+	}
+
+	// Return the pre-existing or newly created data stream
 	return typedDataStream;
 }
 
 void Flarm::updateOpen ()
 {
+	// Make sure that the data stream has the correct type or is NULL, depending
+	// on the configuration.
 	Settings &s=Settings::instance ();
-
 	if (_open && s.flarmEnabled)
 	{
 		// Flarm stream
 		switch (s.flarmConnectionType)
 		{
 			case Flarm::noConnection:
-				// Delete the stream, if any. This will also disconnect its
-				// signals.
-				delete _dataStream;
-				_dataStream=NULL;
-				break;
+			{
+				setDataStream (NULL);
+			} break;
 			case Flarm::serialConnection:
-				ensureTypedDataStream<SerialDataStream> ()->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
-				break;
+			{
+				SerialDataStream *stream=ensureTypedDataStream<SerialDataStream> ();
+				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
+				stream->open ();
+			} break;
 			case Flarm::tcpConnection:
-				ensureTypedDataStream<TcpDataStream> ()->setTarget (s.flarmTcpHost, s.flarmTcpPort);
-				break;
-		}
-
-		if (_dataStream)
-		{
-			connect (
-				_dataStream , SIGNAL (lineReceived (const QString &)),
-				_nmeaDecoder, SLOT   (lineReceived (const QString &)));
-
-			connect (
-				_dataStream, SIGNAL (stateChanged       (DataStream::State)),
-				this       , SIGNAL (streamStateChanged (DataStream::State)));
-			emit streamStateChanged (_dataStream->state ());
-
-			_dataStream->open ();
+			{
+				TcpDataStream *stream=ensureTypedDataStream<TcpDataStream> ();
+				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
+				stream->open ();
+			} break;
+			// no default
 		}
 	}
 	else
 	{
-		if (_dataStream)
-			_dataStream->close ();
+		setDataStream (NULL);
 	}
-
 }
 
 
@@ -121,13 +162,22 @@ void Flarm::settingsChanged ()
 }
 
 
-// ************************
-// ** Data stream facade **
-// ************************
+// *****************
+// ** Data stream **
+// *****************
 
 bool Flarm::isDataValid ()
 {
-	return _dataStream->state ().isDataOk ();
+	if (dataStream ())
+		return dataStream ()->state ().isDataOk ();
+	else
+		return false;
+}
+
+void Flarm::dataStream_stateChanged (DataStream::State state)
+{
+	(void)state;
+	emit connectionStateChanged (connectionState ());
 }
 
 

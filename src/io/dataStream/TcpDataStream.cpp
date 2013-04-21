@@ -7,7 +7,7 @@
 // ** Construction **
 // ******************
 
-TcpDataStream::TcpDataStream ():
+TcpDataStream::TcpDataStream (QObject *parent): DataStream (parent),
 	_port (0)
 {
 	// Note that we don't send a signal for the initial connection state. This

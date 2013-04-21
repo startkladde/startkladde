@@ -13,7 +13,7 @@ class TcpDataStream: public DataStream
 		Q_OBJECT
 
 	public:
-		TcpDataStream ();
+		TcpDataStream (QObject *parent);
 		virtual ~TcpDataStream ();
 
 		void setTarget (const QString &host, uint16_t port);
