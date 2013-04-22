@@ -54,7 +54,7 @@ FlarmNetWindow::FlarmNetWindow (DbManager &dbManager, QWidget *parent):
 	EntityList<FlarmNetRecord> dummyList;
 	dummyList.append (FlarmNetRecord ());
 	FlarmNetRecordModel dummyObjectModel;
-	ObjectListModel<FlarmNetRecord> dummyListModel (false);
+	ObjectListModel<FlarmNetRecord> dummyListModel (this);
 	dummyListModel.setList  (&dummyList       , false);
 	dummyListModel.setModel (&dummyObjectModel, false);
 	ui.flarmNetTable->setModel (&dummyListModel);

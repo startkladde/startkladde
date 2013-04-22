@@ -247,6 +247,8 @@ int test_database ()
 
 void testUi (QApplication &a)
 {
+	(void)a;
+
 	ChoiceDialog dialog (NULL);
 	dialog.setText ("<html><b>Choose</b></html>:");
 	dialog.addOption ("&Foo");

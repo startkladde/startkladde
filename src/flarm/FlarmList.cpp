@@ -174,4 +174,5 @@ QList<FlarmRecord> FlarmList::getList () const
 	// We cannot implement this because we cannot store FlarmRecord in a
 	// Qt container. This list stores pointer to FlarmRecord.
 	assert (!"Not supported");
+	exit (1);
 }
