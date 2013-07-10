@@ -47,8 +47,6 @@ ManagedDataStream::~ManagedDataStream ()
 
 void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 {
-	qDebug () << "ManagedDataStream: set data stream";
-
 	// If the stream is already current, stop
 	if (_stream==stream)
 		return;
@@ -96,7 +94,6 @@ DataStream *ManagedDataStream::getDataStream () const
 
 void ManagedDataStream::open ()
 {
-	qDebug () << "ManagedDataStream: open";
 	_open=true;
 
 	if (_stream)
@@ -195,12 +192,8 @@ void ManagedDataStream::stream_stateChanged ()
 	switch (state)
 	{
 		case DataStream::closedState:
-			qDebug () << "Yes, it's closed";
 			if (_open)
-			{
-				qDebug () << "Start reconnect timer";
 				_reconnectTimer->start ();
-			}
 			break;
 		case DataStream::openingState:
 			break;
@@ -216,20 +209,4 @@ void ManagedDataStream::stream_dataReceived (QByteArray data)
 
 	// Start or restart the data timer
 	_dataTimer->start ();
-
-	// FIXME this should be done either in NmeaDecoder (using a separate class)
-	// or between the stream and the NmeaDecoder.
-	// Process the data
-	// Example:
-	//   f o o \n b a r \n b
-	//   0 1 2 3  4 5 6 7  8
-	buffer.append (QString::fromUtf8 (data));
-	int pos=0;
-	while ((pos=buffer.indexOf ("\n"))>=0)
-	{
-		QString line=buffer.left (pos).trimmed ();
-		buffer.remove (0, pos+1);
-		emit lineReceived (line);
-	}
 }
-

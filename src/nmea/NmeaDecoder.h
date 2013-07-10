@@ -25,7 +25,8 @@ class NmeaDecoder: public QObject
 		virtual ~NmeaDecoder ();
 
 	public slots:
-		void lineReceived (const QString &line);
+		void processData (const QByteArray &data);
+		void processLine (const QString &line);
 
 	signals:
 		void gprmcSentence (const GprmcSentence &sentence);

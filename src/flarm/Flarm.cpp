@@ -36,7 +36,7 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_flarmList->setDatabase (&dbManager);
 
 	connect (_managedDataStream, SIGNAL (lineReceived (const QString &)),
-	         _nmeaDecoder      , SLOT   (lineReceived (const QString &)));
+	         _nmeaDecoder      , SLOT   (processLine  (const QString &)));
 
 	// When the settings change, we may have to react
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
