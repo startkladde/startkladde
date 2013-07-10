@@ -44,6 +44,7 @@ class Flarm: public QObject
 		GeoPosition getPosition () const;
 		QDateTime getGpsTime () const;
 
+		bool isOpen () const;
 
 	public slots:
 		void open  ();

@@ -58,6 +58,7 @@ Flarm::~Flarm ()
 void Flarm::open    ()       { _managedDataStream->open    ();  }
 void Flarm::close   ()       { _managedDataStream->close   ();  }
 void Flarm::setOpen (bool o) { _managedDataStream->setOpen (o); }
+bool Flarm::isOpen  () const { return _managedDataStream->isOpen (); }
 
 template<class T> T *Flarm::ensureTypedDataStream ()
 {

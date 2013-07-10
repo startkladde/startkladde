@@ -503,6 +503,7 @@
     <property name="title">
      <string>Fla&amp;rm</string>
     </property>
+    <addaction name="openFlarmAction"/>
     <addaction name="separator"/>
     <addaction name="actionFlarmRadar"/>
     <addaction name="actionFlarmPlaneList"/>
@@ -1010,6 +1011,17 @@
   <action name="encodeFlarmNetFileAction">
    <property name="text">
     <string>E&amp;ncode FlarmNet file</string>
+   </property>
+  </action>
+  <action name="openFlarmAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Op&amp;en</string>
    </property>
   </action>
  </widget>

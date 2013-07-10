@@ -114,6 +114,11 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 		this  , SLOT   (flarm_connectionStateChanged (Flarm::ConnectionState)));
 	// This will cause a Flarm connection state change
 	flarm.open ();
+	ui.openFlarmAction->setChecked (flarm.isOpen ());
+
+	// TODO this action should only be enabled if the Flarm connection type is
+	// not "none"
+	connect (ui.openFlarmAction, SIGNAL (toggled (bool)), &flarm, SLOT (setOpen (bool)));
 
 	connect (flarm.flarmList (), SIGNAL (departureDetected  (const QString &)), this, SLOT (flarmList_departureDetected  (const QString &)));
 	connect (flarm.flarmList (), SIGNAL (landingDetected    (const QString &)), this, SLOT (flarmList_landingDetected    (const QString &)));
