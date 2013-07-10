@@ -47,6 +47,8 @@ ManagedDataStream::~ManagedDataStream ()
 
 void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 {
+	qDebug () << "ManagedDataStream: set data stream";
+
 	// If the stream is already current, stop
 	if (_stream==stream)
 		return;
@@ -77,6 +79,11 @@ void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 	}
 }
 
+void ManagedDataStream::clearDataStream ()
+{
+	setDataStream (NULL, false);
+}
+
 DataStream *ManagedDataStream::getDataStream () const
 {
 	return _stream;
@@ -89,6 +96,7 @@ DataStream *ManagedDataStream::getDataStream () const
 
 void ManagedDataStream::open ()
 {
+	qDebug () << "ManagedDataStream: open";
 	_open=true;
 
 	if (_stream)
@@ -101,6 +109,8 @@ void ManagedDataStream::open ()
 
 void ManagedDataStream::close ()
 {
+	_open=false;
+
 	// Stop the timers. Note that a timer event may still be in the event queue,
 	// so timer slots may be invoked even when the connection is closed.
 	_dataTimer     ->stop ();
@@ -141,6 +151,7 @@ bool ManagedDataStream::isOpen () const
 void ManagedDataStream::reconnectTimer_timeout ()
 {
 	qDebug () << "ManagedDataStream: reconnect timeout";
+
 	// Ignore if the stream is not open (see above)
 	if (!_open)
 		return;
@@ -176,8 +187,27 @@ void ManagedDataStream::dataTimer_timeout ()
 
 void ManagedDataStream::stream_stateChanged ()
 {
-	qDebug () << "ManagedDataStream: stream state changed to " <<
-		DataStream::stateText (_stream->getState ());
+	DataStream::State state=_stream->getState ();
+
+	qDebug () << "ManagedDataStream: stream state changed to" <<
+		DataStream::stateText (state);
+
+	switch (state)
+	{
+		case DataStream::closedState:
+			qDebug () << "Yes, it's closed";
+			if (_open)
+			{
+				qDebug () << "Start reconnect timer";
+				_reconnectTimer->start ();
+			}
+			break;
+		case DataStream::openingState:
+			break;
+		case DataStream::openState:
+			break;
+		// no default
+	}
 }
 
 void ManagedDataStream::stream_dataReceived (QByteArray data)

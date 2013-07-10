@@ -17,6 +17,7 @@ class ManagedDataStream: public QObject
 		virtual ~ManagedDataStream ();
 
 		void setDataStream (DataStream *stream, bool streamOwned);
+		void clearDataStream ();
 		DataStream *getDataStream () const;
 
 	public slots:

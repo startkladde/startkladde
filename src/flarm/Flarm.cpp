@@ -14,7 +14,7 @@
 //                                  '--> Flarm list
 
 Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
-	_dbManager (dbManager), _open (false)
+	_dbManager (dbManager)
 {
 	// Create the managed data stream (but do not create the underlying data
 	// stream at this point). _managedDataStream will be deleted automatically
@@ -40,6 +40,8 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 
 	// When the settings change, we may have to react
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
+
+	updateDataStream ();
 }
 
 Flarm::~Flarm ()
@@ -52,14 +54,10 @@ Flarm::~Flarm ()
 // ** Connection **
 // ****************
 
-void Flarm::open  () { setOpen (true ); }
-void Flarm::close () { setOpen (false); }
-
-void Flarm::setOpen (bool o)
-{
-	_open=o;
-	updateOpen ();
-}
+// Forward open/close methods to the managed data stream.
+void Flarm::open    ()       { _managedDataStream->open    ();  }
+void Flarm::close   ()       { _managedDataStream->close   ();  }
+void Flarm::setOpen (bool o) { _managedDataStream->setOpen (o); }
 
 template<class T> T *Flarm::ensureTypedDataStream ()
 {
@@ -80,47 +78,44 @@ template<class T> T *Flarm::ensureTypedDataStream ()
 	return typedDataStream;
 }
 
-void Flarm::updateOpen ()
+void Flarm::updateDataStream ()
 {
 	// Make sure that the data stream has the correct type or is NULL, depending
 	// on the configuration.
 	Settings &s=Settings::instance ();
-	if (_open && s.flarmEnabled)
+	if (s.flarmEnabled)
 	{
 		// Flarm stream
 		switch (s.flarmConnectionType)
 		{
 			case Flarm::noConnection:
 			{
-				_managedDataStream->setDataStream (NULL, false);
+				_managedDataStream->clearDataStream ();
 			} break;
 			case Flarm::serialConnection:
 			{
 //				SerialDataStream *stream=ensureTypedDataStream<SerialDataStream> ();
 //				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
-//				stream->open ();
-				_managedDataStream->setDataStream (NULL, false);
+				_managedDataStream->clearDataStream ();
 			} break;
 			case Flarm::tcpConnection:
 			{
 //				TcpDataStream *stream=ensureTypedDataStream<TcpDataStream> ();
 //				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
-//				stream->open ();
-				_managedDataStream->setDataStream (NULL, false);
+				_managedDataStream->clearDataStream ();
 			} break;
 			case Flarm::fileConnection:
 			{
 				FileDataStream *stream=ensureTypedDataStream<FileDataStream> ();
 				stream->setFileName (s.flarmFileName);
 				stream->setDelay (s.flarmFileDelayMs);
-				stream->open ();
 			} break;
 			// no default
 		}
 	}
 	else
 	{
-		_managedDataStream->setDataStream (NULL, false);
+		_managedDataStream->clearDataStream ();
 	}
 }
 
@@ -131,9 +126,9 @@ void Flarm::updateOpen ()
 
 void Flarm::settingsChanged ()
 {
-	// The "Flarm enabled" setting may have changed, so we may have to open or
-	// close the connection. Same for the connection type and parameters.
-	updateOpen ();
+	// The Flarm enabled, connection type or connection parameters may have
+	// changed. We may have to change the connection type.
+	updateDataStream ();
 }
 
 

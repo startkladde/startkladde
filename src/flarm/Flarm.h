@@ -51,7 +51,7 @@ class Flarm: public QObject
 		void setOpen (bool open);
 
 	protected:
-		void updateOpen ();
+		void updateDataStream ();
 
 	protected slots:
 		void settingsChanged ();
@@ -66,8 +66,6 @@ class Flarm: public QObject
 		NmeaDecoder *_nmeaDecoder;
 		GpsTracker  *_gpsTracker;
 		FlarmList   *_flarmList;
-
-		bool _open;
 };
 
 #endif
