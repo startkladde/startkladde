@@ -1,101 +1,48 @@
 #ifndef DATASTREAM_H_
 #define DATASTREAM_H_
 
-#include <QBuffer>
 #include <QObject>
 
 class QTimer;
 
-/**
- *
- */
+// FIXME this (and implementations) must be thread safe
 class DataStream: public QObject
 {
-		Q_OBJECT
+	Q_OBJECT
 
 	public:
-		enum StreamState
-		{
-			streamClosed,
-			streamConnecting,
-			streamNoData,
-			streamDataOk,
-			streamDataTimeout,
-			streamConnectionError
-		};
+		enum State { closedState, openingState, openState };
 
-		enum ErrorType
-		{
-			noError,
-			connectionFailedError,
-			connectionLostError
-		};
-
-		struct State
-		{
-			// State
-			StreamState streamState;
-
-			// Auxiliary data, state dependent
-			int timeRemaining;
-			ErrorType errorType;
-			QString errorMessage;
-
-			// State properties
-			bool isOpen      () { return streamState != streamClosed;      }
-			bool isConnected () { return streamState == streamNoData ||
-			                             streamState == streamDataOk ||
-			                             streamState == streamDataTimeout; }
-			bool isDataOk    () { return streamState == streamDataOk;      }
-
-			bool operator== (const State &other) const;
-			bool operator!= (const State &other) const;
-		};
-
-		// Construction
 		DataStream (QObject *parent);
 		virtual ~DataStream ();
 
-	public:
-		// Public interface
-		State state () const;
+		State getState ();
+		static QString stateText (State state);
 
 	public slots:
-		// Public interface
-		void open ();
-		void close ();
-		void setOpen (bool o);
+		virtual void open ();
+		virtual void close ();
+		virtual void setOpen (bool o);
 
 	signals:
-		// Public interface
-		void stateChanged (DataStream::State state);
-		void lineReceived (QString line);
+		void stateChanged ();
+		void dataReceived (QByteArray data);
 
 	protected:
-		// Stream implementation
-		virtual void openConnection  ()=0;
-		virtual void closeConnection ()=0;
-
 		// Implementation interface
-		void connectionOpened ();
-		void connectionClosed (const QString &message);
-		void dataReceived (const QByteArray &data);
-		void parametersChanged ();
+		virtual void openStream ()=0;
+		virtual void closeStream ()=0;
+
+		virtual void streamOpened ();
+		virtual void streamError ();
+
+		virtual void streamDataReceived (const QByteArray &data);
 
 	private:
+		void setState (State state);
+
 		State _state;
-
-	    QTimer *dataTimer;
-	    QTimer *reconnectTimer;
-
-	    QString buffer;
-
-	    void setState (StreamState streamState, int timeRemaining=0, ErrorType errorType=noError, const QString &errorMessage=QString ());
-
-	private slots:
-		void dataTimerTimeout ();
-		void reconnectTimerTimeout ();
-
+		QString _buffer;
 };
 
 #endif

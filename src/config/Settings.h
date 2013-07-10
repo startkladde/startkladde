@@ -59,6 +59,8 @@ class Settings: public QObject
 		int      flarmSerialBaudRate;
 		QString  flarmTcpHost;
 		uint16_t flarmTcpPort;
+		QString  flarmFileName;
+		int      flarmFileDelayMs;
 		bool flarmAutoDepartures; // Also landings and touch-and-gos
 		bool flarmDataViewable;
 		QString flarmMapKmlFileName;

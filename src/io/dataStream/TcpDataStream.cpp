@@ -1,7 +1,7 @@
 #include "TcpDataStream.h"
 
 #include <QTcpSocket>
-#include <QTimer>
+
 
 // ******************
 // ** Construction **
@@ -15,6 +15,7 @@ TcpDataStream::TcpDataStream (QObject *parent): DataStream (parent),
 
 	// Create the socket and connect the required signals. _socket will be
 	// deleted automatically by its parent (this).
+	// FIXME don't create in constructor - we may be on a background thread
 	_socket=new QTcpSocket (this);
 	connect (_socket, SIGNAL (readyRead    ()                            ), this, SLOT (socketDataReceived ()                            ));
     connect (_socket, SIGNAL (error        (QAbstractSocket::SocketError)), this, SLOT (socketError        (QAbstractSocket::SocketError)));
@@ -38,9 +39,9 @@ void TcpDataStream::setTarget (const QString &host, uint16_t port)
 
 	_host=host;
 	_port=port;
-
-	if (changed)
-		parametersChanged ();
+//
+//	if (changed)
+//		parametersChanged ();
 }
 
 
@@ -48,7 +49,7 @@ void TcpDataStream::setTarget (const QString &host, uint16_t port)
 // ** DataStream methods **
 // ************************
 
-void TcpDataStream::openConnection  ()
+void TcpDataStream::openStream ()
 {
 	if (_socket->state () != QAbstractSocket::UnconnectedState)
 		_socket->abort ();
@@ -56,7 +57,7 @@ void TcpDataStream::openConnection  ()
 	_socket->connectToHost (_host, _port, QIODevice::ReadOnly);
 }
 
-void TcpDataStream::closeConnection ()
+void TcpDataStream::closeStream ()
 {
 	_socket->abort ();
 }
@@ -80,7 +81,7 @@ void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState
 	//qDebug () << "TcpDataStream: socket state changed to" << socketState;
 
 	if (socketState == QAbstractSocket::ConnectedState)
-		connectionOpened ();
+		streamOpened ();
 }
 
 /**
@@ -95,5 +96,6 @@ void TcpDataStream::socketError (QAbstractSocket::SocketError error)
 
 	// Make sure that the socket is closed
 	_socket->abort ();
-	connectionClosed (_socket->errorString ());
+//	streamError (_socket->errorString ()); // FIXME do use error string
+	streamError ();
 }

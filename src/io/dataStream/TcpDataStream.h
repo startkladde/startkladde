@@ -10,7 +10,7 @@ class QTcpSocket;
 
 class TcpDataStream: public DataStream
 {
-		Q_OBJECT
+	Q_OBJECT
 
 	public:
 		TcpDataStream (QObject *parent);
@@ -19,9 +19,9 @@ class TcpDataStream: public DataStream
 		void setTarget (const QString &host, uint16_t port);
 
 	protected:
-		// Stream implementation
-		virtual void openConnection  ();
-		virtual void closeConnection ();
+		// DataStream methods
+		virtual void openStream ();
+		virtual void closeStream ();
 
 	private:
 	    QTcpSocket *_socket;

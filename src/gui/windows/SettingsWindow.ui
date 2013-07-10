@@ -480,17 +480,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="5" column="0" colspan="2">
-           <widget class="QCheckBox" name="flarmAutoDeparturesCheckbox">
-            <property name="toolTip">
-             <string>&lt;html&gt;If enabled, data from the connected flarm device will be used to automatically detect departures, landings and touch-and-gos.&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>&amp;Automatic detection of departures, landings and touch-and-gos</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
+          <item row="9" column="1">
            <widget class="QWidget" name="widget_6" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="margin">
@@ -513,7 +503,36 @@
             </layout>
            </widget>
           </item>
-          <item row="6" column="0" colspan="2">
+          <item row="5" column="1">
+           <widget class="QWidget" name="flarmFileNamePane" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLineEdit" name="flarmFileNameInput"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="browseFlarmFileButton">
+               <property name="text">
+                <string>Browse</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="2">
+           <widget class="QCheckBox" name="flarmAutoDeparturesCheckbox">
+            <property name="toolTip">
+             <string>&lt;html&gt;If enabled, data from the connected flarm device will be used to automatically detect departures, landings and touch-and-gos.&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>&amp;Automatic detection of departures, landings and touch-and-gos</string>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="2">
            <widget class="QCheckBox" name="flarmDataViewableCheckbox">
             <property name="toolTip">
              <string>&lt;html&gt;If enabled, the Flarm radar and a list of received planes can be viewed.&lt;/html&gt;</string>
@@ -523,7 +542,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Flarm radar &amp;KML file:</string>
@@ -580,6 +599,16 @@
             </property>
             <property name="buddy">
              <cstring>flarmTcpPortInput</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="flarmTcpHostInput"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="flarmSerialPortInput">
+            <property name="editable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -677,9 +706,6 @@
             </layout>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="flarmTcpHostInput"/>
-          </item>
           <item row="4" column="1">
            <widget class="QWidget" name="flarmTcpPortPane" native="true">
             <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -712,11 +738,56 @@
             </layout>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="flarmSerialPortInput">
-            <property name="editable">
-             <bool>true</bool>
+          <item row="5" column="0">
+           <widget class="QLabel" name="flarmFileNameLabel">
+            <property name="text">
+             <string>Fil&amp;e name:</string>
             </property>
+            <property name="buddy">
+             <cstring>flarmFileNameInput</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="flarmFileDelayLabel">
+            <property name="text">
+             <string>Dela&amp;y:</string>
+            </property>
+            <property name="buddy">
+             <cstring>flarmFileDelayInput</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QWidget" name="flarmFileDelayPane" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QSpinBox" name="flarmFileDelayInput">
+               <property name="suffix">
+                <string> ms</string>
+               </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -1393,6 +1464,9 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
   <tabstop>flarmSerialBaudRateInput</tabstop>
   <tabstop>flarmTcpHostInput</tabstop>
   <tabstop>flarmTcpPortInput</tabstop>
+  <tabstop>flarmFileNameInput</tabstop>
+  <tabstop>browseFlarmFileButton</tabstop>
+  <tabstop>flarmFileDelayInput</tabstop>
   <tabstop>flarmAutoDeparturesCheckbox</tabstop>
   <tabstop>flarmDataViewableCheckbox</tabstop>
   <tabstop>flarmMapKmlFileNameInput</tabstop>
@@ -1432,8 +1506,8 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>100</x>
-     <y>777</y>
+     <x>109</x>
+     <y>535</y>
     </hint>
     <hint type="destinationlabel">
      <x>2</x>

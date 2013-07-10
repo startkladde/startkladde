@@ -242,6 +242,8 @@ void SettingsWindow::readSettings ()
 	                                             s.flarmSerialBaudRate));
 	ui.flarmTcpHostInput          ->setText     (s.flarmTcpHost);
 	ui.flarmTcpPortInput          ->setValue    (s.flarmTcpPort);
+	ui.flarmFileNameInput         ->setText     (s.flarmFileName);
+	ui.flarmFileDelayInput        ->setValue    (s.flarmFileDelayMs);
 	ui.flarmAutoDeparturesCheckbox->setChecked  (s.flarmAutoDepartures);
 	ui.flarmDataViewableCheckbox  ->setChecked  (s.flarmDataViewable);
 	ui.flarmMapKmlFileNameInput   ->setText     (s.flarmMapKmlFileName);
@@ -332,6 +334,8 @@ void SettingsWindow::writeSettings ()
 	s.flarmSerialBaudRate=ui.flarmSerialBaudRateInput   ->currentText ().toInt ();
 	s.flarmTcpHost       =ui.flarmTcpHostInput          ->text ();
 	s.flarmTcpPort       =ui.flarmTcpPortInput          ->value ();
+	s.flarmFileName      =ui.flarmFileNameInput         ->text ();
+	s.flarmFileDelayMs   =ui.flarmFileDelayInput        ->value ();
 	s.flarmAutoDepartures=ui.flarmAutoDeparturesCheckbox->isChecked ();
 	s.flarmDataViewable  =ui.flarmDataViewableCheckbox  ->isChecked ();
 	s.flarmMapKmlFileName=ui.flarmMapKmlFileNameInput   ->text ();
@@ -394,6 +398,28 @@ QStringList SettingsWindow::getPluginPaths ()
 	return pluginPaths;
 }
 
+
+// ***********
+// ** Flarm **
+// ***********
+
+void SettingsWindow::on_browseFlarmFileButton_clicked ()
+{
+	// TODO: code duplication - browse functionality
+	QString currentFileName=ui.flarmFileNameInput->text ();
+
+	QString fileName=QFileDialog::getOpenFileName (
+		this,
+		tr ("Select Flarm file"),
+		existingParentDirectory (currentFileName, QDir ()).absolutePath (),
+		notr ("*.txt"),
+		NULL,
+		0
+		);
+
+	if (!fileName.isEmpty ())
+		ui.flarmFileNameInput->setText (fileName);
+}
 
 // *****************
 // ** Plugin path **
@@ -764,6 +790,11 @@ void SettingsWindow::updateWidgets ()
 	ui.flarmTcpHostInput->setVisible (connectionType==Flarm::tcpConnection);
 	ui.flarmTcpPortLabel->setVisible (connectionType==Flarm::tcpConnection);
 	ui.flarmTcpPortPane ->setVisible (connectionType==Flarm::tcpConnection);
+
+	ui.flarmFileNamePane  ->setVisible (connectionType==Flarm::fileConnection);
+	ui.flarmFileNameLabel ->setVisible (connectionType==Flarm::fileConnection);
+	ui.flarmFileDelayPane ->setVisible (connectionType==Flarm::fileConnection);
+	ui.flarmFileDelayLabel->setVisible (connectionType==Flarm::fileConnection);
 }
 
 
