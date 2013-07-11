@@ -32,7 +32,6 @@ FileDataStream::~FileDataStream ()
 
 void FileDataStream::setFileName (const QString &fileName)
 {
-	qDebug () << "FileDataStream: set file name" << fileName;
 	bool changed=false;
 	if (fileName!=_fileName) changed=true;
 
@@ -44,7 +43,6 @@ void FileDataStream::setFileName (const QString &fileName)
 
 void FileDataStream::setDelay (int milliseconds)
 {
-	qDebug () << "FileDataStream: set delay" << milliseconds << "ms";
 	bool changed=false;
 	if (milliseconds!=_delayMs) changed=true;
 
@@ -64,7 +62,7 @@ void FileDataStream::openStream ()
 	qDebug () << "FileDataStream: pre-open delay";
 	DefaultQThread::sleep (2);
 
-	qDebug () << "FileDataStream: openStream";
+//	qDebug () << "FileDataStream: openStream";
 	if (_file->isOpen ())
 		_file->close ();
 
@@ -85,7 +83,7 @@ void FileDataStream::openStream ()
 
 void FileDataStream::closeStream ()
 {
-	qDebug () << "FileDataStream: closeStream";
+//	qDebug () << "FileDataStream: closeStream";
 	_file->close ();
 	_timer->stop ();
 }

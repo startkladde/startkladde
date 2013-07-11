@@ -7,7 +7,7 @@
 
 #include "src/container/Maybe.h"
 #include "src/numeric/GeoPosition.h"
-#include "src/io/dataStream/DataStream.h" // For DataStream::State
+#include "src/io/dataStream/ManagedDataStream.h" // For ManagedDataStream::State::Type
 
 class DbManager;
 class FlarmList;
@@ -51,12 +51,15 @@ class Flarm: public QObject
 		void close ();
 		void setOpen (bool open);
 
+	signals:
+		void streamStateChanged (ManagedDataStream::State::Type state);
+
 	protected:
 		void updateDataStream ();
 
 	protected slots:
 		void settingsChanged ();
-//		void dataStream_stateChanged (DataStream::State state);
+		void managedDataStream_stateChanged (ManagedDataStream::State::Type state);
 
 	private:
 		template<class T> T *ensureTypedDataStream ();

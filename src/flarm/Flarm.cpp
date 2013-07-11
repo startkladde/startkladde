@@ -13,6 +13,12 @@
 //   Data stream --> NMEA decoder --.--> GPS tracker
 //                                  '--> Flarm list
 
+// Improvements:
+//   * We should have a Flarm connection state extending the ManagedDataStream
+//     connection state which also includes "disabled" (no connection
+//     configured, as opposed to configured but closed) and "data not
+//     recognized" if data is received, but no NMEA sentences can be recognized.
+
 Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_dbManager (dbManager)
 {
@@ -35,8 +41,11 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	_flarmList->setNmeaDecoder (_nmeaDecoder);
 	_flarmList->setDatabase (&dbManager);
 
-	connect (_managedDataStream, SIGNAL (lineReceived (const QString &)),
-	         _nmeaDecoder      , SLOT   (processLine  (const QString &)));
+	connect (_managedDataStream, SIGNAL (dataReceived (QByteArray)),
+	         _nmeaDecoder      , SLOT   (processData  (QByteArray)));
+
+	connect (_managedDataStream, SIGNAL (stateChanged                   (ManagedDataStream::State::Type)),
+	         this              , SLOT   (managedDataStream_stateChanged (ManagedDataStream::State::Type)));
 
 	// When the settings change, we may have to react
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
@@ -147,12 +156,11 @@ bool Flarm::isDataValid ()
 //		return false;
 }
 
-//void Flarm::dataStream_stateChanged (DataStream::State state)
-//{
-//	// FIXME implement
-//	(void)state;
-////	emit connectionStateChanged (connectionState ());
-//}
+void Flarm::managedDataStream_stateChanged (ManagedDataStream::State::Type state)
+{
+	qDebug () << "Flarm: data stream state changed to" << ManagedDataStream::stateText (state);
+	emit streamStateChanged (state);
+}
 
 
 // ************************

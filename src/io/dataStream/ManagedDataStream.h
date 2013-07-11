@@ -12,10 +12,17 @@ class ManagedDataStream: public QObject
 	Q_OBJECT
 
 	public:
+		struct State { enum Type { closed, opening, open, ok, timeout, error }; };
+
 		// Construction
 		ManagedDataStream (QObject *parent);
 		virtual ~ManagedDataStream ();
 
+		// State
+		State::Type getState () const;
+		static QString stateText (State::Type state);
+
+		// Underlying data stream
 		void setDataStream (DataStream *stream, bool streamOwned);
 		void clearDataStream ();
 		DataStream *getDataStream () const;
@@ -29,19 +36,25 @@ class ManagedDataStream: public QObject
 
 	signals:
 		// Public interface
-		void dataReceived (QString line);
-		void lineReceived (QString line);
+		void dataReceived (QByteArray line);
+		void stateChanged (ManagedDataStream::State::Type state);
+
+	protected:
+		void setState (State::Type state);
 
 	private:
 		DataStream *_stream;
 		bool _streamOwned;
 
+		// Configuration
 		bool _open;
 
+		// State
+		State::Type _state;
+
+		// Internals
 	    QTimer *_dataTimer;
 	    QTimer *_reconnectTimer;
-
-	    QString buffer;
 
 	private slots:
 		void dataTimer_timeout ();
