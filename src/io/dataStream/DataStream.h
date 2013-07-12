@@ -5,32 +5,95 @@
 
 class QTimer;
 
-// FIXME this (and implementations) must be thread safe
+/**
+ * The abstract base class for DataStream implementations
+ *
+ * The DataStream architecture provides a common interface to different
+ * communication channels, such as serial, network, or reading from a file.
+ * Additionally, the interface consists mostly of signals and slots, which
+ * facilitates running a DataStream instance on a background thread.
+ *
+ * At any given time, a data stream is in one of three states:
+ *   - closed: the data stream has not been opened, or it has been closed, or
+ *     it was closed due to failure (e. g. TCP connection terminated)
+ *   - opening: the data stream has been requested to open, but is not open yet
+ *     (e. g. a TCP data stream waiting for the remote side to accept the
+ *     connection). An opening stream will go to the open state if the
+ *     connection succeeds, or to the closed state if the connection fails
+ *     (e. g. the remote side refusing a TCP connection).
+ *   - open: the data stream has successfully been opened
+ *
+ * A data stream is configured (e. g. setting the remote host and port for a TCP
+ * data stream) using implementation-specific methods. It is then opened by
+ * calling the `open` method, causing it to go to the `opening` state (before
+ * the `open` method returns).
+ * After that, it will either go to the `open` state (on success) or to the
+ * `closed` state (on failure). Depending on the implementation, this may either
+ * happen immediately before the `open` method returns or later.
+ *
+ * The stream is closed by calling the `close` method.
+ *
+ * Whenever the state changes, the stateChanged signal is emitted. The current
+ * state can also be queried using the getState method. Note, however, that the
+ * state may change autonomously in response to a connection event (e. g. a TCP
+ * connection being terminated) and a signal may be delayed in the event queue.
+ * Therefore, when receiving a stateChanged signal, the getState method may
+ * actually return a different state than the one which was passed in the
+ * stateChanged event. This is particularly true if the DataStream is running on
+ * a background thread.
+ *
+ * When data is received by the stream, the dataReceived signal will be emitted.
+ * There are currently no provisions for transmitting data.
+ *
+ * A wrapper that runs a DataStream on a background thread is available in
+ * BackgroundDataStream. A wrapper that automatically reconnects a DataStream
+ * and monitors data flow is available in ManagedDataStream.
+ *
+ * Implementations should document whether they block on opening or return
+ * immediately.
+ */
 class DataStream: public QObject
 {
 	Q_OBJECT
 
 	public:
+		// Types
 		enum State { closedState, openingState, openState };
 
+		// Construction
 		DataStream (QObject *parent);
 		virtual ~DataStream ();
 
+		// Public interface
 		State getState ();
+
+		// State methods
 		static QString stateText (State state);
 
 	public slots:
+		// Public interface
 		virtual void open ();
 		virtual void close ();
 		virtual void setOpen (bool o);
 
 	signals:
-		void stateChanged ();
+		void stateChanged (DataStream::State state);
 		void dataReceived (QByteArray data);
 
 	protected:
 		// Implementation interface
+		/**
+		 * Must be defined by implementations to do whatever is necessary to
+		 * open a connection to the currently configured target. Either
+		 * streamOpened or streamError MUST then be called, either immediately
+		 * or later. This method is also allowed to block while opening the
+		 * connection.
+		 */
 		virtual void openStream ()=0;
+		/**
+		 * Must be defined by implementations to do whatever is necessary to
+		 * close any existing connection.
+		 */
 		virtual void closeStream ()=0;
 
 		virtual void streamOpened ();
@@ -39,7 +102,7 @@ class DataStream: public QObject
 		virtual void streamDataReceived (const QByteArray &data);
 
 	private:
-		void setState (State state);
+		void goToState (State state);
 
 		State _state;
 		QString _buffer;

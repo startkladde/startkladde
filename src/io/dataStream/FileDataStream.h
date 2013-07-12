@@ -6,6 +6,17 @@ class QTimer;
 
 #include "src/io/dataStream/DataStream.h"
 
+/**
+ * A DataStream implementation that reads data from a file, one line at a time,
+ * with a constant, configurable delay between lines.
+ *
+ * The file name and delay are configured using the setFileName and setDelay
+ * methods. After that, the stream can be opened.
+ *
+ * This DataStream implementation will block on opening until the file has been
+ * opened, which should typically be instantaneous; however, if the file is on
+ * a slow medium (such as the network), this may take some time.
+ */
 class FileDataStream: public DataStream
 {
 	Q_OBJECT

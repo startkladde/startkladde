@@ -13,6 +13,8 @@
 FileDataStream::FileDataStream (QObject *parent): DataStream (parent),
 	_delayMs (0)
 {
+	qDebug () << "FileDataStream: create";
+
 	// Create the file and the timer. _file and _timer will be deleted
 	// automatically by its parent (this).
 	_file=new QFile (this);
@@ -32,24 +34,12 @@ FileDataStream::~FileDataStream ()
 
 void FileDataStream::setFileName (const QString &fileName)
 {
-	bool changed=false;
-	if (fileName!=_fileName) changed=true;
-
 	_fileName=fileName;
-
-//	if (changed)
-//		parametersChanged ();
 }
 
 void FileDataStream::setDelay (int milliseconds)
 {
-	bool changed=false;
-	if (milliseconds!=_delayMs) changed=true;
-
 	_delayMs=milliseconds;
-
-//	if (changed)
-//		parametersChanged ();
 }
 
 
@@ -59,33 +49,40 @@ void FileDataStream::setDelay (int milliseconds)
 
 void FileDataStream::openStream ()
 {
-	qDebug () << "FileDataStream: pre-open delay";
-	DefaultQThread::sleep (2);
+	// A delay to simulate a blocking open method. This can be used to test a
+	// background implementation.
+//	qDebug () << "FileDataStream: pre-open delay";
+//	DefaultQThread::sleep (2);
 
-//	qDebug () << "FileDataStream: openStream";
+	// If the file is currently open, close it.
 	if (_file->isOpen ())
 		_file->close ();
 
+	// Open the file for reading in text mode
 	_file->setFileName (_fileName);
 	bool success=_file->open (QFile::ReadOnly | QFile::Text);
 
 	if (success)
 	{
+		// The file was successfully opened. Start the read timer with the
+		// specified delay.
 		_timer->setInterval (_delayMs);
 		_timer->start ();
 		streamOpened ();
 	}
 	else
 	{
+		// The file could not be opened.
 		streamError ();
 	}
 }
 
 void FileDataStream::closeStream ()
 {
-//	qDebug () << "FileDataStream: closeStream";
-	_file->close ();
+	// Close the file and stop the timer. Note that there may still be a timer
+	// event in the queue.
 	_timer->stop ();
+	_file->close ();
 }
 
 
@@ -95,25 +92,29 @@ void FileDataStream::closeStream ()
 
 void FileDataStream::timerSlot ()
 {
+	// The file may have been closed after a timer event was queued. We
+	// therefore have to verify that the fill is still open.
 	if (_file->isOpen ())
 	{
-		QByteArray line=_file->readLine();
+		// Read a single line from the file. On EOF, this will return an empty
+		// string.
+		QByteArray line=_file->readLine ();
+
 		if (line.isEmpty ())
 		{
-			qDebug () << "FileDataStream: EOF";
-			// End of file reached
+			// We reached the end of the file. Stop the timer and close the
+			// file. We currently report this as an error; we could as well
+			// silently re-open the file.
+			//qDebug () << "FileDataStream: EOF";
 			_timer->stop ();
 			_file->close ();
 			streamError ();
 		}
 		else
 		{
-			qDebug () << "FileDataStream: data - " << line.trimmed ();
+			// Emit a signal with the received data.
+			//qDebug () << "FileDataStream: data - " << line.trimmed ();
 			emit dataReceived (line);
 		}
-	}
-	else
-	{
-		streamError ();
 	}
 }

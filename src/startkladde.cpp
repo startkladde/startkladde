@@ -23,6 +23,7 @@
 #include "src/i18n/TranslationManager.h"
 #include "src/flarm/Flarm.h"
 #include "src/i18n/LanguageConfiguration.h"
+#include "src/io/dataStream/DataStream.h"
 
 // For test_database
 //#include "src/model/Plane.h"
@@ -399,6 +400,7 @@ int main (int argc, char **argv)
 	qRegisterMetaType<DbEvent> (notr ("DbEvent"));
 	qRegisterMetaType<Query> (notr ("Query"));
 	qRegisterMetaType<DatabaseInfo> (notr ("DatabaseInfo"));
+	qRegisterMetaType<DataStream::State> (notr ("DataStream::State"));
 
 	// For QSettings
 	QCoreApplication::setOrganizationName (notr ("startkladde"));

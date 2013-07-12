@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "src/io/dataStream/DataStream.h"
+#include "src/io/dataStream/BackgroundDataStream.h"
 
 // FIXME seems like we'll need (at least) two independent state machines:
 // What can happen is that the connection is terminated (state: error), and then
@@ -72,8 +72,7 @@
 // ******************
 
 ManagedDataStream::ManagedDataStream (QObject *parent): QObject (parent),
-	_stream (NULL), _streamOwned (false), _open (false) //, _dataState (DataState::none)
-	, _state (State::closed)
+	_backgroundStream (NULL), _open (false), _state (State::closed)
 {
 	// Create the timers. The timers will be deleted automatically by Qt.
 	_dataTimer      = new QTimer (this);
@@ -90,9 +89,9 @@ ManagedDataStream::ManagedDataStream (QObject *parent): QObject (parent),
 
 ManagedDataStream::~ManagedDataStream ()
 {
-	// FIXME can this interfere with the stream being deleted by its parent?
-	if (_streamOwned)
-		delete _stream;
+	// _backgroundStream will be deleted automatically
+	// _dataTimer will be deleted automatically
+	// _reconnectTimer will be deleted automatically
 }
 
 
@@ -100,7 +99,7 @@ ManagedDataStream::~ManagedDataStream ()
 // ** State **
 // ***********
 
-void ManagedDataStream::setState (ManagedDataStream::State::Type state)
+void ManagedDataStream::goToState (ManagedDataStream::State::Type state)
 {
 	bool changed = (_state != state);
 
@@ -140,44 +139,40 @@ QString ManagedDataStream::stateText (ManagedDataStream::State::Type state)
 
 void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 {
-	// FIXME need to update the state!
-
 	// If the stream is already current, stop
-	if (_stream==stream)
+	if (_backgroundStream && _backgroundStream->getStream ()==stream)
 		return;
 
-	// Disconnect the old stream's signals
-	if (_stream)
-		_stream->disconnect (this);
+	// Delete the old background stream. This will stop the thread, disconnect
+	// its signals and, if the old underlying stream was owned, delete it.
+	delete _backgroundStream;
+	_backgroundStream=NULL;
 
-	// Delete the old stream if we owned it
-	if (_streamOwned)
-		delete _stream;
-
-	// Store the new stream
-	_stream=stream;
-	_streamOwned=streamOwned;
-
-	if (_stream)
+	// If the stream is being set to NULL, there's nothing else to do.
+	if (stream)
 	{
-		// Connect the new stream's signals
-		connect (_stream, SIGNAL (stateChanged ()), this, SLOT (stream_stateChanged ()));
-		connect (_stream, SIGNAL (dataReceived (QByteArray)), this, SLOT (stream_dataReceived (QByteArray)));
+		// Create a new background stream for the new stream
+		_backgroundStream=new BackgroundDataStream (this, stream, streamOwned);
+
+		// Connect the new background stream's signals
+		connect (_backgroundStream, SIGNAL (stateChanged        (DataStream::State)),
+		         this             , SLOT   (stream_stateChanged (DataStream::State)));
+		connect (_backgroundStream, SIGNAL (dataReceived        (QByteArray)),
+		         this             , SLOT   (stream_dataReceived (QByteArray)));
 
 		// We changed the underlying data stream. We must now do two things:
 		// get the data stream into the proper state, and update our own state
 		// to match the data stream's state.
 
-
 		// Update our own state (synthesize a stream state change event)
-		stream_stateChanged ();
+		stream_stateChanged (_backgroundStream->getState ());
 
 		// Update the new stream's state. If the stream is already in the
 		// correct state, nothing will happen.
 		if (_open)
-			_stream->open ();
+			_backgroundStream->open ();
 		else
-			_stream->close ();
+			_backgroundStream->close ();
 	}
 }
 
@@ -186,9 +181,14 @@ void ManagedDataStream::clearDataStream ()
 	setDataStream (NULL, false);
 }
 
+// TODO we should remove this if possible, because we're not supposed to access
+// the underlying data stream which now lives on a background thread.
 DataStream *ManagedDataStream::getDataStream () const
 {
-	return _stream;
+	if (_backgroundStream)
+		return _backgroundStream->getStream ();
+	else
+		return NULL;
 }
 
 
@@ -200,28 +200,28 @@ void ManagedDataStream::open ()
 {
 	_open=true;
 
-	if (_stream)
+	if (_backgroundStream)
 	{
 		// Open the stream. When the connection succeeds or fails (now or later),
 		// we will receive a signal. This may cause timer to be started.
-		_stream->open ();
+		_backgroundStream->open ();
 	}
 }
 
 void ManagedDataStream::close ()
 {
 	_open=false;
-	setState (State::closed);
+	goToState (State::closed);
 
 	// Stop the timers. Note that a timer event may still be in the event queue,
 	// so timer slots may be invoked even when the connection is closed.
 	_dataTimer     ->stop ();
 	_reconnectTimer->stop ();
 
-	if (_stream)
+	if (_backgroundStream)
 	{
 		// Close the stream
-		_stream->close ();
+		_backgroundStream->close ();
 	}
 }
 
@@ -258,9 +258,9 @@ void ManagedDataStream::reconnectTimer_timeout ()
 	if (!_open)
 		return;
 
-	if (_stream)
+	if (_backgroundStream)
 	{
-		_stream->open ();
+		_backgroundStream->open ();
 	}
 }
 
@@ -276,9 +276,9 @@ void ManagedDataStream::dataTimer_timeout ()
 	if (!_open)
 		return;
 
-	setState (State::timeout);
+	goToState (State::timeout);
 
-	if (_stream)
+	if (_backgroundStream)
 	{
 
 	}
@@ -289,10 +289,8 @@ void ManagedDataStream::dataTimer_timeout ()
 // ** Stream **
 // ************
 
-void ManagedDataStream::stream_stateChanged ()
+void ManagedDataStream::stream_stateChanged (DataStream::State state)
 {
-	DataStream::State state=_stream->getState ();
-
 	qDebug () << "ManagedDataStream: stream state changed to" <<
 		DataStream::stateText (state);
 
@@ -303,14 +301,14 @@ void ManagedDataStream::stream_stateChanged ()
 			{
 				_dataTimer->stop ();
 				_reconnectTimer->start ();
-				setState (State::error);
+				goToState (State::error);
 			}
 			break;
 		case DataStream::openingState:
-			setState (State::opening);
+			goToState (State::opening);
 			break;
 		case DataStream::openState:
-			setState (State::open);
+			goToState (State::open);
 			break;
 		// no default
 	}
@@ -318,7 +316,7 @@ void ManagedDataStream::stream_stateChanged ()
 
 void ManagedDataStream::stream_dataReceived (QByteArray data)
 {
-	setState (State::ok);
+	goToState (State::ok);
 	emit dataReceived (data);
 
 	// Start or restart the data timer

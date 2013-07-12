@@ -3,9 +3,11 @@
 
 #include <QObject>
 
+#include "src/io/dataStream/DataStream.h" // For DataStream::State
+
 class QTimer;
 
-class DataStream;
+class BackgroundDataStream;
 
 class ManagedDataStream: public QObject
 {
@@ -40,11 +42,10 @@ class ManagedDataStream: public QObject
 		void stateChanged (ManagedDataStream::State::Type state);
 
 	protected:
-		void setState (State::Type state);
+		void goToState (State::Type state);
 
 	private:
-		DataStream *_stream;
-		bool _streamOwned;
+		BackgroundDataStream *_backgroundStream;
 
 		// Configuration
 		bool _open;
@@ -60,7 +61,7 @@ class ManagedDataStream: public QObject
 		void dataTimer_timeout ();
 		void reconnectTimer_timeout ();
 
-		void stream_stateChanged ();
+		void stream_stateChanged (DataStream::State state);
 		void stream_dataReceived (QByteArray data);
 };
 

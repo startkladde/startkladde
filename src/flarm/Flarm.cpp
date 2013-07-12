@@ -72,6 +72,7 @@ bool Flarm::isOpen  () const { return _managedDataStream->isOpen (); }
 template<class T> T *Flarm::ensureTypedDataStream ()
 {
 	// Try to cast the existing data stream (if any) to the requested type.
+	// FIXME we can't access this, it's not thread safe.
 	T *typedDataStream=dynamic_cast<T *> (_managedDataStream->getDataStream ());
 
 	// If the cast returned NULL, there is either no data stream, or it has the
