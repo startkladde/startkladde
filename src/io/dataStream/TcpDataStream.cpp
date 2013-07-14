@@ -10,16 +10,17 @@
 TcpDataStream::TcpDataStream (QObject *parent): DataStream (parent),
 	_port (0)
 {
-	// Note that we don't send a signal for the initial connection state. This
-	// is the constructor, so no connection can have been made at this point.
-
 	// Create the socket and connect the required signals. _socket will be
 	// deleted automatically by its parent (this).
-	// FIXME don't create in constructor - we may be on a background thread
+	// FIXME don't create in constructor - allow calling open() from a different
+	// thread than the constructor
 	_socket=new QTcpSocket (this);
-	connect (_socket, SIGNAL (readyRead    ()                            ), this, SLOT (socketDataReceived ()                            ));
-    connect (_socket, SIGNAL (error        (QAbstractSocket::SocketError)), this, SLOT (socketError        (QAbstractSocket::SocketError)));
-    connect (_socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)), this, SLOT (socketStateChanged (QAbstractSocket::SocketState)));
+	connect (_socket, SIGNAL (readyRead           ()),
+	         this   , SLOT   (socket_dataReceived ()));
+    connect (_socket, SIGNAL (error        (QAbstractSocket::SocketError)),
+             this   , SLOT   (socket_error (QAbstractSocket::SocketError)));
+    connect (_socket, SIGNAL (stateChanged        (QAbstractSocket::SocketState)),
+             this   , SLOT   (socket_stateChanged (QAbstractSocket::SocketState)));
 }
 
 TcpDataStream::~TcpDataStream ()
@@ -31,17 +32,13 @@ TcpDataStream::~TcpDataStream ()
 // ** Properties **
 // ****************
 
+/**
+ * Sets the target host and port.
+ */
 void TcpDataStream::setTarget (const QString &host, uint16_t port)
 {
-	bool changed=false;
-	if (host!=_host) changed=true;
-	if (port!=_port) changed=true;
-
 	_host=host;
 	_port=port;
-//
-//	if (changed)
-//		parametersChanged ();
 }
 
 
@@ -70,13 +67,16 @@ void TcpDataStream::closeStream ()
 /**
  * Called when data is received from the socket
  */
-void TcpDataStream::socketDataReceived ()
+void TcpDataStream::socket_dataReceived ()
 {
 	dataReceived (_socket->readAll ());
 }
 
-
-void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState)
+/**
+ * Called when the socked state changes, e. g. when the connection is
+ * established.
+ */
+void TcpDataStream::socket_stateChanged (QAbstractSocket::SocketState socketState)
 {
 	//qDebug () << "TcpDataStream: socket state changed to" << socketState;
 
@@ -85,10 +85,10 @@ void TcpDataStream::socketStateChanged (QAbstractSocket::SocketState socketState
 }
 
 /**
- * Invoked when the socket connection failed (while opening) or was lost (while
+ * Called when the socket connection fails (while opening) or is lost (while
  * open).
  */
-void TcpDataStream::socketError (QAbstractSocket::SocketError error)
+void TcpDataStream::socket_error (QAbstractSocket::SocketError error)
 {
 	Q_UNUSED (error);
 

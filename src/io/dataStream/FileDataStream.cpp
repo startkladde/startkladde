@@ -13,8 +13,6 @@
 FileDataStream::FileDataStream (QObject *parent): DataStream (parent),
 	_delayMs (0)
 {
-	qDebug () << "FileDataStream: create";
-
 	// Create the file and the timer. _file and _timer will be deleted
 	// automatically by its parent (this).
 	_file=new QFile (this);

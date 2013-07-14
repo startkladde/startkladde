@@ -82,7 +82,6 @@ template<class T> T *Flarm::ensureTypedDataStream ()
 		// Either there is no data stream, or it has the wrong type. Create a
 		// new one data stream with the correct type and store it.
 		typedDataStream=new T (this);
-		_managedDataStream->setDataStream (typedDataStream, true);
 	}
 
 	// Return the pre-existing or newly created data stream
@@ -105,21 +104,24 @@ void Flarm::updateDataStream ()
 			} break;
 			case Flarm::serialConnection:
 			{
-//				SerialDataStream *stream=ensureTypedDataStream<SerialDataStream> ();
-//				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
-				_managedDataStream->clearDataStream ();
+				SerialDataStream *stream=ensureTypedDataStream<SerialDataStream> ();
+				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
+				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::tcpConnection:
 			{
-//				TcpDataStream *stream=ensureTypedDataStream<TcpDataStream> ();
-//				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
-				_managedDataStream->clearDataStream ();
+				TcpDataStream *stream=ensureTypedDataStream<TcpDataStream> ();
+				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
+				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::fileConnection:
 			{
 				FileDataStream *stream=ensureTypedDataStream<FileDataStream> ();
+				// FIXME we may not do this if the stream is already in use -
+				// thread safety.
 				stream->setFileName (s.flarmFileName);
 				stream->setDelay (s.flarmFileDelayMs);
+				_managedDataStream->setDataStream (stream, true);
 			} break;
 			// no default
 		}

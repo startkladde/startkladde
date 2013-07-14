@@ -33,6 +33,8 @@ class QTimer;
  *
  * The stream is closed by calling the `close` method.
  *
+ * FIXME state diagram
+ *
  * Whenever the state changes, the stateChanged signal is emitted. The current
  * state can also be queried using the getState method. Note, however, that the
  * state may change autonomously in response to a connection event (e. g. a TCP
@@ -77,7 +79,16 @@ class DataStream: public QObject
 		virtual void setOpen (bool o);
 
 	signals:
+		/**
+		 * Emitted whenever the state changes. Note that when receiving this
+		 * signal, the state may already have changed again and the
+		 * corresponding signal may have been delivered yet.
+		 */
 		void stateChanged (DataStream::State state);
+
+		/**
+		 * Emitted whenever the stream receives data.
+		 */
 		void dataReceived (QByteArray data);
 
 	protected:

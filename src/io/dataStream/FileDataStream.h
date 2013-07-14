@@ -15,7 +15,7 @@ class QTimer;
  *
  * This DataStream implementation will block on opening until the file has been
  * opened, which should typically be instantaneous; however, if the file is on
- * a slow medium (such as the network), this may take some time.
+ * a slow medium (such as a network path), this may take some time.
  */
 class FileDataStream: public DataStream
 {

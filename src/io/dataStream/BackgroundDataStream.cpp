@@ -5,6 +5,15 @@
 
 #include "src/util/signal.h"
 
+/**
+ * Creates a BackgroundDataStream for the specified stream with the specified Qt
+ * parent.
+ *
+ * If streamOwned is true, the stream will automatically be deleted when this
+ * BackgroundDataStream instance is deleted.
+ *
+ * The background thread will be started immediately.
+ */
 BackgroundDataStream::BackgroundDataStream (QObject *parent, DataStream *stream, bool streamOwned):
 	QObject (parent),
 	_stream (stream), _streamOwned (streamOwned)
@@ -40,6 +49,11 @@ BackgroundDataStream::BackgroundDataStream (QObject *parent, DataStream *stream,
 	_thread->start ();
 }
 
+/**
+ * Stops the background thread.
+ *
+ * If streamOwned is true, the stream is also deleted.
+ */
 BackgroundDataStream::~BackgroundDataStream ()
 {
 	// FIXME must stop the thread before deleting it
@@ -76,6 +90,14 @@ DataStream *BackgroundDataStream::getStream () const
 // ** Public interface **
 // **********************
 
+/**
+ * Returns the state of the wrapped stream.
+ *
+ * More precisely, this returns the state at the time of the last stateChanged
+ * signal. The value returned by this method may be outdated if the state has
+ * changed in the meantime and the corresponding stateChanged signal has not yet
+ * been delivered.
+ */
 DataStream::State BackgroundDataStream::getState () const
 {
 	return _state;
@@ -86,16 +108,40 @@ DataStream::State BackgroundDataStream::getState () const
 // ** Forward slots to the stream **
 // *********************************
 
+/**
+ * Opens the wrapped stream on the background thread.
+ *
+ * Note that after this method returns, the state of the data stream has not
+ * necessarily changed yet.
+ *
+ * See also DataStream::open ()
+ */
 void BackgroundDataStream::open ()
 {
 	emit open_stream ();
 }
 
+/**
+ * Closes the wrapped stream on the background thread.
+ *
+ * Note that after this method returns, the state of the data stream has not
+ * necessarily changed yet.
+ *
+ * See also DataStream::open ()
+ */
 void BackgroundDataStream::close ()
 {
 	emit close_stream ();
 }
 
+/**
+ * Calls DataStream::setOpen on the background thread.
+ *
+ * Note that after this method returns, the state of the data stream has not
+ * necessarily changed yet.
+ *
+ * See also DataStream::open ()
+ */
 void BackgroundDataStream::setOpen (bool o)
 {
 	emit setOpen_stream (o);

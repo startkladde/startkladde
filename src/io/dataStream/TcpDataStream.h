@@ -8,6 +8,14 @@
 
 class QTcpSocket;
 
+/**
+ * A DataStream implementation that receives data via a TCP socket.
+ *
+ * The host and port are configured using the setTarget method. After that, the
+ * stream can be opened.
+ *
+ * This DataStream implementation will not block on opening.
+ */
 class TcpDataStream: public DataStream
 {
 	Q_OBJECT
@@ -30,9 +38,9 @@ class TcpDataStream: public DataStream
 		uint16_t _port;
 
 	private slots:
-    	void socketDataReceived ();
-		void socketStateChanged (QAbstractSocket::SocketState socketState);
-		void socketError (QAbstractSocket::SocketError error);
+    	void socket_dataReceived ();
+		void socket_stateChanged (QAbstractSocket::SocketState socketState);
+		void socket_error (QAbstractSocket::SocketError error);
 };
 
 #endif

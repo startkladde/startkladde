@@ -9,6 +9,7 @@ class QTimer;
 
 class BackgroundDataStream;
 
+// FIXME documentation
 class ManagedDataStream: public QObject
 {
 	Q_OBJECT
