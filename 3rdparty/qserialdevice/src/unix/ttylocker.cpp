@@ -157,13 +157,36 @@ bool TTYLocker::locked(bool *lockedByCurrentPid) const
     eg "LCK.30.50" etc. */
 QString TTYLocker::getLockFileInNumericForm() const
 {
+    // Workaround (MH): when the device has been removed (e. g. USB serial
+    // converter), the device file no longer exists. Therefore, ::stat won't
+    // return any useful values. We therefore cache the major and minor node
+    // numbers. We also store the file name for which the numbers are valid so
+    // we don't use them when the name changed.
+    static int cached_major=-1, cached_minor=-1;
+    static QString cached_name;
+
     QString result = this->getFirstSharedLockDir();
     if (!result.isEmpty()) {
         struct stat buf;
         if (::stat(this->m_name.toLocal8Bit().constData(), &buf))
-            result.clear();
+        {
+            // Stat failed
+            if (cached_major>=0 && cached_minor>=0 && cached_name==m_name) {
+                // But we can re-use the cached values
+                result.append("/LCK.%1.%2");
+                result = result.arg(cached_major).arg(cached_minor);
+            }
+            else {
+                // And there are no cached values - fail.
+                result.clear();
+            }
+        }
         else {
+            // stat succeeded
             result.append("/LCK.%1.%2");
+            cached_major=major(buf.st_rdev);
+            cached_minor=minor(buf.st_rdev);
+            cached_name=m_name;
             result = result.arg(major(buf.st_rdev)).arg(minor(buf.st_rdev));
         }
     }
@@ -246,6 +269,10 @@ bool TTYLocker::m_locked(bool *lockedByCurrentPid) const
 
         switch (this->checkPid(pid)) {
         case 0:
+            // Workaround (MH): The lock exists, but is stale (i. e. the
+            // process no longer exists). Remove the lock, or subsequent
+            // locking will fail.
+            m_unlock ();
             break;
         case 1:
             result = true;
