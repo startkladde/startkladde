@@ -412,7 +412,7 @@ void SettingsWindow::on_browseFlarmFileButton_clicked ()
 		this,
 		tr ("Select Flarm file"),
 		existingParentDirectory (currentFileName, QDir ()).absolutePath (),
-		notr ("*.txt"),
+		notr ("*.txt;;*"),
 		NULL,
 		0
 		);
