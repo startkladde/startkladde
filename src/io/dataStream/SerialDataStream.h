@@ -2,6 +2,7 @@
 #define SERIALDATASTREAM_H_
 
 #include <QStringList>
+#include <QDateTime>
 
 #include "src/io/dataStream/DataStream.h"
 
@@ -37,6 +38,7 @@ class SerialDataStream: public DataStream
 	private slots:
 		void availablePortsChanged (const QStringList &ports);
     	void port_dataReceived ();
+		void port_status (const QString &status, QDateTime dateTime);
 };
 
 #endif

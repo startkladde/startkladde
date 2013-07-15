@@ -22,17 +22,8 @@
 //     is relatively long.
 
 SerialDataStream::SerialDataStream (QObject *parent): DataStream (parent),
-	_baudRate (0)
+	_port (NULL), _baudRate (0)
 {
-	// Create the port and connect the required signals. _port will be deleted
-	// automatically by its parent.
-	// FIXME don't create in constructor - allow calling open() from a different
-	// thread than the constructor
-	// _port=new SerialPort (this); // QtSerialPort
-	_port=new AbstractSerial (this); // QSerialDevice
-	connect (_port, SIGNAL (readyRead         ()),
-	         this , SLOT   (port_dataReceived ()));
-
 	// QSerialDevice - not supported in QtSerialPort
 	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
 	connect (serialDeviceEnumerator, SIGNAL (hasChanged            (const QStringList &)),
@@ -76,9 +67,23 @@ void SerialDataStream::openStream ()
 	QStringList availableDevices=SerialDeviceEnumerator::instance ()->devicesAvailable ();
 	if (!availableDevices.contains (_portName, Qt::CaseInsensitive))
 	{
+		qDebug () << "Does not exist:" << _portName;
 		streamError (); // FIXME (tr ("The port %1 does not exist").arg (_portName));
 		return;
 	}
+
+	// Delete the old port, if it exists
+	delete _port;
+
+	// Create the port and connect the required signals. _port will be deleted
+	// automatically by its parent.
+	// _port=new SerialPort (this); // QtSerialPort
+	_port=new AbstractSerial (this); // QSerialDevice
+	_port->enableEmitStatus (true);
+	connect (_port, SIGNAL (readyRead         ()),
+	         this , SLOT   (port_dataReceived ()));
+	connect (_port, SIGNAL (signalStatus (const QString &, QDateTime)),
+	         this , SLOT   (port_status  (const QString &, QDateTime)));
 
 	// QSerialDevice
 	_port->setDeviceName (_portName);
@@ -89,9 +94,11 @@ void SerialDataStream::openStream ()
 	//	connectionClosed (_port->errorString ());
 	//	return;
 	//}
+	qDebug () << "Open:" << _portName;
 	_port->open (QIODevice::ReadOnly);
 	if (!_port->isOpen ())
 	{
+		qDebug () << "Not open" << _portName;
 		streamError (); // FIXME (tr ("Connection did not open"));
 		return;
 	}
@@ -128,7 +135,13 @@ void SerialDataStream::openStream ()
 
 void SerialDataStream::closeStream ()
 {
+	if (!_port)
+		return;
+
+	qDebug () << "Close";
 	_port->close ();
+	delete _port;
+	_port=NULL;
 }
 
 
@@ -141,18 +154,27 @@ void SerialDataStream::closeStream ()
  */
 void SerialDataStream::port_dataReceived ()
 {
+	if (!_port)
+		return;
 	dataReceived (_port->readAll ());
+}
+
+void SerialDataStream::port_status (const QString &status, QDateTime dateTime)
+{
+	qDebug () << "Port status" << status << dateTime;
 }
 
 void SerialDataStream::availablePortsChanged (const QStringList &ports)
 {
 	// QSerialDevice - not supported in QtSerialPort
-	if (_port->isOpen ())
+	if (_port && _port->isOpen ())
 	{
 		if (!ports.contains (_portName, Qt::CaseInsensitive))
 		{
 			// Oops - our port is not available any more
 			_port->close ();
+			delete _port;
+			_port=NULL;
 			streamError (); // FIXME (tr ("The port is no longer available"));
 		}
 	}

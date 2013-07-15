@@ -4,6 +4,8 @@
 class QFile;
 class QTimer;
 
+#include <stdint.h>
+
 #include "src/io/dataStream/DataStream.h"
 
 /**
