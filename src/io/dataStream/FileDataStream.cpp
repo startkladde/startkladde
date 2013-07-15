@@ -111,7 +111,6 @@ void FileDataStream::timerSlot ()
 		else
 		{
 			// Emit a signal with the received data.
-			//qDebug () << "FileDataStream: data - " << line.trimmed ();
 			emit dataReceived (line);
 		}
 	}

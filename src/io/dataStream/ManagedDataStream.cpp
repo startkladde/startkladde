@@ -252,7 +252,7 @@ bool ManagedDataStream::isOpen () const
 
 void ManagedDataStream::reconnectTimer_timeout ()
 {
-	qDebug () << "ManagedDataStream: reconnect timeout";
+	//qDebug () << "ManagedDataStream: reconnect timeout";
 
 	// Ignore if the stream is not open (see above)
 	if (!_open)
@@ -270,7 +270,7 @@ void ManagedDataStream::reconnectTimer_timeout ()
  */
 void ManagedDataStream::dataTimer_timeout ()
 {
-	qDebug () << "ManagedDataStream: data timeout";
+	//qDebug () << "ManagedDataStream: data timeout";
 
 	// Ignore if the stream is not open (see above)
 	if (!_open)
@@ -291,12 +291,13 @@ void ManagedDataStream::dataTimer_timeout ()
 
 void ManagedDataStream::stream_stateChanged (DataStream::State state)
 {
-	qDebug () << "ManagedDataStream: stream state changed to" <<
-		DataStream::stateText (state);
+	//qDebug () << "ManagedDataStream: stream state changed to" <<
+	//	DataStream::stateText (state);
 
 	switch (state)
 	{
 		case DataStream::closedState:
+			// FIXME should the timers be managed by goToState?
 			if (_open)
 			{
 				_dataTimer->stop ();
@@ -305,10 +306,18 @@ void ManagedDataStream::stream_stateChanged (DataStream::State state)
 			}
 			break;
 		case DataStream::openingState:
-			goToState (State::opening);
+			if (_open)
+			{
+				_reconnectTimer->stop ();
+				goToState (State::opening);
+			}
 			break;
 		case DataStream::openState:
-			goToState (State::open);
+			if (_open)
+			{
+				_dataTimer->start ();
+				goToState (State::open);
+			}
 			break;
 		// no default
 	}
@@ -316,6 +325,8 @@ void ManagedDataStream::stream_stateChanged (DataStream::State state)
 
 void ManagedDataStream::stream_dataReceived (QByteArray data)
 {
+	//qDebug () << "ManagedDataStream: data - " << data;
+
 	goToState (State::ok);
 	emit dataReceived (data);
 
