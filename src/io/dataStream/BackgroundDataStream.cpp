@@ -45,6 +45,8 @@ BackgroundDataStream::BackgroundDataStream (QObject *parent, DataStream *stream,
 	         this   , SLOT   (stream_stateChanged (DataStream::State)));
 	connect (_stream, SIGNAL (dataReceived (QByteArray)),
 	         this   , SIGNAL (dataReceived (QByteArray)));
+	connect (_stream, SIGNAL (connectionBecameAvailable ()),
+	         this   , SIGNAL (connectionBecameAvailable ()));
 
 	_thread->start ();
 }
@@ -75,6 +77,7 @@ BackgroundDataStream::~BackgroundDataStream ()
 // ** Underlying stream **
 // ***********************
 
+// FIXME remove - replace with bool isStream (?)
 /**
  * Note that you should not access the stream directly via the pointer returned
  * by this method, unless you know that it is thread safe. This method's purpose
@@ -101,6 +104,12 @@ DataStream *BackgroundDataStream::getStream () const
 DataStream::State BackgroundDataStream::getState () const
 {
 	return _state;
+}
+
+QString BackgroundDataStream::getErrorMessage () const
+{
+	// FIXME must be thread safe now
+	return _stream->getErrorMessage ();
 }
 
 

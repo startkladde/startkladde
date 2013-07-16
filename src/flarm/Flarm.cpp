@@ -69,6 +69,13 @@ void Flarm::close   ()       { _managedDataStream->close   ();  }
 void Flarm::setOpen (bool o) { _managedDataStream->setOpen (o); }
 bool Flarm::isOpen  () const { return _managedDataStream->isOpen (); }
 
+// It's const - you're not supposed to change (e. g. open) it directly) - use
+// Flarm's methods for that.
+const ManagedDataStream *Flarm::getManagedStream () const
+{
+	return _managedDataStream;
+}
+
 template<class T> T *Flarm::ensureTypedDataStream ()
 {
 	// Try to cast the existing data stream (if any) to the requested type.
@@ -161,7 +168,7 @@ bool Flarm::isDataValid ()
 
 void Flarm::managedDataStream_stateChanged (ManagedDataStream::State::Type state)
 {
-	qDebug () << "Flarm: data stream state changed to" << ManagedDataStream::stateText (state);
+	//qDebug () << "Flarm: data stream state changed to" << ManagedDataStream::stateText (state);
 	emit streamStateChanged (state);
 }
 

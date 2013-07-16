@@ -2,6 +2,7 @@
 #define MANAGEDDATASTREAM_H_
 
 #include <QObject>
+#include <QTime>
 
 #include "src/io/dataStream/DataStream.h" // For DataStream::State
 
@@ -24,6 +25,8 @@ class ManagedDataStream: public QObject
 		// State
 		State::Type getState () const;
 		static QString stateText (State::Type state);
+		QString getErrorMessage () const;
+		QTime getReconnectTime () const;
 
 		// Underlying data stream
 		void setDataStream (DataStream *stream, bool streamOwned);
@@ -39,11 +42,13 @@ class ManagedDataStream: public QObject
 
 	signals:
 		// Public interface
-		void dataReceived (QByteArray line);
 		void stateChanged (ManagedDataStream::State::Type state);
+		void dataReceived (QByteArray line);
+		void connectionBecameAvailable ();
 
 	protected:
 		void goToState (State::Type state);
+		void startReconnectTimer ();
 
 	private:
 		BackgroundDataStream *_backgroundStream;
@@ -57,6 +62,7 @@ class ManagedDataStream: public QObject
 		// Internals
 	    QTimer *_dataTimer;
 	    QTimer *_reconnectTimer;
+	    QTime _reconnectTime;
 
 	private slots:
 		void dataTimer_timeout ();
@@ -64,6 +70,7 @@ class ManagedDataStream: public QObject
 
 		void stream_stateChanged (DataStream::State state);
 		void stream_dataReceived (QByteArray data);
+		void stream_connectionBecameAvailable ();
 };
 
 #endif

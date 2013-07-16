@@ -1977,52 +1977,12 @@ void MainWindow::databaseStateChanged (DbManager::State state)
 	}
 }
 
-void MainWindow::flarmStreamLinkActivated (const QString &link)
-{
-	(void)link;
-
-	QString text;
-
-//	if (!flarmConnectionState.dataStreamState.isValid ())
-//	{
-//		// Oops
-//		return;
-//	}
-
-	// FIXME implement
-//	switch (flarmConnectionState.dataStreamState->errorType)
-//	{
-//		case DataStream::noError:
-//			// Should not happen
-//			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
-//				text=tr ("The connection encountered an error and will be reopened automatically.");
-//			else
-//				text=tr ("The connection encountered an error: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
-//			break;
-//		case DataStream::connectionFailedError:
-//			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
-//				text=tr ("The connection could not be established and will be reopened automatically.");
-//			else
-//				text=tr ("The connection could not be established: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
-//			break;
-//		case DataStream::connectionLostError:
-//			if (flarmConnectionState.dataStreamState->errorMessage.isEmpty ())
-//				text=tr ("The connection was terminated and will be reopened automatically.");
-//			else
-//				text=tr ("The connection was terminated: %1. The connection will be reopened automatically.").arg (flarmConnectionState.dataStreamState->errorMessage);
-//			break;
-//	}
-
-	QString title=tr ("Flarm stream error");
-	QMessageBox::information (this, title, text);
-}
-
 QString linkTo (const QString &target, const QString &text)
 {
 	return qnotr ("<a href=\"%1\">%2</a>").arg (target).arg (text);
 }
 
-void MainWindow::flarm_streamStateChanged (ManagedDataStream::State::Type state)
+void MainWindow::updateFlarmStreamState (ManagedDataStream::State::Type state)
 {
 	QString text;
 
@@ -2032,22 +1992,81 @@ void MainWindow::flarm_streamStateChanged (ManagedDataStream::State::Type state)
 
 	switch (state)
 	{
-		case ManagedDataStream::State::closed: text=tr ("Closed")             ; break;
-		// TODO add "connection failed - reconnecting" and "connection
-		// lost - reconnecting" options:
-		// text=linkTo (linkTarget, tr ("Connection failed"))+qnotr (" - ")+tr ("reconnecting"); break;
-		case ManagedDataStream::State::opening: text=tr ("Connecting")       ; break;
-		case ManagedDataStream::State::open:    text=tr ("Connected")        ; break;
-		case ManagedDataStream::State::ok:      text=tr ("OK")               ; break;
-		case ManagedDataStream::State::timeout: text=tr ("No data")          ; break;
-		// TODO add "connection failed" and "connection lost" options:
-		// text=linkTo (linkTarget, tr ("Connection error" )); break;
-		case ManagedDataStream::State::error:   text=tr ("Connection failed"); break;
+		case ManagedDataStream::State::closed:
+			text=tr ("Closed");
+			break;
+		case ManagedDataStream::State::opening:
+			// TODO distinguish:
+			//   * connection failed - reconnecting (with link)
+			//   * connection lost - reconnecting (with link)
+			//   * connecting
+			text=tr ("Connecting");
+			break;
+		case ManagedDataStream::State::open:
+			text=tr ("Connected");
+			break;
+		case ManagedDataStream::State::ok:
+			text=tr ("OK");
+			break;
+		case ManagedDataStream::State::timeout:
+			text=tr ("No data");
+			break;
+		case ManagedDataStream::State::error:
+		{
+			// TODO distinguish between "connection failed" and "connection lost"
+			text=linkTo (linkTarget, tr ("Error"));
+
+			QTime reconnectTime=flarm.getManagedStream ()->getReconnectTime ();
+			if (reconnectTime.isValid ())
+			{
+				QTime now=QTime::currentTime ();
+				int msToReconnect=now.msecsTo (reconnectTime);
+				int sToReconnect=(msToReconnect/1000)+1;
+				text+=", "+tr ("reconnect in %1 s").arg (sToReconnect);
+
+				// Update the status again in 200 ms to update the remaining
+				// time. This will continue until the state is no longer
+				// ManagedDataStream::State::error, or until the reconnect time
+				// reported by the managed data stream is invalid.
+				QTimer::singleShot (200, this, SLOT (updateFlarmStreamState ()));
+			}
+			flarmConnectionError=flarm.getManagedStream ()->getErrorMessage ();
+		} break;
 		// no default
 	}
 
 	ui.flarmStateLabel->setText (text);
 }
+
+void MainWindow::updateFlarmStreamState ()
+{
+	updateFlarmStreamState (flarm.getManagedStream ()->getState ());
+}
+
+void MainWindow::flarm_streamStateChanged (ManagedDataStream::State::Type state)
+{
+	updateFlarmStreamState (state);
+}
+
+void MainWindow::flarmStreamLinkActivated (const QString &link)
+{
+	(void)link;
+
+	QString text;
+
+	// TODO distinguish between "connection failed" and "connection lost":
+	//   - "the connection was terminated"
+	//   - "the connection could not be established"
+
+	if (flarmConnectionError.isEmpty ())
+		text=tr ("The connection encountered an error and will be reopened automatically.");
+	else
+		text=tr ("The connection encountered an error: %1. The connection will be reopened automatically.").arg (flarmConnectionError);
+
+	QString title=tr ("Flarm connection error");
+	QMessageBox::information (this, title, text);
+}
+
 
 // ***************************
 // ** Connection monitoring **

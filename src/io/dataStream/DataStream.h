@@ -30,10 +30,24 @@ class QTimer;
  * After that, it will either go to the `open` state (on success) or to the
  * `closed` state (on failure). Depending on the implementation, this may either
  * happen immediately before the `open` method returns or later.
+ * The stream is closed by calling the `close` method. It will also be closed
+ * automatically if a fatal error occurs (e. g. a TCP socket being closed by the
+ * remote host).
  *
- * The stream is closed by calling the `close` method.
- *
- * FIXME state diagram
+ * State diagram:
+ *   .---------.
+ *   | Closed  |<-----------------.
+ *   '---------'                  |
+ *        | open()                |
+ *        V                       |
+ *   .---------. Failure          |
+ *   | Opening |------------------|
+ *   '---------'                  |
+ *        | Success               |
+ *        V                       |
+ *   .---------. Error or close() |
+ *   | Opening |------------------'
+ *   '---------'
  *
  * Whenever the state changes, the stateChanged signal is emitted. The current
  * state can also be queried using the getState method. Note, however, that the
@@ -43,6 +57,10 @@ class QTimer;
  * actually return a different state than the one which was passed in the
  * stateChanged event. This is particularly true if the DataStream is running on
  * a background thread.
+ *
+ * Note that there is currently no way to distinguish between the stream being
+ * closed by the user (by calling close()) or in response to an error. The user
+ * has to keep track of whether he wants the stream closed himself.
  *
  * When data is received by the stream, the dataReceived signal will be emitted.
  * There are currently no provisions for transmitting data.
@@ -67,7 +85,8 @@ class DataStream: public QObject
 		virtual ~DataStream ();
 
 		// Public interface
-		State getState ();
+		State getState () const;
+		QString getErrorMessage () const;
 
 		// State methods
 		static QString stateText (State state);
@@ -91,6 +110,12 @@ class DataStream: public QObject
 		 */
 		void dataReceived (QByteArray data);
 
+		/**
+		 * Emitted whenever the implementation detects that the connection is
+		 * now available. Can be used to trigger a reconnect after an error.
+		 */
+		void connectionBecameAvailable ();
+
 	protected:
 		// Implementation interface
 		/**
@@ -98,7 +123,8 @@ class DataStream: public QObject
 		 * open a connection to the currently configured target. Either
 		 * streamOpened or streamError MUST then be called, either immediately
 		 * or later. This method is also allowed to block while opening the
-		 * connection.
+		 * connection. Whether it blocks should be documented by the
+		 * implementation.
 		 */
 		virtual void openStream ()=0;
 		/**
@@ -108,15 +134,15 @@ class DataStream: public QObject
 		virtual void closeStream ()=0;
 
 		virtual void streamOpened ();
-		virtual void streamError ();
-
+		virtual void streamError (const QString &errorMessage);
 		virtual void streamDataReceived (const QByteArray &data);
+		virtual void streamConnectionBecameAvailable ();
 
 	private:
 		void goToState (State state);
 
 		State _state;
-		QString _buffer;
+		QString _errorMessage;
 };
 
 #endif

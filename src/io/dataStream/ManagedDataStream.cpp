@@ -79,8 +79,9 @@ ManagedDataStream::ManagedDataStream (QObject *parent): QObject (parent),
 	_reconnectTimer = new QTimer (this);
 
     // Setup the timers
+	// TOOD make the intervals configurable
     _dataTimer     ->setInterval (2000); _dataTimer     ->setSingleShot (true);
-    _reconnectTimer->setInterval (2000); _reconnectTimer->setSingleShot (true);
+    _reconnectTimer->setInterval (5000); _reconnectTimer->setSingleShot (true);
 
     // Connect the timers' signals
     connect (_dataTimer     , SIGNAL (timeout ()), this, SLOT (dataTimer_timeout      ()));
@@ -110,9 +111,22 @@ void ManagedDataStream::goToState (ManagedDataStream::State::Type state)
 		emit stateChanged (_state);
 }
 
+void ManagedDataStream::startReconnectTimer ()
+{
+	_reconnectTimer->start ();
+	QTime now=QTime::currentTime ();
+	// TODO we should also set this to invalid when starting to connect
+	_reconnectTime=now.addMSecs (_reconnectTimer->interval ());
+}
+
 ManagedDataStream::State::Type ManagedDataStream::getState () const
 {
 	return _state;
+}
+
+QTime ManagedDataStream::getReconnectTime () const
+{
+	return _reconnectTime;
 }
 
 QString ManagedDataStream::stateText (ManagedDataStream::State::Type state)
@@ -130,6 +144,12 @@ QString ManagedDataStream::stateText (ManagedDataStream::State::Type state)
 
 	return "?";
 }
+
+QString ManagedDataStream::getErrorMessage () const
+{
+	return _backgroundStream->getErrorMessage ();
+}
+
 
 
 
@@ -159,6 +179,8 @@ void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 		         this             , SLOT   (stream_stateChanged (DataStream::State)));
 		connect (_backgroundStream, SIGNAL (dataReceived        (QByteArray)),
 		         this             , SLOT   (stream_dataReceived (QByteArray)));
+		connect (_backgroundStream, SIGNAL (connectionBecameAvailable        ()),
+		         this             , SLOT   (stream_connectionBecameAvailable ()));
 
 		// We changed the underlying data stream. We must now do two things:
 		// get the data stream into the proper state, and update our own state
@@ -252,8 +274,6 @@ bool ManagedDataStream::isOpen () const
 
 void ManagedDataStream::reconnectTimer_timeout ()
 {
-	//qDebug () << "ManagedDataStream: reconnect timeout";
-
 	// Ignore if the stream is not open (see above)
 	if (!_open)
 		return;
@@ -270,8 +290,6 @@ void ManagedDataStream::reconnectTimer_timeout ()
  */
 void ManagedDataStream::dataTimer_timeout ()
 {
-	//qDebug () << "ManagedDataStream: data timeout";
-
 	// Ignore if the stream is not open (see above)
 	if (!_open)
 		return;
@@ -301,7 +319,7 @@ void ManagedDataStream::stream_stateChanged (DataStream::State state)
 			if (_open)
 			{
 				_dataTimer->stop ();
-				_reconnectTimer->start ();
+				startReconnectTimer ();
 				goToState (State::error);
 			}
 			break;
@@ -325,11 +343,19 @@ void ManagedDataStream::stream_stateChanged (DataStream::State state)
 
 void ManagedDataStream::stream_dataReceived (QByteArray data)
 {
-	//qDebug () << "ManagedDataStream: data - " << data;
-
 	goToState (State::ok);
 	emit dataReceived (data);
 
 	// Start or restart the data timer
 	_dataTimer->start ();
+}
+
+void ManagedDataStream::stream_connectionBecameAvailable ()
+{
+	// Trigger the reconnect timeout immediately
+	if (_state==State::error)
+	{
+		_reconnectTimer->stop ();
+		reconnectTimer_timeout ();
+	}
 }

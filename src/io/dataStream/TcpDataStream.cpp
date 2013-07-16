@@ -96,6 +96,5 @@ void TcpDataStream::socket_error (QAbstractSocket::SocketError error)
 
 	// Make sure that the socket is closed
 	_socket->abort ();
-//	streamError (_socket->errorString ()); // FIXME do use error string
-	streamError ();
+	streamError (_socket->errorString ());
 }

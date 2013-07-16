@@ -60,15 +60,14 @@ void SerialDataStream::openStream ()
 
 	if (isBlank (_portName))
 	{
-		streamError (); // FIXME (tr ("No port specified"));
+		streamError (tr ("No port specified"));
 		return;
 	}
 
 	QStringList availableDevices=SerialDeviceEnumerator::instance ()->devicesAvailable ();
 	if (!availableDevices.contains (_portName, Qt::CaseInsensitive))
 	{
-		qDebug () << "Does not exist:" << _portName;
-		streamError (); // FIXME (tr ("The port %1 does not exist").arg (_portName));
+		streamError (tr ("The port %1 does not exist").arg (_portName));
 		return;
 	}
 
@@ -94,12 +93,10 @@ void SerialDataStream::openStream ()
 	//	connectionClosed (_port->errorString ());
 	//	return;
 	//}
-	qDebug () << "Open:" << _portName;
 	_port->open (QIODevice::ReadOnly);
 	if (!_port->isOpen ())
 	{
-		qDebug () << "Not open" << _portName;
-		streamError (); // FIXME (tr ("Connection did not open"));
+		streamError (tr ("Connection did not open"));
 		return;
 	}
 
@@ -138,7 +135,6 @@ void SerialDataStream::closeStream ()
 	if (!_port)
 		return;
 
-	qDebug () << "Close";
 	_port->close ();
 	delete _port;
 	_port=NULL;
@@ -161,7 +157,7 @@ void SerialDataStream::port_dataReceived ()
 
 void SerialDataStream::port_status (const QString &status, QDateTime dateTime)
 {
-	qDebug () << "Port status" << status << dateTime;
+	//qDebug () << "Port status" << status << dateTime;
 }
 
 void SerialDataStream::availablePortsChanged (const QStringList &ports)
@@ -175,7 +171,13 @@ void SerialDataStream::availablePortsChanged (const QStringList &ports)
 			_port->close ();
 			delete _port;
 			_port=NULL;
-			streamError (); // FIXME (tr ("The port is no longer available"));
+			streamError (tr ("The port is no longer available"));
 		}
+	}
+	else
+	{
+		// FIXME the criterion should be: did not contain it before.
+		if (ports.contains (_portName, Qt::CaseInsensitive))
+			streamConnectionBecameAvailable ();
 	}
 }

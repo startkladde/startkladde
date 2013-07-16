@@ -71,7 +71,7 @@ void FileDataStream::openStream ()
 	else
 	{
 		// The file could not be opened.
-		streamError ();
+		streamError (_file->errorString ());
 	}
 }
 
@@ -102,11 +102,11 @@ void FileDataStream::timerSlot ()
 		{
 			// We reached the end of the file. Stop the timer and close the
 			// file. We currently report this as an error; we could as well
-			// silently re-open the file.
+			// silently rewind the file.
 			//qDebug () << "FileDataStream: EOF";
 			_timer->stop ();
 			_file->close ();
-			streamError ();
+			streamError (tr ("End of file reached"));
 		}
 		else
 		{

@@ -123,6 +123,8 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
 		void flarm_streamStateChanged (ManagedDataStream::State::Type state);
+		void updateFlarmStreamState (ManagedDataStream::State::Type state);
+		void updateFlarmStreamState ();
 		void readTimeout ();
 		void readResumed ();
 
@@ -318,6 +320,7 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 
 		// FIXME remove?
 //		Flarm::ConnectionState flarmConnectionState;
+		QString flarmConnectionError;
 
 		// TODO: This is only used for Flarm and should be integrated with the
 		// Flarm handling (e. g. receive signals from the flight controller).

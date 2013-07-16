@@ -30,6 +30,7 @@ class BackgroundDataStream: public QObject
 		DataStream *getStream () const;
 
 		DataStream::State getState () const;
+		QString getErrorMessage () const;
 
 	public slots:
 		// Public interface
@@ -43,6 +44,8 @@ class BackgroundDataStream: public QObject
 		void stateChanged (DataStream::State state);
 		/** Same as DataStream::stateChanged */
 		void dataReceived (QByteArray data);
+		/** Same as DataStream::connectionBecameAvailable */
+		void connectionBecameAvailable ();
 
 		// Signals to the underlying stream
 		/** Implementation detail. Please disregard. */

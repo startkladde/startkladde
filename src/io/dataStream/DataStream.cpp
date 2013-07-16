@@ -1,7 +1,8 @@
 #include "DataStream.h"
 
-#include "src/i18n/notr.h"
+#include <QDebug>
 
+#include "src/i18n/notr.h"
 
 // ******************
 // ** Construction **
@@ -91,9 +92,15 @@ void DataStream::setOpen (bool o)
 /**
  * Returns the current state of the data stream.
  */
-DataStream::State DataStream::getState ()
+DataStream::State DataStream::getState () const
 {
 	return _state;
+}
+
+// FIXME now we have to make it thread-safe.
+QString DataStream::getErrorMessage () const
+{
+	return _errorMessage;
 }
 
 
@@ -132,8 +139,10 @@ void DataStream::streamOpened ()
  * Implementations should make sure that the underlying mechanism is closed and
  * ready to be re-opened before calling this method.
  */
-void DataStream::streamError ()
+void DataStream::streamError (const QString &errorMessage)
 {
+	//qDebug () << "DataStream error:" << errorMessage;
+	_errorMessage=errorMessage;
 	goToState (closedState);
 }
 
@@ -143,6 +152,21 @@ void DataStream::streamError ()
 void DataStream::streamDataReceived (const QByteArray &data)
 {
 	emit dataReceived (data);
+}
+
+/**
+ * Can be called by implementations when it seems likely that the connection can
+ * now be established when it couldn't before; e. g. when the required hardware
+ * is plugged in.
+ *
+ * The corresponding signal may, for example, be used to initiate a reconnect
+ * the connection failed.
+ *
+ * Implementations are not required to support this mechanism.
+ */
+void DataStream::streamConnectionBecameAvailable ()
+{
+	emit connectionBecameAvailable ();
 }
 
 

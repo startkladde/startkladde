@@ -45,6 +45,7 @@ class Flarm: public QObject
 		QDateTime getGpsTime () const;
 
 		bool isOpen () const;
+		const ManagedDataStream *getManagedStream () const;
 
 	public slots:
 		void open  ();
