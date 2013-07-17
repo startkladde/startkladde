@@ -23,7 +23,6 @@ GpsTracker::GpsTracker (QObject *parent): QObject (parent),
 
 GpsTracker::~GpsTracker ()
 {
-	setNmeaDecoder (NULL);
 }
 
 /**
