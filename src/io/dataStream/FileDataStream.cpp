@@ -91,7 +91,7 @@ void FileDataStream::closeStream ()
 void FileDataStream::timerSlot ()
 {
 	// The file may have been closed after a timer event was queued. We
-	// therefore have to verify that the fill is still open.
+	// therefore have to verify that the file is still open.
 	if (_file->isOpen ())
 	{
 		// Read a single line from the file. On EOF, this will return an empty
