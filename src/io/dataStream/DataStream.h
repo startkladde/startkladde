@@ -122,14 +122,16 @@ class DataStream: public QObject
 		 * Must be defined by implementations to do whatever is necessary to
 		 * open a connection to the currently configured target. Either
 		 * streamOpened or streamError MUST then be called, either immediately
-		 * or later. This method is also allowed to block while opening the
-		 * connection. Whether it blocks should be documented by the
-		 * implementation.
+		 * or later.
+		 * This method is allowed to block while opening the connection.
+		 * Implementations should document whether or not it blocks.
 		 */
 		virtual void openStream ()=0;
 		/**
 		 * Must be defined by implementations to do whatever is necessary to
 		 * close any existing connection.
+		 * This method is allowed to block while opening the connection.
+		 * Implementations should document whether or not it blocks.
 		 */
 		virtual void closeStream ()=0;
 
@@ -139,10 +141,10 @@ class DataStream: public QObject
 		virtual void streamConnectionBecameAvailable ();
 
 	private:
-		void goToState (State state);
-
 		State _state;
 		QString _errorMessage;
+
+		void goToState (State state);
 };
 
 #endif

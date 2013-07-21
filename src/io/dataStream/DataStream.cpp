@@ -129,7 +129,11 @@ void DataStream::goToState (DataStream::State state)
  */
 void DataStream::streamOpened ()
 {
-	goToState (openState);
+	// The stream implementation may be opened with a delay (e. g. when using
+	// QTcpSocket), so the stream may have been closed in the meantime. In this
+	// case, ignore the opened event.
+	if (_state==openingState)
+		goToState (openState);
 }
 
 /**
@@ -142,8 +146,13 @@ void DataStream::streamOpened ()
 void DataStream::streamError (const QString &errorMessage)
 {
 	//qDebug () << "DataStream error:" << errorMessage;
-	_errorMessage=errorMessage;
-	goToState (closedState);
+	// The stream may have been closed in the meantime. In this case, ignore the
+	// error.
+	if (_state!=closedState)
+	{
+		_errorMessage=errorMessage;
+		goToState (closedState);
+	}
 }
 
 /**
@@ -151,7 +160,10 @@ void DataStream::streamError (const QString &errorMessage)
  */
 void DataStream::streamDataReceived (const QByteArray &data)
 {
-	emit dataReceived (data);
+	// The stream may have been closed in the meantime. In this case, ignore the
+	// data.
+	if (_state==openState)
+		emit dataReceived (data);
 }
 
 /**
