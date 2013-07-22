@@ -6,6 +6,7 @@
 
 #include "src/io/dataStream/DataStream.h"
 
+class QMutex;
 class QTcpSocket;
 
 /**
@@ -15,6 +16,8 @@ class QTcpSocket;
  * stream can be opened.
  *
  * This DataStream implementation will not block on opening.
+ *
+ * This class is thread safe.
  */
 class TcpDataStream: public DataStream
 {
@@ -32,10 +35,18 @@ class TcpDataStream: public DataStream
 		virtual void closeStream ();
 
 	private:
-	    QTcpSocket *_socket;
+		// There are two different mutexes: one for protecting the parameters
+		// and one for protecting the back-end. This is so that a blocking
+		// back-end operation does not block other operations.
+	    QMutex *_parameterMutex;
+	    QMutex *_backEndMutex;
 
+	    // Parameters
 		QString _host;
 		uint16_t _port;
+
+		// Back-end
+	    QTcpSocket *_socket;
 
 	private slots:
     	void socket_dataReceived ();

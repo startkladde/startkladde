@@ -1,6 +1,8 @@
 #include "DataStream.h"
 
 #include <QDebug>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "src/i18n/notr.h"
 
@@ -12,13 +14,16 @@
  * Creates a new DataStream instance with the specified Qt parent
  */
 DataStream::DataStream (QObject *parent): QObject (parent),
+	_mutex (new QMutex (QMutex::Recursive)),
 	_state (closedState)
+
 {
 	// The stream is initially in the closed state.
 }
 
 DataStream::~DataStream ()
 {
+	delete _mutex;
 }
 
 
@@ -39,9 +44,14 @@ DataStream::~DataStream ()
  * opening is delayed, e. g. waiting for the remote side to accept the
  * connection), `open` (if the stream opened immediately) or `closed` (if the
  * connection failed immediately).
+ *
+ * This method is thread safe.
  */
 void DataStream::open ()
 {
+	// Note that the
+	QMutexLocker locker (_mutex);
+
 	// If the stream is already open or opening, there's nothing to do.
 	if (_state!=closedState)
 		return;
@@ -53,6 +63,9 @@ void DataStream::open ()
 	// streamOpenSuccess will be called. When the operation fails (now or
 	// later), streamOpenFailure will be called. When the error is closed due to
 	// an error (after it has been opened), streamError will be called.
+	// The openStream method may block, so we have to unlock the mutex before
+	// the call.
+	locker.unlock ();
 	openStream ();
 }
 
@@ -61,9 +74,13 @@ void DataStream::open ()
  *
  * If the stream is already closed, nothing happens. Otherwise, it will go to
  * the `closed` state before this method returns.
+ *
+ * This method is thread safe.
  */
 void DataStream::close ()
 {
+	QMutexLocker locker (_mutex);
+
 	// If the stream is already closed, there's nothing to do.
 	if (_state==closedState)
 		return;
@@ -72,6 +89,9 @@ void DataStream::close ()
 	goToState (closedState);
 
 	// Close the stream
+	// The openStream method may block, so we have to unlock the mutex before
+	// the call.
+	locker.unlock ();
 	closeStream ();
 }
 
@@ -80,9 +100,13 @@ void DataStream::close ()
  *
  * This method (slot) can be useful to connect to a signal of, e. g., a QAction
  * that controls opening of the stream.
+ *
+ * This method is thread safe.
  */
 void DataStream::setOpen (bool o)
 {
+	// Locking is not necessary as we do not access any data members and only
+	// call thread safe methods.
 	if (o)
 		open ();
 	else
@@ -91,15 +115,23 @@ void DataStream::setOpen (bool o)
 
 /**
  * Returns the current state of the data stream.
+ *
+ * This method is thread safe.
  */
 DataStream::State DataStream::getState () const
 {
+	QMutexLocker locker (_mutex);
 	return _state;
 }
 
-// FIXME now we have to make it thread-safe.
+/**
+ * Returns the last error message.
+ *
+ * This method is thread safe.
+ */
 QString DataStream::getErrorMessage () const
 {
+	QMutexLocker locker (_mutex);
 	return _errorMessage;
 }
 
@@ -112,9 +144,15 @@ QString DataStream::getErrorMessage () const
  * Goes to the specified state.
  *
  * This method stores the specified state and emits a stateChanged signal.
+ *
+ * This method is thread safe.
  */
 void DataStream::goToState (DataStream::State state)
 {
+	// This method may be called from other thread safe methods holding the
+	// mutex. Since the mutex is recursive, we can still lock it here.
+	QMutexLocker locker (_mutex);
+
 	_state=state;
 	emit stateChanged (state);
 }
@@ -126,9 +164,13 @@ void DataStream::goToState (DataStream::State state)
 
 /**
  * Called by implementations whenever the stream is successfully opened.
+ *
+ * This method is thread safe.
  */
 void DataStream::streamOpened ()
 {
+	QMutexLocker locker (_mutex);
+
 	// The stream implementation may be opened with a delay (e. g. when using
 	// QTcpSocket), so the stream may have been closed in the meantime. In this
 	// case, ignore the opened event.
@@ -142,10 +184,15 @@ void DataStream::streamOpened ()
  *
  * Implementations should make sure that the underlying mechanism is closed and
  * ready to be re-opened before calling this method.
+ *
+ * This method is thread safe.
  */
 void DataStream::streamError (const QString &errorMessage)
 {
+	QMutexLocker locker (_mutex);
+
 	//qDebug () << "DataStream error:" << errorMessage;
+
 	// The stream may have been closed in the meantime. In this case, ignore the
 	// error.
 	if (_state!=closedState)
@@ -157,9 +204,13 @@ void DataStream::streamError (const QString &errorMessage)
 
 /**
  * Called by implementations when data is received from the stream.
+ *
+ * This method is thread safe.
  */
 void DataStream::streamDataReceived (const QByteArray &data)
 {
+	QMutexLocker locker (_mutex);
+
 	// The stream may have been closed in the meantime. In this case, ignore the
 	// data.
 	if (_state==openState)
@@ -175,9 +226,13 @@ void DataStream::streamDataReceived (const QByteArray &data)
  * the connection failed.
  *
  * Implementations are not required to support this mechanism.
+ *
+ * This method is thread safe.
  */
 void DataStream::streamConnectionBecameAvailable ()
 {
+	// This method does not access any properties and does not call any methods
+	// (except signals). It is therefore thread safe.
 	emit connectionBecameAvailable ();
 }
 
@@ -192,9 +247,14 @@ void DataStream::streamConnectionBecameAvailable ()
  * This method can be useful for logging, but the return value should probably
  * not be shown to the user, since the text is not localized and may change in
  * the future.
+ *
+ * This method is thread safe.
  */
-QString DataStream::stateText (DataStream::State state)
+QString DataStream::stateText (DataStream::State state) // static
 {
+	// This method does not access any properties and does not call any methods.
+	// It is therefore inherently thread safe.
+
 	switch (state)
 	{
 		case closedState : return notr ("closed" );

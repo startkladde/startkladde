@@ -1,12 +1,13 @@
 #ifndef FILEDATASTREAM_H_
 #define FILEDATASTREAM_H_
 
-class QFile;
-class QTimer;
-
 #include <stdint.h>
 
 #include "src/io/dataStream/DataStream.h"
+
+class QFile;
+class QMutex;
+class QTimer;
 
 /**
  * A DataStream implementation that reads data from a file, one line at a time,
@@ -18,6 +19,8 @@ class QTimer;
  * This DataStream implementation will block on opening until the file has been
  * opened, which should typically be instantaneous; however, if the file is on
  * a slow medium (such as a network path), this may take some time.
+ *
+ * This class is thread safe.
  */
 class FileDataStream: public DataStream
 {
@@ -36,11 +39,19 @@ class FileDataStream: public DataStream
 		virtual void closeStream ();
 
 	private:
-	    QFile *_file;
-	    QTimer *_timer;
+		// There are two different mutexes: one for protecting the parameters
+		// and one for protecting the back-end. This is so that a blocking
+		// back-end operation does not block other operations.
+	    QMutex *_parameterMutex;
+	    QMutex *_backEndMutex;
 
+	    // Parameters
 		QString _fileName;
 		uint16_t _delayMs;
+
+		// Back-end
+	    QFile *_file;
+	    QTimer *_timer;
 
 	private slots:
 		void timerSlot ();

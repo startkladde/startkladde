@@ -6,11 +6,23 @@
 
 #include "src/io/dataStream/DataStream.h"
 
-// QtSerialPort
-//namespace QtAddOn { namespace SerialPort { class SerialPort; } }
-// QSerialDEvice
+class QMutex;
+
 class AbstractSerial;
 
+/**
+ * A DataStream implementation that receives data from a serial port.
+ *
+ * The port and baud rate are configured using the setPort method. After that,
+ * the stream can be opened.
+ *
+ * This DataStream implementation may block on opening.
+ *
+ * This implementation uses the QSerialDevice library, for reasons detailed on
+ * the SerialPort page of the startkladde Wiki.
+ *
+ * This class is thread safe.
+ */
 class SerialDataStream: public DataStream
 {
 	Q_OBJECT
@@ -27,13 +39,18 @@ class SerialDataStream: public DataStream
 		virtual void closeStream ();
 
 	private:
-		// QtSerialPort
-		//QtAddOn::SerialPort::SerialPort *_port;
-		// QSerialDevice
-		AbstractSerial *_port;
+		// There are two different mutexes: one for protecting the parameters
+		// and one for protecting the back-end. This is so that a blocking
+		// back-end operation does not block other operations.
+	    QMutex *_parameterMutex;
+	    QMutex *_backEndMutex;
 
+	    // Parameters
 		QString _portName;
 		int _baudRate;
+
+		// Back-end
+		AbstractSerial *_port;
 
 	private slots:
 		void availablePortsChanged (const QStringList &ports);

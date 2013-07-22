@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+class QMutex;
 class QTimer;
 
 /**
@@ -71,6 +72,10 @@ class QTimer;
  *
  * Implementations should document whether they block on opening or return
  * immediately.
+ *
+ * All methods of this class are thread safe. Implementations must also be
+ * thread safe. In particular, this includes calling the openStream and
+ * closeStream methods from arbitrary threads.
  */
 class DataStream: public QObject
 {
@@ -141,6 +146,8 @@ class DataStream: public QObject
 		virtual void streamConnectionBecameAvailable ();
 
 	private:
+		QMutex *_mutex;
+
 		State _state;
 		QString _errorMessage;
 
