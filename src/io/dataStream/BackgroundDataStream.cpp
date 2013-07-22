@@ -60,16 +60,18 @@ BackgroundDataStream::~BackgroundDataStream ()
 {
 	// _thread will be deleted automatically.
 
+	// _stream has no parent; that's a requirement of moving it to the
+	// background thread. Use deleteLater for an object on a different thread.
+	if (_stream && _streamOwned)
+	{
+		_stream->deleteLater ();
+	}
+
 	_thread->exit (0);
 	QThread::yieldCurrentThread ();
 	// FIXME can we get rid of this delay?
 	_thread->wait (100);
 	_thread->terminate ();
-
-	// _stream has no parent; that's a requirement of moving it to the
-	// background thread.
-	if (_stream && _streamOwned)
-		_stream->deleteLater ();
 }
 
 

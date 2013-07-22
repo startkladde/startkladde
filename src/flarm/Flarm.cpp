@@ -76,14 +76,21 @@ const ManagedDataStream *Flarm::getManagedStream () const
 	return _managedDataStream;
 }
 
-template<class T> T *Flarm::ensureTypedDataStream ()
+/**
+ * If the underlying data stream of the managed data stream is currently of type
+ * T, returns a pointer to that data stream. Otherwise, a new data stream of
+ * type T is created.
+ *
+ * There is no indication of which case was true. This method is only useful if
+ * the resulting data stream is then assigned to the managed data stream.
+ */
+template<class T> T *Flarm::getOrCreateTypedDataStream ()
 {
 	// Try to cast the existing data stream (if any) to the requested type.
-	// FIXME we can't access this, it's not thread safe.
 	T *typedDataStream=dynamic_cast<T *> (_managedDataStream->getDataStream ());
 
 	// If the cast returned NULL, there is either no data stream, or it has the
-	// wrong type. In this case, create
+	// wrong type. In this case, create a new data stream of the correct type.
 	if (!typedDataStream)
 	{
 		// Either there is no data stream, or it has the wrong type. Create a
@@ -111,21 +118,19 @@ void Flarm::updateDataStream ()
 			} break;
 			case Flarm::serialConnection:
 			{
-				SerialDataStream *stream=ensureTypedDataStream<SerialDataStream> ();
+				SerialDataStream *stream=getOrCreateTypedDataStream<SerialDataStream> ();
 				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
 				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::tcpConnection:
 			{
-				TcpDataStream *stream=ensureTypedDataStream<TcpDataStream> ();
+				TcpDataStream *stream=getOrCreateTypedDataStream<TcpDataStream> ();
 				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
 				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::fileConnection:
 			{
-				FileDataStream *stream=ensureTypedDataStream<FileDataStream> ();
-				// FIXME we may not do this if the stream is already in use -
-				// thread safety.
+				FileDataStream *stream=getOrCreateTypedDataStream<FileDataStream> ();
 				stream->setFileName (s.flarmFileName);
 				stream->setDelay (s.flarmFileDelayMs);
 				_managedDataStream->setDataStream (stream, true);
@@ -139,6 +144,12 @@ void Flarm::updateDataStream ()
 	}
 }
 
+void Flarm::managedDataStream_stateChanged (ManagedDataStream::State::Type state)
+{
+	//qDebug () << "Flarm: data stream state changed to" << ManagedDataStream::stateText (state);
+	emit streamStateChanged (state);
+}
+
 
 // **************
 // ** Settings **
@@ -149,27 +160,6 @@ void Flarm::settingsChanged ()
 	// The Flarm enabled, connection type or connection parameters may have
 	// changed. We may have to change the connection type.
 	updateDataStream ();
-}
-
-
-// *****************
-// ** Data stream **
-// *****************
-
-bool Flarm::isDataValid ()
-{
-	// FIXME implement
-	return false;
-//	if (dataStream ())
-//		return dataStream ()->state ().isDataOk ();
-//	else
-//		return false;
-}
-
-void Flarm::managedDataStream_stateChanged (ManagedDataStream::State::Type state)
-{
-	//qDebug () << "Flarm: data stream state changed to" << ManagedDataStream::stateText (state);
-	emit streamStateChanged (state);
 }
 
 

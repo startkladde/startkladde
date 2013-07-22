@@ -23,7 +23,6 @@ class BackgroundDataStream: public QObject
 	Q_OBJECT
 
 	public:
-		// FIXME disallow copying
 		BackgroundDataStream (QObject *parent, DataStream *stream, bool streamOwned);
 		virtual ~BackgroundDataStream ();
 

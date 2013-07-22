@@ -2197,12 +2197,13 @@ void MainWindow::on_actionSetTime_triggered ()
 void MainWindow::on_actionSetGPSTime_triggered ()
 {
         qDebug () << "MainWindow::on_actionSetGPSTime_triggered";
-        if (!flarm.isDataValid ())
-        {
-        	QMessageBox::warning (this, tr ("No GPS signal"),
-        			tr ("Flarm does not send data"));
-        	return;
-        }
+        // FIXME
+//        if (!flarm.isDataValid ())
+//        {
+//        	QMessageBox::warning (this, tr ("No GPS signal"),
+//        			tr ("Flarm does not send data"));
+//        	return;
+//        }
         QDateTime current (QDateTime::currentDateTimeUtc ());
         QDateTime currentGPSdateTime (flarm.getGpsTime ());
         qDebug () << "slot_setGPSdateTime: " << currentGPSdateTime.toString (notr("hh:mm:ss dd.MM.yyyy"));

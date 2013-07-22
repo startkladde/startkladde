@@ -203,8 +203,6 @@ void ManagedDataStream::clearDataStream ()
 	setDataStream (NULL, false);
 }
 
-// TODO we should remove this if possible, because we're not supposed to access
-// the underlying data stream which now lives on a background thread.
 DataStream *ManagedDataStream::getDataStream () const
 {
 	if (_backgroundStream)

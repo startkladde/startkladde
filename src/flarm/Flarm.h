@@ -38,8 +38,6 @@ class Flarm: public QObject
 		GpsTracker  *gpsTracker  () { return _gpsTracker;  }
 		FlarmList   *flarmList   () { return _flarmList;   }
 
-		bool isDataValid ();
-
 		// GPS tracker facade
 		GeoPosition getPosition () const;
 		QDateTime getGpsTime () const;
@@ -63,7 +61,7 @@ class Flarm: public QObject
 		void managedDataStream_stateChanged (ManagedDataStream::State::Type state);
 
 	private:
-		template<class T> T *ensureTypedDataStream ();
+		template<class T> T *getOrCreateTypedDataStream ();
 
 		DbManager &_dbManager;
 
