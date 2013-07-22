@@ -159,9 +159,12 @@ QString ManagedDataStream::getErrorMessage () const
 
 void ManagedDataStream::setDataStream (DataStream *stream, bool streamOwned)
 {
-	// If the stream is already current, stop
+	// If the stream is already current, just apply the parameters
 	if (_backgroundStream && _backgroundStream->getStream ()==stream)
+	{
+		_backgroundStream->applyParameters ();
 		return;
+	}
 
 	// Delete the old background stream. This will stop the thread, disconnect
 	// its signals and, if the old underlying stream was owned, delete it.

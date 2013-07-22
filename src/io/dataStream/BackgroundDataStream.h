@@ -36,6 +36,7 @@ class BackgroundDataStream: public QObject
 		virtual void open ();
 		virtual void close ();
 		virtual void setOpen (bool o);
+		virtual void applyParameters ();
 
 	signals:
 		// Public interface
@@ -53,6 +54,8 @@ class BackgroundDataStream: public QObject
 		void close_stream ();
 		/** Implementation detail. Please disregard. */
 		void setOpen_stream (bool o);
+		/** Implementation detail. Please disregard. */
+		void applyParameters_stream ();
 
 	private slots:
 		// Signals from the underlying stream. Most of the signals are simply

@@ -33,14 +33,17 @@ BackgroundDataStream::BackgroundDataStream (QObject *parent, DataStream *stream,
 
 	// Connect signals to the stream
 	connect (this   , SIGNAL (open_stream ()),
-	         _stream, SLOT   (open ()));
+	         _stream, SLOT   (open        ()));
 	connect (this   , SIGNAL (close_stream ()),
-	         _stream, SLOT   (close ()));
+	         _stream, SLOT   (close        ()));
 	connect (this   , SIGNAL (setOpen_stream (bool)),
-	         _stream, SLOT   (setOpen (bool)));
+	         _stream, SLOT   (setOpen        (bool)));
+	connect (this   , SIGNAL (applyParameters_stream ()),
+	         _stream, SLOT   (applyParameters        ()));
 
 	// Connect signals from the stream
-	// Note that the stateChanged signal connects to a slot.
+	// Note that most signals connect to a signal of this class, but the
+	// stateChanged signal connects to a slot.
 	connect (_stream, SIGNAL (stateChanged        (DataStream::State)),
 	         this   , SLOT   (stream_stateChanged (DataStream::State)));
 	connect (_stream, SIGNAL (dataReceived (QByteArray)),
@@ -149,6 +152,19 @@ void BackgroundDataStream::close ()
 void BackgroundDataStream::setOpen (bool o)
 {
 	emit setOpen_stream (o);
+}
+
+/**
+ * Calls DataStream::applyParameters on the background thread.
+ *
+ * Note that after this method returns, the state of the data stream has not
+ * necessarily changed yet.
+ *
+ * See also DataStream::applyParameters ()
+ */
+void BackgroundDataStream::applyParameters ()
+{
+	emit applyParameters_stream ();
 }
 
 // *****************************

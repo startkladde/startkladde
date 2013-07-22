@@ -25,12 +25,15 @@ class QTimer;
  *   - open: the data stream has successfully been opened
  *
  * A data stream is configured (e. g. setting the remote host and port for a TCP
- * data stream) using implementation-specific methods. It is then opened by
- * calling the `open` method, causing it to go to the `opening` state (before
- * the `open` method returns).
- * After that, it will either go to the `open` state (on success) or to the
- * `closed` state (on failure). Depending on the implementation, this may either
- * happen immediately before the `open` method returns or later.
+ * data stream) using implementation-specific methods. The parameters are
+ * applied when the connection is opened the next time. If the stream is already
+ * open, the parameters are not applied immediately.
+ *
+ * The stream is then opened by calling the `open` method, causing it to go to
+ * the `opening` state (before the `open` method returns). After that, it will
+ * either go to the `open` state (on success) or to the `closed` state (on
+ * failure). Depending on the implementation, this may either happen immediately
+ * (before the `open` method returns) or later.
  * The stream is closed by calling the `close` method. It will also be closed
  * automatically if a fatal error occurs (e. g. a TCP socket being closed by the
  * remote host).
@@ -101,6 +104,7 @@ class DataStream: public QObject
 		virtual void open ();
 		virtual void close ();
 		virtual void setOpen (bool o);
+		virtual void applyParameters ();
 
 	signals:
 		/**
@@ -132,6 +136,7 @@ class DataStream: public QObject
 		 * Implementations should document whether or not it blocks.
 		 */
 		virtual void openStream ()=0;
+
 		/**
 		 * Must be defined by implementations to do whatever is necessary to
 		 * close any existing connection.
@@ -139,6 +144,23 @@ class DataStream: public QObject
 		 * Implementations should document whether or not it blocks.
 		 */
 		virtual void closeStream ()=0;
+
+		/**
+		 * Must be defined by implementations to determine whether the
+		 * parameters are current
+		 */
+		virtual bool streamParametersCurrent ()=0;
+
+//		/**
+//		 * Must be defined by implementations to do whatever is necessary to
+//		 * apply the current settings. In the simplest case, this consists in
+//		 * closing and re-opening the stream. A more advanced implementation
+//		 * might first check whether the settings changed at all. An even more
+//		 * sophisticated implementation might be able to apply some of the
+//		 * parameters on the fly.
+//		 */
+//		virtual void applyStreamSettings ()=0;
+
 
 		virtual void streamOpened ();
 		virtual void streamError (const QString &errorMessage);

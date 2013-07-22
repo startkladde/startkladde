@@ -33,6 +33,7 @@ class TcpDataStream: public DataStream
 		// DataStream methods
 		virtual void openStream ();
 		virtual void closeStream ();
+		virtual bool streamParametersCurrent ();
 
 	private:
 		// There are two different mutexes: one for protecting the parameters

@@ -132,6 +132,28 @@ void FileDataStream::closeStream ()
 	_file->close ();
 }
 
+/**
+ * Implementation of DataStream::streamParametersCurrent ().
+ *
+ * This method is thread safe.
+ */
+bool FileDataStream::streamParametersCurrent ()
+{
+	QMutexLocker parameterLocker (_parameterMutex);
+	QString configuredFileName=_fileName;
+	int     configuredDelayMs =_delayMs;
+	parameterLocker.unlock ();
+
+	QMutexLocker backEndLocker (_backEndMutex);
+	QString activeFileName=_file ->fileName ();
+	int     activeDelayMs =_timer->interval ();
+	backEndLocker.unlock ();
+
+	return
+		configuredFileName == activeFileName &&
+		configuredDelayMs  == activeDelayMs;
+}
+
 
 // ***********
 // ** Timer **
@@ -170,6 +192,7 @@ void FileDataStream::timerSlot ()
 		}
 		else
 		{
+			//qDebug () << "FileDataStream:" << line.trimmed ();
 			// Emit a signal with the received data.
 			backEndLocker.unlock ();
 			emit dataReceived (line);

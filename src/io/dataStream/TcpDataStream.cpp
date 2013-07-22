@@ -96,6 +96,16 @@ void TcpDataStream::closeStream ()
 	_socket->abort ();
 }
 
+/**
+ * Implementation of DataStream::streamParametersCurrent ().
+ *
+ * This method is thread safe.
+ */
+bool TcpDataStream::streamParametersCurrent ()
+{
+	// FIXME implement, see FileDataStream
+	return false;
+}
 
 // *******************
 // ** Socket events **

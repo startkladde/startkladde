@@ -114,6 +114,30 @@ void DataStream::setOpen (bool o)
 }
 
 /**
+ * Closes and re-opens the stream if the parameters are outdated.
+ *
+ * This method is thread safe.
+ */
+void DataStream::applyParameters ()
+{
+	QMutexLocker locker (_mutex);
+	State state=_state;
+	locker.unlock ();
+
+	if (state!=closedState)
+	{
+		if (!streamParametersCurrent ())
+		{
+			// Note that we call close() and open() rather than closeStram()
+			// and openStream() so we get the proper state changes.
+			close ();
+			open ();
+		}
+	}
+}
+
+
+/**
  * Returns the current state of the data stream.
  *
  * This method is thread safe.
@@ -190,8 +214,6 @@ void DataStream::streamOpened ()
 void DataStream::streamError (const QString &errorMessage)
 {
 	QMutexLocker locker (_mutex);
-
-	//qDebug () << "DataStream error:" << errorMessage;
 
 	// The stream may have been closed in the meantime. In this case, ignore the
 	// error.

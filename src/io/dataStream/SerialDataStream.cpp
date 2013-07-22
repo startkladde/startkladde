@@ -7,7 +7,6 @@
 #include "3rdparty/qserialdevice/src/qserialdevice/abstractserial.h"
 #include "3rdparty/qserialdevice/src/qserialdeviceenumerator/serialdeviceenumerator.h"
 
-//#include "src/concurrent/DefaultQThread.h"
 #include "src/i18n/notr.h"
 #include "src/text.h"
 
@@ -141,6 +140,17 @@ void SerialDataStream::closeStream ()
 	_port->close ();
 }
 
+/**
+ * Implementation of DataStream::streamParametersCurrent ().
+ *
+ * This method is thread safe.
+ */
+bool SerialDataStream::streamParametersCurrent ()
+{
+	// FIXME implement, see FileDataStream
+	return false;
+}
+
 
 // *****************
 // ** Port events **
@@ -156,11 +166,10 @@ void SerialDataStream::port_dataReceived ()
 	// Lock the back-end mutex and read the available data. Unlock the mutex
 	// before calling the base class.
 	QMutexLocker backEndLocker (_backEndMutex);
-
 	QByteArray data=_port->readAll ();
 
 	backEndLocker.unlock ();
-	dataReceived (data);
+	streamDataReceived (data);
 }
 
 /**

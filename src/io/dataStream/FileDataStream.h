@@ -37,6 +37,7 @@ class FileDataStream: public DataStream
 		// DataStream methods
 		virtual void openStream ();
 		virtual void closeStream ();
+		virtual bool streamParametersCurrent ();
 
 	private:
 		// There are two different mutexes: one for protecting the parameters
@@ -47,7 +48,7 @@ class FileDataStream: public DataStream
 
 	    // Parameters
 		QString _fileName;
-		uint16_t _delayMs;
+		int _delayMs;
 
 		// Back-end
 	    QFile *_file;
