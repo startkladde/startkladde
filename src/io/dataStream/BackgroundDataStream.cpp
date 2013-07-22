@@ -58,11 +58,11 @@ BackgroundDataStream::BackgroundDataStream (QObject *parent, DataStream *stream,
  */
 BackgroundDataStream::~BackgroundDataStream ()
 {
-	// FIXME must stop the thread before deleting it
 	// _thread will be deleted automatically.
 
 	_thread->exit (0);
 	QThread::yieldCurrentThread ();
+	// FIXME can we get rid of this delay?
 	_thread->wait (100);
 	_thread->terminate ();
 
@@ -77,12 +77,6 @@ BackgroundDataStream::~BackgroundDataStream ()
 // ** Underlying stream **
 // ***********************
 
-// FIXME remove - replace with bool isStream (?)
-/**
- * Note that you should not access the stream directly via the pointer returned
- * by this method, unless you know that it is thread safe. This method's purpose
- * is to check the identity of the stream.
- */
 DataStream *BackgroundDataStream::getStream () const
 {
 	return _stream;
@@ -108,7 +102,6 @@ DataStream::State BackgroundDataStream::getState () const
 
 QString BackgroundDataStream::getErrorMessage () const
 {
-	// FIXME must be thread safe now
 	return _stream->getErrorMessage ();
 }
 
