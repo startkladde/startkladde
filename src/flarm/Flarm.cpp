@@ -119,19 +119,19 @@ void Flarm::updateDataStream ()
 			case Flarm::serialConnection:
 			{
 				SerialDataStream *stream=getOrCreateTypedDataStream<SerialDataStream> ();
-				stream->setPort (s.flarmSerialPort, s.flarmSerialBaudRate);
+				stream->setPort (s.flarmSerialPort.trimmed (), s.flarmSerialBaudRate);
 				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::tcpConnection:
 			{
 				TcpDataStream *stream=getOrCreateTypedDataStream<TcpDataStream> ();
-				stream->setTarget (s.flarmTcpHost, s.flarmTcpPort);
+				stream->setTarget (s.flarmTcpHost.trimmed (), s.flarmTcpPort);
 				_managedDataStream->setDataStream (stream, true);
 			} break;
 			case Flarm::fileConnection:
 			{
 				FileDataStream *stream=getOrCreateTypedDataStream<FileDataStream> ();
-				stream->setFileName (s.flarmFileName);
+				stream->setFileName (s.flarmFileName.trimmed ());
 				stream->setDelay (s.flarmFileDelayMs);
 				_managedDataStream->setDataStream (stream, true);
 			} break;

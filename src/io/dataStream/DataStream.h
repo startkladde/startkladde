@@ -79,6 +79,9 @@ class QTimer;
  * All methods of this class are thread safe. Implementations must also be
  * thread safe. In particular, this includes calling the openStream and
  * closeStream methods from arbitrary threads.
+ *
+ * Some methods access the back-end. While all methods are thread safe, these
+ * methods may be delayed by a blocking back-end operation.
  */
 class DataStream: public QObject
 {
@@ -132,35 +135,32 @@ class DataStream: public QObject
 		 * open a connection to the currently configured target. Either
 		 * streamOpened or streamError MUST then be called, either immediately
 		 * or later.
+		 *
 		 * This method is allowed to block while opening the connection.
 		 * Implementations should document whether or not it blocks.
+		 *
+		 * This method is thread safe. It accesses the back-end.
 		 */
 		virtual void openStream ()=0;
 
 		/**
 		 * Must be defined by implementations to do whatever is necessary to
 		 * close any existing connection.
+		 *
 		 * This method is allowed to block while opening the connection.
 		 * Implementations should document whether or not it blocks.
+		 *
+		 * This method is thread safe. It accesses the back-end.
 		 */
 		virtual void closeStream ()=0;
 
 		/**
 		 * Must be defined by implementations to determine whether the
 		 * parameters are current
+		 *
+		 * This method is thread safe. It accesses the back-end.
 		 */
 		virtual bool streamParametersCurrent ()=0;
-
-//		/**
-//		 * Must be defined by implementations to do whatever is necessary to
-//		 * apply the current settings. In the simplest case, this consists in
-//		 * closing and re-opening the stream. A more advanced implementation
-//		 * might first check whether the settings changed at all. An even more
-//		 * sophisticated implementation might be able to apply some of the
-//		 * parameters on the fly.
-//		 */
-//		virtual void applyStreamSettings ()=0;
-
 
 		virtual void streamOpened ();
 		virtual void streamError (const QString &errorMessage);

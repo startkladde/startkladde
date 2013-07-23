@@ -139,15 +139,17 @@ void FileDataStream::closeStream ()
  */
 bool FileDataStream::streamParametersCurrent ()
 {
+	QMutexLocker backEndLocker (_backEndMutex);
+	if (_file->isOpen ())
+		return false;
+	QString activeFileName=_file ->fileName ();
+	int     activeDelayMs =_timer->interval ();
+	backEndLocker.unlock ();
+
 	QMutexLocker parameterLocker (_parameterMutex);
 	QString configuredFileName=_fileName;
 	int     configuredDelayMs =_delayMs;
 	parameterLocker.unlock ();
-
-	QMutexLocker backEndLocker (_backEndMutex);
-	QString activeFileName=_file ->fileName ();
-	int     activeDelayMs =_timer->interval ();
-	backEndLocker.unlock ();
 
 	return
 		configuredFileName == activeFileName &&

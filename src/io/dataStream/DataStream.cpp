@@ -45,7 +45,7 @@ DataStream::~DataStream ()
  * connection), `open` (if the stream opened immediately) or `closed` (if the
  * connection failed immediately).
  *
- * This method is thread safe.
+ * This method is thread safe. It accesses the back-end.
  */
 void DataStream::open ()
 {
@@ -75,7 +75,7 @@ void DataStream::open ()
  * If the stream is already closed, nothing happens. Otherwise, it will go to
  * the `closed` state before this method returns.
  *
- * This method is thread safe.
+ * This method is thread safe. It accesses the back-end.
  */
 void DataStream::close ()
 {
@@ -101,7 +101,7 @@ void DataStream::close ()
  * This method (slot) can be useful to connect to a signal of, e. g., a QAction
  * that controls opening of the stream.
  *
- * This method is thread safe.
+ * This method is thread safe. It accesses the back-end.
  */
 void DataStream::setOpen (bool o)
 {
@@ -116,7 +116,7 @@ void DataStream::setOpen (bool o)
 /**
  * Closes and re-opens the stream if the parameters are outdated.
  *
- * This method is thread safe.
+ * This method is thread safe. It accesses the back-end.
  */
 void DataStream::applyParameters ()
 {
@@ -124,9 +124,17 @@ void DataStream::applyParameters ()
 	State state=_state;
 	locker.unlock ();
 
-	if (state!=closedState)
+	if (!streamParametersCurrent ())
 	{
-		if (!streamParametersCurrent ())
+		if (state==closedState)
+		{
+			// Suggest that we may try to connect right now
+			// TODO the decisions about connecting (closed state) and
+			// reconnecting (other states) should be made in the same place,
+			// probably in ManagedDataStream.
+			emit connectionBecameAvailable ();
+		}
+		else
 		{
 			// Note that we call close() and open() rather than closeStram()
 			// and openStream() so we get the proper state changes.
@@ -140,7 +148,7 @@ void DataStream::applyParameters ()
 /**
  * Returns the current state of the data stream.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 DataStream::State DataStream::getState () const
 {
@@ -151,7 +159,7 @@ DataStream::State DataStream::getState () const
 /**
  * Returns the last error message.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 QString DataStream::getErrorMessage () const
 {
@@ -169,7 +177,7 @@ QString DataStream::getErrorMessage () const
  *
  * This method stores the specified state and emits a stateChanged signal.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 void DataStream::goToState (DataStream::State state)
 {
@@ -189,7 +197,7 @@ void DataStream::goToState (DataStream::State state)
 /**
  * Called by implementations whenever the stream is successfully opened.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 void DataStream::streamOpened ()
 {
@@ -209,7 +217,7 @@ void DataStream::streamOpened ()
  * Implementations should make sure that the underlying mechanism is closed and
  * ready to be re-opened before calling this method.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 void DataStream::streamError (const QString &errorMessage)
 {
@@ -227,11 +235,13 @@ void DataStream::streamError (const QString &errorMessage)
 /**
  * Called by implementations when data is received from the stream.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 void DataStream::streamDataReceived (const QByteArray &data)
 {
 	QMutexLocker locker (_mutex);
+
+	//qDebug () << data.trimmed ();
 
 	// The stream may have been closed in the meantime. In this case, ignore the
 	// data.
@@ -249,7 +259,7 @@ void DataStream::streamDataReceived (const QByteArray &data)
  *
  * Implementations are not required to support this mechanism.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 void DataStream::streamConnectionBecameAvailable ()
 {
@@ -270,7 +280,7 @@ void DataStream::streamConnectionBecameAvailable ()
  * not be shown to the user, since the text is not localized and may change in
  * the future.
  *
- * This method is thread safe.
+ * This method is thread safe. It does not access the back-end.
  */
 QString DataStream::stateText (DataStream::State state) // static
 {

@@ -54,7 +54,8 @@ class SerialDataStream: public DataStream
 		AbstractSerial *_port;
 
 	private slots:
-		void availablePortsChanged (const QStringList &ports);
+		void portAdded (QString port);
+		void portRemoved (QString port);
     	void port_dataReceived ();
 		void port_status (const QString &status, QDateTime dateTime);
 };

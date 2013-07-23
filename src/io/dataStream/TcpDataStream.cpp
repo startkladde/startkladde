@@ -103,7 +103,22 @@ void TcpDataStream::closeStream ()
  */
 bool TcpDataStream::streamParametersCurrent ()
 {
-	// FIXME implement, see FileDataStream
+	QMutexLocker backEndLocker (_backEndMutex);
+	if (!_socket->isOpen ())
+		return false;
+	QString activeHost = _socket->peerName ();
+	int     activePort = _socket->peerPort ();
+	backEndLocker.unlock ();
+
+	QMutexLocker parameterLocker (_parameterMutex);
+	QString configuredHost = _host;
+	int     configuredPort = _port;
+	parameterLocker.unlock ();
+
+	return
+		configuredHost == activeHost &&
+		configuredPort == activePort;
+
 	return false;
 }
 
