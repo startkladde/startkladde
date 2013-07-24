@@ -27,14 +27,14 @@
 #include <QStringList>
 #include <QShowEvent>
 
-#include "3rdparty/qserialdevice/src/qserialdeviceenumerator/serialdeviceenumerator.h"
-
+#include "src/text.h"
 #include "src/config/Settings.h"
 #include "src/db/DatabaseInfo.h"
 #include "src/gui/dialogs.h"
 #include "src/gui/views/ReadOnlyItemDelegate.h"
 #include "src/gui/views/SpinBoxCreator.h"
 #include "src/gui/views/SpecialIntDelegate.h"
+#include "src/io/serial/SerialPortList.h"
 #include "src/i18n/notr.h"
 #include "src/i18n/TranslationManager.h"
 #include "src/plugin/info/InfoPlugin.h"
@@ -82,8 +82,8 @@ SettingsWindow::SettingsWindow (QWidget *parent):
 		ui.flarmConnectionTypeInput->addItem (text, type);
 	}
 
-	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
-	connect (serialDeviceEnumerator, SIGNAL (hasChanged (const QStringList &)), this, SLOT (populateSerialPortList ()));
+	SerialPortList *serialPortList=SerialPortList::instance ();
+	connect (serialPortList, SIGNAL (portsChanged (QSet<QString>)), this, SLOT (populateSerialPortList ()));
 	populateSerialPortList ();
 
 	readSettings ();
@@ -139,6 +139,26 @@ void SettingsWindow::setupText ()
 	adjustSize ();
 }
 
+/**
+ * A very special sorting criterion that defaults to stringNumericLessThan, but
+ * sorts all strings containing "USB" to the front of the list.
+ *
+ * Examples:
+ *   - ttyUSB1 < ttyS0 (entries containing "USB" before others)
+ *   - ttyUSB1 < ttyUSB10 (entries containing "USB": use stringNumericLessThan)
+ *   - ttyS1 < ttyS10 (entries not containing "USB": use stringNumericLessThan)
+ */
+bool serialPortLessThan (const QString &s1, const QString &s2)
+{
+	bool usb1=s1.contains ("USB", Qt::CaseInsensitive);
+	bool usb2=s2.contains ("USB", Qt::CaseInsensitive);
+
+	if (usb1 == usb2)
+		return stringNumericLessThan (s1, s2);
+	else
+		return usb1;
+}
+
 void SettingsWindow::populateSerialPortList ()
 {
 	// The edit text will be replaced with the first entry added to the list, so
@@ -151,28 +171,22 @@ void SettingsWindow::populateSerialPortList ()
 
 	ui.flarmSerialPortInput->clear ();
 
-	// Populate the serial ports list - QSerialDevice library
-	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
-	foreach (const QString &deviceName, serialDeviceEnumerator->devicesAvailable ())
+	// Populate the serial ports list
+	SerialPortList *serialPortList=SerialPortList::instance ();
+	QStringList ports (serialPortList->availablePorts ().toList ());
+	qSort (ports.begin (), ports.end (), serialPortLessThan);
+	foreach (const QString &deviceName, ports)
 	{
-		serialDeviceEnumerator->setDeviceName (deviceName);
-		QString deviceDescription=serialDeviceEnumerator->description ();
+		QString deviceDescription=serialPortList->getDescription (deviceName);
 
-		QString text=tr ("%1 (%2)").arg (deviceName).arg (deviceDescription);
+		QString text;
+		if (isBlank (deviceDescription))
+			text=tr ("%1").arg (deviceName);
+		else
+			text=tr ("%1 (%2)").arg (deviceName).arg (deviceDescription);
 
 		ui.flarmSerialPortInput->addItem (text, deviceName);
 	}
-
-	//// Populate the serial ports list - QtSerialPort library
-	//foreach (const SerialPortInfo &portInfo, SerialPortInfo::availablePorts ())
-	//{
-	//	QString portName=portInfo.portName ();
-	//	QString portDescription=portInfo.description ();
-	//
-	//	QString text=tr ("%1 (%2)").arg (portName).arg (portDescription);
-	//
-	//	ui.flarmSerialPortInput->addItem (text, portName);
-	//}
 
 	// Make boolean columns and some other columns read-only
 	// The title column is read-only because we would have to write back the
@@ -238,7 +252,7 @@ void SettingsWindow::readSettings ()
 	ui.flarmConnectionTypeInput   ->setCurrentItemByItemData (
 	                                             s.flarmConnectionType, 0);
 	ui.flarmSerialPortInput       ->setEditText (s.flarmSerialPort);
-	ui.flarmSerialBaudRateInput   ->setEditText(QString::number (
+	ui.flarmSerialBaudRateInput   ->setEditText (QString::number (
 	                                             s.flarmSerialBaudRate));
 	ui.flarmTcpHostInput          ->setText     (s.flarmTcpHost);
 	ui.flarmTcpPortInput          ->setValue    (s.flarmTcpPort);
