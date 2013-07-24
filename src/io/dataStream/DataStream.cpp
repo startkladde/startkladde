@@ -5,6 +5,7 @@
 #include <QMutexLocker>
 
 #include "src/i18n/notr.h"
+#include "src/concurrent/DefaultQThread.h"
 
 // ******************
 // ** Construction **
@@ -265,6 +266,13 @@ void DataStream::streamConnectionBecameAvailable ()
 {
 	// This method does not access any properties and does not call any methods
 	// (except signals). It is therefore thread safe.
+
+	// It seems to be possible (observed on a Windows 7 system) that opening a
+	// serial port immediately after it becomes available fails with a "file not
+	// found" error (ERROR_FILE_NOT_FOUND). This delay seems to work around the
+	// issue.
+	DefaultQThread::msleep (500);
+
 	emit connectionBecameAvailable ();
 }
 
