@@ -78,7 +78,7 @@ bool NativeSerialEnginePrivate::nativeOpen(QIODevice::OpenMode mode)
     this->descriptor = qt_safe_open(this->deviceName.toLocal8Bit().constData(), flags);
 
     if (-1 == this->descriptor) {
-    	// FIXME error reporting: errorCode=errno;
+        errorCode = errno;
 #if defined (NATIVESERIALENGINE_UNIX_DEBUG)
         qDebug() << "Linux: NativeSerialEnginePrivate::nativeOpen(AbstractSerial::OpenMode mode) \n"
                 " -> function: ::open(...) returned: -1,"
