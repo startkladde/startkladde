@@ -194,4 +194,10 @@ void AbstractSerialEngine::lineNotification()
         receiver->lineNotification();
 }
 
+// MH
+int AbstractSerialEngine::errorCode () const
+{
+	return d_func()->errorCode;
+}
+
 #include "moc_abstractserialengine.cpp"

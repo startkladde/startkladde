@@ -762,11 +762,6 @@ bool AbstractSerial::open(OpenMode mode)
             return false;
         }
 
-        // Workaround (MH): on error, we'll use errno later on, but we cannot be
-        // sure that the library will set it in all cases. Therefore, we set it
-        // to zero now, and only use it later if it is non-zero.
-        errno=0;
-
         if (d->serialEngine && d->serialEngine->open(mode)) {
 
             d->clearBuffers();
@@ -786,12 +781,16 @@ bool AbstractSerial::open(OpenMode mode)
 
         this->emitStatusString(EOpen);
 
-        // Workaround (MH): this is a generic, "it did not work" type, error.
-        // They C library may have set errno to a useful value. If so, use it to
-        // set a more specific error string.
-        if (errno!=0)
+        // MH: EOpen is a generic, "it did not work" type, error. The native
+        // serial engine should have set errorCode to a useful value. In this
+        // case, use it to set at more specific error message.
+        // The source of d->serialEngine->errorCode depends on the OS (errno on
+        // Unix and GetLastError() on Windows). Qt's qt_error_string will create
+        // an error message depending on the OS.
+        int errorCode=d->serialEngine->errorCode ();
+        if (errorCode != 0)
         {
-        	QString errorString=qt_error_string (errno);
+        	QString errorString=qt_error_string (errorCode);
         	// Translate the string. This is a bit of a hack because it seems we
         	// can't translate a QString directly.
         	QByteArray errorStringLatin1=errorString.toLatin1 ();

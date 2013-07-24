@@ -88,10 +88,13 @@ bool NativeSerialEnginePrivate::nativeOpen(QIODevice::OpenMode mode)
                                     0);
 
     if (INVALID_HANDLE_VALUE == this->descriptor) {
+    	// MH: store the last error; note that GetLastError also resets it.
+    	errorCode=::GetLastError ();
+
 #if defined (NATIVESERIALENGINE_WIN_DEBUG)
         qDebug() << "Windows: NativeSerialEnginePrivate::nativeOpen(AbstractSerial::OpenMode mode) \n"
                 " -> function: ::CreateFile(...) returned: " << this->descriptor << ", \n"
-                " last error is: " << ::GetLastError() << ". Error! \n";
+                " last error is: " << errorCode << ". Error! \n";
 #endif
         return false;
     }

@@ -31,6 +31,8 @@ public:
     int currParityToValue() const;
     int currStopBitsToValue() const;
 
+    // MH: error reporting
+    int errorCode;
 };
 
 #endif // ABSTRACTSERIALENGINE_P_H

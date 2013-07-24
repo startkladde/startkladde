@@ -122,6 +122,9 @@ public:
 
     void setReceiver(AbstractSerialEngineReceiver *receiver);
 
+    // MH: error reporting
+    int errorCode () const;
+
 public Q_SLOTS:
     void readNotification();
     void writeNotification();
