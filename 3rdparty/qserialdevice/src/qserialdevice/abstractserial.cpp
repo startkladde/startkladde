@@ -269,6 +269,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QAbstractEventDispatcher>
 #include <QtCore/QObject>
+#include <QApplication>
 
 #include "abstractserial.h"
 #include "abstractserial_p.h"
@@ -277,6 +278,7 @@
 #include <QtCore/QElapsedTimer>
 #endif
 //#include <limits.h>
+#include <errno.h>
 
 //#define ABSTRACTSERIAL_DEBUG
 
@@ -760,6 +762,11 @@ bool AbstractSerial::open(OpenMode mode)
             return false;
         }
 
+        // Workaround (MH): on error, we'll use errno later on, but we cannot be
+        // sure that the library will set it in all cases. Therefore, we set it
+        // to zero now, and only use it later if it is non-zero.
+        errno=0;
+
         if (d->serialEngine && d->serialEngine->open(mode)) {
 
             d->clearBuffers();
@@ -776,7 +783,23 @@ bool AbstractSerial::open(OpenMode mode)
             d->isBuffered = (0 == (Unbuffered & mode));
             return QIODevice::open(mode);
         }
+
         this->emitStatusString(EOpen);
+
+        // Workaround (MH): this is a generic, "it did not work" type, error.
+        // They C library may have set errno to a useful value. If so, use it to
+        // set a more specific error string.
+        if (errno!=0)
+        {
+        	QString errorString=qt_error_string (errno);
+        	// Translate the string. This is a bit of a hack because it seems we
+        	// can't translate a QString directly.
+        	QByteArray errorStringLatin1=errorString.toLatin1 ();
+        	const char *errorStringData=errorStringLatin1.constData ();
+        	errorString=qApp->translate ("QIODevice", errorStringData);
+        	setErrorString (errorString);
+        }
+
         return false;
     }
     this->emitStatusString(EDeviceIsOpen);

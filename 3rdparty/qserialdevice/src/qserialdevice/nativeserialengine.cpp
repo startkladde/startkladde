@@ -23,6 +23,8 @@
 
 #include <QtCore/QAbstractEventDispatcher>
 
+#include <errno.h>
+
 #include "nativeserialengine.h"
 #include "nativeserialengine_p.h"
 #include "abstractserialnotifier.h"
@@ -51,8 +53,16 @@ bool NativeSerialEngine::open(AbstractSerial::OpenMode mode)
 {
     Q_D(NativeSerialEngine);
     bool ret = d->nativeOpen(mode);
+
     if (!ret)
+    {
+        // Workaround (MH): since the file handle may not be valid, nativeClose
+        // may overwrite errno with EBADF. This is not useful, so we store the
+        // value of errno before the call and reset it afterwards.
+        int my_errno=errno;
         d->nativeClose();
+        errno=my_errno;
+    }
     return ret;
 }
 
