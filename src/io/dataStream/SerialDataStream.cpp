@@ -121,8 +121,12 @@ void SerialDataStream::openStream ()
 	}
 	else
 	{
+		// The (modified) QSerialDevice library now provides a more useful error
+		// message. Use this message as the stream's error message.
+		QString errorMessage=_port->errorString ();
 		backEndLocker.unlock ();
-		streamError (tr ("Connection did not open"));
+		//streamError (tr ("Connection did not open"));
+		streamError (errorMessage);
 	}
 }
 
