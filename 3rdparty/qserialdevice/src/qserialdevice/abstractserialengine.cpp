@@ -41,6 +41,7 @@ AbstractSerialEnginePrivate::AbstractSerialEnginePrivate()
         , descriptor(0)
         , receiver(0)
         , isAutoCalcReadTimeoutConstant(false)
+        , errorCode(0)
 {
 }
 
