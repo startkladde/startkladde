@@ -34,6 +34,7 @@ class SerialPortList: public QObject
 		// Port inquiry
 		QSet<QString> availablePorts ();
 		bool isPortAvailable (const QString &port, Qt::CaseSensitivity caseSensitivity);
+		QString getDescription (const QString &deviceName);
 
 	signals:
 		/** Emitted when the available port list changes */

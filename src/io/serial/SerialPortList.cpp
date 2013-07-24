@@ -31,11 +31,11 @@ SerialPortList::SerialPortList ()
 	// Now that we know we're on the GUI thread, we can create the device
 	// enumerator, initialize our local list of available ports and connect the
 	// hasChanged signal.
-	SerialDeviceEnumerator *serialDeviceEnumerator=SerialDeviceEnumerator::instance ();
-	connect (serialDeviceEnumerator, SIGNAL (hasChanged            (const QStringList &)),
-	         this                  , SLOT   (availablePortsChanged (const QStringList &)));
+	SerialDeviceEnumerator *deviceEnumerator=SerialDeviceEnumerator::instance ();
+	connect (deviceEnumerator, SIGNAL (hasChanged            (const QStringList &)),
+	         this            , SLOT   (availablePortsChanged (const QStringList &)));
 
-	_availablePorts = QSet<QString>::fromList (serialDeviceEnumerator->devicesAvailable ());
+	_availablePorts = QSet<QString>::fromList (deviceEnumerator->devicesAvailable ());
 }
 
 SerialPortList::~SerialPortList ()
@@ -118,6 +118,15 @@ bool SerialPortList::isPortAvailable (const QString &port, Qt::CaseSensitivity c
 	locker.unlock ();
 
 	return portList.contains (port, caseSensitivity);
+}
+
+QString SerialPortList::getDescription (const QString &deviceName)
+{
+	QMutexLocker locker (_mutex);
+
+	SerialDeviceEnumerator *deviceEnumerator=SerialDeviceEnumerator::instance ();
+	deviceEnumerator->setDeviceName (deviceName);
+	return deviceEnumerator->description ();
 }
 
 
