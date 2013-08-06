@@ -820,5 +820,18 @@ void SettingsWindow::on_flarmConnectionTypeInput_activated (int index)
 
 void SettingsWindow::on_flarmSerialPortInput_activated (int index)
 {
-	ui.flarmSerialPortInput->setEditText (ui.flarmSerialPortInput->itemData (index).toString ());
+	// An item was selected. This can either be one of the predefined items, or
+	// a custom text.
+	// A predefined item will have a text of "port name (description)". We don't
+	// want the description part in the text field, just the port name. The port
+	// name is also stored in the item data for the item. For a custom text, the
+	// item data will be empty.
+
+	// Retrieve the item data for the item that was activated.
+	QString text=ui.flarmSerialPortInput->itemData (index).toString ();
+
+	// If the item data is not empty (i. e. it is one of the predefined items),
+	// set the text to the item data.
+	if (!text.isEmpty ())
+		ui.flarmSerialPortInput->setEditText (text);
 }
