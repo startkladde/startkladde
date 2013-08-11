@@ -20,7 +20,8 @@
 //     recognized" if data is received, but no NMEA sentences can be recognized.
 
 Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
-	_dbManager (dbManager)
+	_dbManager (dbManager),
+	_state (State::disabled) // Will be initialized to the proper value in updateDataStream ()
 {
 	// Create the managed data stream (but do not create the underlying data
 	// stream at this point). _managedDataStream will be deleted automatically
@@ -50,6 +51,7 @@ Flarm::Flarm (QObject *parent, DbManager &dbManager): QObject (parent),
 	// When the settings change, we may have to react
 	connect (&Settings::instance (), SIGNAL (changed ()), this, SLOT (settingsChanged ()));
 
+	// TODO we should not call this from the constructor
 	updateDataStream ();
 }
 
@@ -100,6 +102,24 @@ template<class T> T *Flarm::getOrCreateTypedDataStream ()
 
 	// Return the pre-existing or newly created data stream
 	return typedDataStream;
+}
+
+void Flarm::goToState (State::Type state)
+{
+	// Determine whether the state actually changed
+	bool changed=(_state!=state);
+
+	// Set the new state
+	_state=state;
+
+	// If the state changed, emit a state change signal
+	if (changed)
+		emit stateChanged (state);
+}
+
+Flarm::State::Type Flarm::state () const
+{
+	return _state;
 }
 
 void Flarm::updateDataStream ()

@@ -7,6 +7,28 @@
 #include "src/i18n/notr.h"
 #include "src/concurrent/DefaultQThread.h"
 
+/*
+ * Architecture rationale:
+ *
+ * We can't simply put the back-end class (e. g. QIODevice implementation) on
+ * a background thread, because:
+ *   - setup/open is not thread safe
+ *   - open isn't a slot (setup neither)
+ *
+ * It may not be allowed to access the back-end in a thread other than where it
+ * was created. Therefore, the whole DataStream must live on a background thread
+ * where it creates, opens and accesses the back-end. It must therefore be
+ * thread safe.
+ *
+ * Potential improvements:
+ *   - Less code in background thread: only have back-end on background thread,
+ *     not the state tracking
+ *   - We can't call streamParametersCurrent() from the GUI thread as it
+ *     accesses the back-end.
+ *   - We shouldn't abuse the connectionBecameAvailable mechanism for
+ *     reconnecting on settings change when in error state
+ */
+
 // ******************
 // ** Construction **
 // ******************

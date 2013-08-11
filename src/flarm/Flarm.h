@@ -23,6 +23,8 @@ class Flarm: public QObject
 		Q_OBJECT
 
 	public:
+		struct State { enum Type { disabled, closed, active }; };
+
 		// Connection type
 		enum ConnectionType { noConnection, serialConnection, tcpConnection, fileConnection };
 		static QString               ConnectionType_toString   (ConnectionType type);
@@ -45,16 +47,20 @@ class Flarm: public QObject
 		bool isOpen () const;
 		const ManagedDataStream *getManagedStream () const;
 
+		State::Type state () const;
+
 	public slots:
 		void open  ();
 		void close ();
 		void setOpen (bool open);
 
 	signals:
+		void stateChanged (Flarm::State::Type state);
 		void streamStateChanged (ManagedDataStream::State::Type state);
 
 	protected:
 		void updateDataStream ();
+		void goToState (State::Type state);
 
 	protected slots:
 		void settingsChanged ();
@@ -64,6 +70,8 @@ class Flarm: public QObject
 		template<class T> T *getOrCreateTypedDataStream ();
 
 		DbManager &_dbManager;
+
+		State::Type _state;
 
 		ManagedDataStream *_managedDataStream;
 		NmeaDecoder *_nmeaDecoder;

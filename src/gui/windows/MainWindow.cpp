@@ -108,7 +108,7 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 
 	ui.flightTable->init (&dbManager);
 
-	// Flarm
+	// ***** Flarm
 	connect (
 		&flarm, SIGNAL (streamStateChanged       (ManagedDataStream::State::Type)),
 		this  , SLOT   (flarm_streamStateChanged (ManagedDataStream::State::Type)));
@@ -125,6 +125,8 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 	connect (flarm.flarmList (), SIGNAL (touchAndGoDetected (const QString &)), this, SLOT (flarmList_touchAndGoDetected (const QString &)));
 
 	connect (ui.flarmStateLabel, SIGNAL (linkActivated (const QString &)), this, SLOT (flarmStreamLinkActivated (const QString &)));
+
+	updateFlarmStreamState ();
 
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
@@ -233,6 +235,7 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 
 	connect (&dbManager, SIGNAL (stateChanged (DbManager::State)), this, SLOT (databaseStateChanged (DbManager::State)));
 	databaseStateChanged (dbManager.getState ());
+
 }
 
 MainWindow::~MainWindow ()
@@ -1984,14 +1987,18 @@ QString linkTo (const QString &target, const QString &text)
 
 void MainWindow::updateFlarmStreamState (ManagedDataStream::State::Type state)
 {
+	qDebug () << "update flarm stream state";
 	QString text;
 
 	QString linkTarget=notr ("flarmStreamErrorDetails");
 
-	// FIXME "disabled" when no Flarm connection is configured
+	// FIXME "disabled" when Flarm is disabled
 
 	switch (state)
 	{
+		case ManagedDataStream::State::noConnection:
+			text=tr ("No connection");
+			break;
 		case ManagedDataStream::State::closed:
 			text=tr ("Closed");
 			break;
