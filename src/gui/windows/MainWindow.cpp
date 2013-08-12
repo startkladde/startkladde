@@ -112,6 +112,9 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 	connect (
 		&flarm, SIGNAL (streamStateChanged       (ManagedDataStream::State::Type)),
 		this  , SLOT   (flarm_streamStateChanged (ManagedDataStream::State::Type)));
+	connect (
+		&flarm, SIGNAL (stateChanged       (Flarm::State::Type)),
+		this  , SLOT   (flarm_stateChanged (Flarm::State::Type)));
 	// This will cause a Flarm connection state change
 	flarm.open ();
 	ui.openFlarmAction->setChecked (flarm.isOpen ());
@@ -126,7 +129,8 @@ MainWindow::MainWindow (QWidget *parent, DbManager &dbManager, Flarm &flarm):
 
 	connect (ui.flarmStateLabel, SIGNAL (linkActivated (const QString &)), this, SLOT (flarmStreamLinkActivated (const QString &)));
 
-	updateFlarmStreamState ();
+	// TODO should not call any non-trivial methods from the constructor
+	updateFlarmState ();
 
 	// Menu bar
 	logAction = ui.logDockWidget->toggleViewAction ();
@@ -1985,14 +1989,11 @@ QString linkTo (const QString &target, const QString &text)
 	return qnotr ("<a href=\"%1\">%2</a>").arg (target).arg (text);
 }
 
-void MainWindow::updateFlarmStreamState (ManagedDataStream::State::Type state)
+void MainWindow::updateFlarmStateEnabled (ManagedDataStream::State::Type state)
 {
-	qDebug () << "update flarm stream state";
 	QString text;
 
 	QString linkTarget=notr ("flarmStreamErrorDetails");
-
-	// FIXME "disabled" when Flarm is disabled
 
 	switch (state)
 	{
@@ -2045,14 +2046,38 @@ void MainWindow::updateFlarmStreamState (ManagedDataStream::State::Type state)
 	ui.flarmStateLabel->setText (text);
 }
 
-void MainWindow::updateFlarmStreamState ()
+void MainWindow::updateFlarmStateDisabled ()
 {
-	updateFlarmStreamState (flarm.getManagedStream ()->getState ());
+	ui.flarmStateLabel->setText (tr ("Disabled"));
+}
+
+void MainWindow::updateFlarmState (Flarm::State::Type state)
+{
+	switch (state)
+	{
+		case Flarm::State::active:
+			updateFlarmStateEnabled (flarm.getManagedStream ()->getState ());
+			break;
+		case Flarm::State::disabled:
+			updateFlarmStateDisabled ();
+			break;
+	}
+}
+
+void MainWindow::updateFlarmState ()
+{
+	updateFlarmState (flarm.state ());
+}
+
+void MainWindow::flarm_stateChanged (Flarm::State::Type state)
+{
+	updateFlarmState (state);
 }
 
 void MainWindow::flarm_streamStateChanged (ManagedDataStream::State::Type state)
 {
-	updateFlarmStreamState (state);
+	// FIXME state mix-up, there should only be a single Flarm state
+	updateFlarmStateEnabled (state);
 }
 
 void MainWindow::flarmStreamLinkActivated (const QString &link)

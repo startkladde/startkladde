@@ -157,10 +157,13 @@ void Flarm::updateDataStream ()
 			} break;
 			// no default
 		}
+
+		goToState (State::active);
 	}
 	else
 	{
 		_managedDataStream->clearDataStream ();
+		goToState (State::disabled);
 	}
 }
 

@@ -23,7 +23,7 @@ class Flarm: public QObject
 		Q_OBJECT
 
 	public:
-		struct State { enum Type { disabled, closed, active }; };
+		struct State { enum Type { disabled, /*closed,*/ active }; };
 
 		// Connection type
 		enum ConnectionType { noConnection, serialConnection, tcpConnection, fileConnection };

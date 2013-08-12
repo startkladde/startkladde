@@ -122,9 +122,14 @@ class MainWindow: public SkMainWindow<Ui::MainWindowClass>
 	protected slots:
 		void databaseError (int number, QString message);
 		void databaseStateChanged (DbManager::State state);
+		void flarm_stateChanged (Flarm::State::Type state);
 		void flarm_streamStateChanged (ManagedDataStream::State::Type state);
-		void updateFlarmStreamState (ManagedDataStream::State::Type state);
-		void updateFlarmStreamState ();
+
+		void updateFlarmStateEnabled (ManagedDataStream::State::Type state);
+		void updateFlarmStateDisabled ();
+		void updateFlarmState (Flarm::State::Type state);
+		void updateFlarmState ();
+
 		void readTimeout ();
 		void readResumed ();
 
