@@ -1090,7 +1090,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="29"/>
         <source>2 - Two-seated training</source>
-        <translation>2 - Schulungsflug (einsitzig)</translation>
+        <translation>2 - Schulungsflug (doppelsitzig)</translation>
     </message>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="30"/>
@@ -1125,7 +1125,7 @@ Soll die Datenbank jetzt aktualisiert werden?</translation>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="44"/>
         <source>Solo training</source>
-        <translation>Schulungsflug (einsitzig)</translation>
+        <translation>Schulungsflug (doppelsitzig)</translation>
     </message>
     <message>
         <location filename="../src/model/Flight_Type.cpp" line="45"/>
