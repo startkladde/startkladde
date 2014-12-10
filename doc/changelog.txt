@@ -1,3 +1,8 @@
+  Improvements:
+    - New command line option: --database-name
+    - Remove warning message stating the connection has been canceled
+    - Version is displayed in main window title bar
+  
 2.1.1 (2012-06-17):
   New features:
     - Internationalization

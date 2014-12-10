@@ -4,6 +4,7 @@
 #include <QString>
 
 QString getVersion ();
+QString getLongVersion ();
 
 #endif
 

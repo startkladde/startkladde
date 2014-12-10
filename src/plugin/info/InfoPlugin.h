@@ -31,6 +31,8 @@ class InfoPlugin: public Plugin
 		class Descriptor
 		{
 			public:
+				virtual ~Descriptor () {}
+
 				virtual InfoPlugin *create () const=0;
 				virtual QUuid   getId          () const=0;
 				virtual QString getName        () const=0;
