@@ -65,7 +65,7 @@
        <item>
         <widget class="QComboBox" name="separatorInput">
          <property name="toolTip">
-          <string>&lt;/html&gt;The column separator character. This is usually a comma, but other values, like semicolons, are also in use.&lt;/html&gt;</string>
+          <string>&lt;html&gt;The column separator character. This is usually a comma, but other values, like semicolons, are also in use.&lt;/html&gt;</string>
          </property>
          <property name="editable">
           <bool>true</bool>

@@ -94,7 +94,7 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="locationInput">
             <property name="toolTip">
-             <string>&lt;html&gt;The name of the airfield this program is used at&lt;/html&gt;</string>
+             <string>&lt;html&gt;The name of the airfield where this program is used (e. g. &quot;Rheinstetten&quot;)&lt;/html&gt;</string>
             </property>
            </widget>
           </item>

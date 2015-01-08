@@ -31,7 +31,7 @@ PersonListWindow::PersonListWindow (DbManager &manager, QWidget *parent):
 	// (and get rid of validity checks)
 	personModel=dynamic_cast<Person::DefaultObjectModel *> (getObjectModel ());
 	if (!personModel)
-		std::cerr << "Unexpected model type in PersonListWindow constructor" << std::endl;
+		std::cerr << notr ("Unexpected model type in PersonListWindow constructor") << std::endl;
 
 	connect (mergeAction             , SIGNAL (triggered ()), this, SLOT (mergeAction_triggered              ()));
 	connect (displayMedicalDataAction, SIGNAL (triggered ()), this, SLOT (displayMedicalDataAction_triggered ()));

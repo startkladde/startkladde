@@ -129,7 +129,7 @@
       <item>
        <widget class="SkComboBox" name="personRequiredInput">
         <property name="toolTip">
-         <string>&lt;html&gt;If true, a warning will be output if a person is not specified for a flight with this launch method.&lt;/html&gt;</string>
+         <string>&lt;html&gt;If true, a warning will be output if a pilot is not specified for a flight with this launch method.&lt;/html&gt;</string>
         </property>
        </widget>
       </item>

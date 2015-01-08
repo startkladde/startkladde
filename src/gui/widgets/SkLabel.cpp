@@ -16,6 +16,12 @@ SkLabel::SkLabel (QWidget *parent, Qt::WindowFlags f):
 	useDefaultBackgroundColor (false),
 	errorColor (255, 0, 0)
 {
+	// Determine the color for concealing the label. This is based on the
+	// original background color, which is probably either transparent or
+	// identical to the parent widget's background color. To be sure that
+	// the color is really invisible, we make it transparent.
+	concealedColor=palette ().background ().color ();
+	concealedColor.setAlpha (0);
 }
 
 SkLabel::SkLabel (const QString &text, QWidget *parent, Qt::WindowFlags f):
@@ -26,6 +32,12 @@ SkLabel::SkLabel (const QString &text, QWidget *parent, Qt::WindowFlags f):
 	useDefaultBackgroundColor (false),
 	errorColor (255, 0, 0)
 {
+	// Determine the color for concealing the label. This is based on the
+	// original background color, which is probably either transparent or
+	// identical to the parent widget's background color. To be sure that
+	// the color is really invisible, we make it transparent.
+	concealedColor=palette ().background ().color ();
+	concealedColor.setAlpha (0);
 }
 
 
@@ -118,11 +130,12 @@ void SkLabel::updateColors ()
 
 	if (concealed)
 	{
-		// Concealed => foreground and background like parent background
-		setAutoFillBackground (true);
-
-		p.setColor (QPalette::WindowText, parentWidget ()->palette ().background ().color ());
-		p.setColor (QPalette::Window    , parentWidget ()->palette ().background ().color ());
+		// Concealed => concealed color as foreground and background
+		// Note that the parent widget's background is not necessarily a uniform
+		// color. For example, in KDE4, we may have a gradient.
+		setAutoFillBackground (false);
+		p.setColor (QPalette::WindowText, concealedColor);
+		p.setColor (QPalette::Window    , concealedColor);
 	}
 	else if (error)
 	{

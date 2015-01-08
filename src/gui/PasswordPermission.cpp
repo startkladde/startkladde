@@ -1,7 +1,9 @@
 #include "PasswordPermission.h"
 
 /**
- * Creates a PasswordPermission, using the given PasswordCheck
+  * Creates a PasswordPermission, using the given PasswordCheck
+  *
+  * The password will not be required unless set using setPasswordRequired.
  */
 PasswordPermission::PasswordPermission (PasswordCheck &passwordCheck):
 	passwordCheck (passwordCheck),

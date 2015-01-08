@@ -1,4 +1,0 @@
-Tooltips may be enclosed in <html>...</html> even if they don't use any HTML in
-order to enable line breaks.
-
-

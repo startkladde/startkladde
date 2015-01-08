@@ -4,7 +4,9 @@
 
 set (startkladde_VERSION_MAJOR 2)
 set (startkladde_VERSION_MINOR 1)
-set (startkladde_VERSION_REVISION 0)
+set (startkladde_VERSION_REVISION 1)
+
+SET (full_version ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
 
 
 #################
@@ -80,7 +82,6 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 endif ()
 
 
-
 ######################
 ## Compile settings ##
 ######################
@@ -94,7 +95,6 @@ SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 #foreach (_variableName ${_variableNames})
 #    message(STATUS "${_variableName}=${${_variableName}}")
 #endforeach()
-
 
 ##################
 ## Source files ##
@@ -223,6 +223,11 @@ ADD_CUSTOM_TARGET (lupdate
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+ADD_CUSTOM_TARGET (lupdate_drop
+	COMMAND ${QT_LUPDATE_EXECUTABLE} src -ts ${translation_sources} -no-obsolete
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 
 ################
 ## Executable ##
@@ -248,8 +253,27 @@ target_link_libraries(startkladde qserialdevice)
 # only used via the Qt plugin) to avoid "Error in my_thread_global_end(): 1
 # threads didn't exit" in specific situations (e. g. exception on open).
 # Is this still required?
+#IF (UNIX)
+#	SET (libs ${libs} ${MYSQL_LIBRARIES})
+#ENDIF ()
 
 TARGET_LINK_LIBRARIES (startkladde ${QT_LIBRARIES} ${libs})
+
+
+#############
+## manpage ##
+#############
+
+IF (NOT WIN32)
+	add_custom_command (
+		OUTPUT "${PROJECT_BINARY_DIR}/startkladde.1.gz"
+		DEPENDS "doc/startkladde.1"
+		COMMAND gzip -c ${PROJECT_SOURCE_DIR}/doc/startkladde.1 >${PROJECT_BINARY_DIR}/startkladde.1.gz
+		COMMENT "Generating manpage startkladde.1.gz"
+	)
+
+	add_custom_target (manpage ALL DEPENDS startkladde.1.gz)
+ENDIF ()
 
 
 #########
@@ -308,8 +332,9 @@ ELSE ()
 	SET (TRANSLATIONS_INSTALL_DIR "share/startkladde" )
 	SET (PLUGINS_INSTALL_DIR      "lib/startkladde"   )
 	# Non-Windows specific
-	SET (MENU_INSTALL_DIR         "share/applications")
-	SET (ICON_INSTALL_DIR         "share/pixmaps"     )
+	SET (FREEDESKTOP_MENU_INSTALL_DIR "share/applications")
+	SET (DEBIAN_MENU_INSTALL_DIR      "share/menu"        )
+	SET (ICON_INSTALL_DIR             "share/pixmaps"     )
 ENDIF ()
 
 # Install the executable, translations, external plugins
@@ -341,8 +366,10 @@ IF (WIN32)
 ENDIF ()
 
 IF (NOT WIN32)
-	INSTALL (FILES config/startkladde.desktop DESTINATION ${MENU_INSTALL_DIR})
-	INSTALL (FILES graphics/startkladde.png   DESTINATION ${ICON_INSTALL_DIR})
+	INSTALL (FILES config/startkladde.desktop             DESTINATION "share/applications")
+	INSTALL (FILES config/debian_menu                     DESTINATION "share/menu" RENAME startkladde)
+	INSTALL (FILES graphics/startkladde.png               DESTINATION "share/pixmaps")
+	INSTALL (FILES ${PROJECT_BINARY_DIR}/startkladde.1.gz DESTINATION "share/man/man1")
 ENDIF ()
 
 
@@ -387,13 +414,49 @@ SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
 SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
 SET (CPACK_STRIP_FILES 1)
 
+# Set the package file name 
+IF (WIN32)
+	# On Windows, include the version and -setup in the file name
+	SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}-setup")
+ELSE ()
+	# On Linux, include the version and the architecture in the file name
+
+	# We'll set the package file name to include the architecutre, depending on
+	# the distribution. Therefore, we can not build packages for more than one
+	# distribution at once.
+	IF (CPACK_BINARY_DEB AND CPACK_BINARY_RPM)
+		MESSAGE (FATAL_ERROR "Generating DEB and RPM at the same time is not supported for startkladde")
+	ENDIF ()
+
+	IF (CPACK_BINARY_DEB)
+		# Find the dpkg program. Abort if it is not found.
+		FIND_PROGRAM (DPKG_CMD dpkg)
+		IF (NOT DPKG_CMD)
+			MESSAGE (FATAL_ERROR "dpkg is required for Debian package building")
+		ENDIF(NOT DPKG_CMD)
+
+		# Get the architecture from dpkg --print-architecture
+		EXECUTE_PROCESS (
+			COMMAND "${DPKG_CMD}" --print-architecture
+			OUTPUT_VARIABLE debian_architecture
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+		# Construct the package file name
+		SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}-${debian_architecture}")
+	#ELSEIF (CPACK_BINARY_RPM)
+	#	...
+	ELSE ()
+		SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}")
+	ENDIF ()
+ENDIF ()
+
 
 ####################
 ## Package - NSIS ##
 ####################
 
 # Installer appearance
-SET (CPACK_NSIS_DISPLAY_NAME "Startkladde")
+SET (CPACK_NSIS_DISPLAY_NAME "Startkladde ${full_version}")
 #SET (CPACK_NSIS_MUI_ICON    ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Installer icon
 #SET (CPACK_NSIS_MUI_UNIICON ${PROJECT_SOURCE_DIR}/graphics\\\\startkladde.ico) # Uninstaller icon
 #SET (CPACK_PACKAGE_ICON    "${PROJECT_SOURCE_DIR}/graphics\\\\test.bmp"      ) # Header image, 150x57
@@ -417,8 +480,19 @@ SET (CPACK_NSIS_CONTACT        "martin@famherrmann.de")
 ######################
 
 SET (CPACK_DEBIAN_PACKAGE_NAME startkladde)
-SET (CPACK_DEBIAN_PACKAGE_VERSION ${startkladde_VERSION_MAJOR}.${startkladde_VERSION_MINOR}.${startkladde_VERSION_REVISION})
+SET (CPACK_DEBIAN_PACKAGE_VERSION ${full_version})
 #SET (CPACK_DEBIAN_PACKAGE_ARCHITECTURE i386)
+SET (CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://startkladde.sourceforge.net")
+SET (CPACK_DEBIAN_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}
+ Startkladde can be used by flying clubs for recording flights for legal or
+ accounting purposes.
+ .
+ The flight data can be accessed by clubs or pilots by using a web interface
+ (in the startkladde-web package).
+ .
+ Startkladde was originally developed at Akaflieg Karlsruhe for use at the
+ Rheinstetten airfield."
+)
 
 # Do not explicitly require the MySQL client library. On Ubuntu, its name may
 # changes between releases (e. g. libmysqlclient18 on Ubuntu Precise), which
@@ -432,7 +506,6 @@ SET (CPACK_DEBIAN_PACKAGE_MAINTAINER "Martin Herrmann <martin@famherrmann.de>")
 SET (CPACK_DEBIAN_PACKAGE_SECTION    "misc")
 SET (CPACK_DEBIAN_PACKAGE_PRIORITY   "optional")
 SET (CPACK_DEBIAN_PACKAGE_RECOMMENDS "mysql-server")
-SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
 SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
 
 # TODO: the old (PPA) debian package included some files that are not longer

@@ -102,6 +102,13 @@ DefaultInterface::~DefaultInterface ()
 	// Make sure the QSqlDatabase instance is destroyed before removing it
 	db=QSqlDatabase ();
 
+	// FIXME: on Linux, if a connection has never been established (for example
+	// because the hostname is invalid), there is a 5 second delay and the
+	// message "Error in my_thread_global_end(): 1 threads didn't exit" in this
+	// call on shutdown.
+	// It seems like explicitly linking the mysql client library helped before,
+	// but it no longer does.
+	// Ubuntu precise, Qt 4.8.1, MySQL 5.5.22
 	//std::cout << "remove db " << name << std::endl;
 	QSqlDatabase::removeDatabase (name);
 

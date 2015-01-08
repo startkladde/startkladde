@@ -27,27 +27,6 @@
 template<class T> class MutableObjectList: public AbstractObjectList<T>
 {
 	public:
-//		// Untested
-//		class Mutator
-//		{
-//			friend class MutableObjectList<T>;
-//
-//			public:
-//				~Mutator () { update (); }
-//
-//				T* operator-> () { return &(list.list[index]); }
-//				void update () { list.update (index); }
-//
-//			private:
-//				Mutator (MutableObjectList<T> &list, int index):
-//					list (list), index (index) {}
-//
-//				MutableObjectList<T> &list;
-//				int index;
-//		};
-//
-//		friend class Mutator;
-
 		// Required for gcc 4.7 two-phase lookup
 		using AbstractObjectList<T>::setParent;
 

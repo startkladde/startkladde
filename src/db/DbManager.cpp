@@ -422,15 +422,11 @@ bool DbManager::connect (QWidget *parent)
 	}
 	catch (DbManager::ConnectCanceledException &)
 	{
-		showWarning (tr ("Connection canceled", "Title"),
-			tr ("Connection canceled", "Text"),
-			parent);
+		// Do nothing
 	}
 	catch (OperationCanceledException &ex)
 	{
-		showWarning (tr ("Connection canceled", "Title"),
-			tr ("Connection canceled", "Text"),
-			parent);
+		// Do nothing
 	}
 	catch (ConnectFailedException &ex)
 	{
