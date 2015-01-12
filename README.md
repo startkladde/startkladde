@@ -4,10 +4,10 @@
 glider sites and automatically generating statistics and log books. You can run
 it on Linux or Windows.
 
-*Starkladde* development has been started by
+*Startkladde* development has been started by
 [Akaflieg Karlsruhe](//www.akaflieg.uni-karlsruhe.de/) for
 [LSG Rheinstetten](http://www.lsg-rheinstetten.de) airfield in 2004. Since then
-it's being on many other airfields around the world.
+it's being used on many other airfields around the world.
 
 *Startkladde* has two major components:
 * [startkladde](//github.com/startkladde/startkladde), the main program for logging flight movements
