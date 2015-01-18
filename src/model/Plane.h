@@ -54,7 +54,10 @@ class Plane: public Entity
 	    static QString defaultRegistrationPrefix () { return qApp->translate ("Plane", "N", "default prefix"); }
 	    virtual QString fullRegistration () const;
 	    virtual QString registrationWithType () const;
-
+        virtual bool requiresStrictLogs(void) const {
+            QString val= this->getField("StrictLogs").trimmed().toLower();
+            return (val == "yes" || val == "on" || val == "true" || val == "1" || val =="enabled");
+        }
 
 		// *** Formatting
 		virtual QString toString () const;

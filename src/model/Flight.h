@@ -110,6 +110,13 @@ class Flight: public FlightBase
 		virtual bool copilotRecorded () const { return typeCopilotRecorded (getType ()); }
 		virtual bool hasCopilot () const { return typeAlwaysHasCopilot (getType ()) || (typeCopilotRecorded (getType ()) && copilotSpecified ()); }
 		virtual int numPassengers () const { return hasCopilot ()?2:1; } // TODO: this is inaccurate for planes with >2 seats
+        virtual dbId getPilotInCommandId(void) const
+        {
+            if( getType() == FlightBase::typeTraining2 && copilotSpecified() )
+                return getCopilotId();
+
+            return getPilotId();
+        }
 
 
 		// *** Launch method

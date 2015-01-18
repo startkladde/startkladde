@@ -89,7 +89,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const Flight *flight, Cache &cache)
 	PlaneLog::Entry entry;
 
 	Plane      *plane     =cache.getNewObject<Plane     > (flight->getPlaneId ());
-	Person     *pilot     =cache.getNewObject<Person    > (flight->getPilotId ());
+    Person     *pilot     =cache.getNewObject<Person    > (flight->getPilotInCommandId ());
 
 	if (plane) entry.registration=plane->registration.trimmed ();
 	if (plane) entry.type=plane->type.trimmed ();
@@ -124,7 +124,7 @@ PlaneLog::Entry PlaneLog::Entry::create (const QList<Flight> &flights, Cache &ca
 	PlaneLog::Entry entry;
 
 	Plane      *plane     =cache.getNewObject<Plane     > (flights.last ().getPlaneId ());
-	Person     *pilot     =cache.getNewObject<Person    > (flights.last ().getPilotId ());
+    Person     *pilot     =cache.getNewObject<Person    > (flights.last ().getPilotInCommandId ());
 
 	// Values directly determined
 	if (plane) entry.registration=plane->registration;

@@ -31,10 +31,42 @@ class Entity
 
 		// *** Property access
 		virtual dbId getId () const { return id; }
-		virtual void setId (dbId id) { this->id=id; }
-		virtual QString getDisplayName () const=0;
+		virtual void setId (dbId id) { this->id=id; }	
+        virtual QString getDisplayName () const=0;
 
-	protected:
+        /**
+        *\brief Add key-value pair to comment field
+        *
+        * Adds a key value pair of the form
+        *    <key>= '<value>'
+        * to the comments of this object. If the pair already exists, the value
+        * is replaced by the new value. If value is empty, the entire key value
+        * pair is removed.
+        *
+        *\param[in] name Key name
+        *\param[in] value Value
+        *
+        *\author Claas H. Koehler
+        *\date December 2014
+        */
+        virtual void setField(const char* name, const QString& value);
+
+        /**
+        *\brief Get key-value pair from comment field
+        *
+        * Extracts a key value pair of the form
+        *    <key>= '<value>'
+        * from the comments of this object.
+        *
+        *\param[in] name Key name
+        *\return Value. If key is not found, an empty string is returned.
+        *
+        *\author Claas H. Koehler
+        *\date December 2014
+        */
+        virtual QString getField(const char* name) const;
+
+protected:
 		dbId id;
 };
 

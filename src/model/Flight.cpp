@@ -899,6 +899,11 @@ bool Flight::collectiveLogEntryPossible (const Flight *prev, const Plane *plane)
 	if (prev->  getLandingLocation ().trimmed ().toLower ()!=    getDepartureLocation ().trimmed ().toLower ()) return false;
 	if (      getDepartureLocation ().trimmed ().toLower ()!=      getLandingLocation ().trimmed ().toLower ()) return false;
 
+
+    //CK: Add check if is same PIC here for strict rules. Check comment for respective fields.
+    if (plane && plane->requiresStrictLogs() && getPilotInCommandId() != prev->getPilotInCommandId())
+        return false;
+
 	// For motor planes: only allow if the flights are towflights.
 	// Unknown planes are treated like motor planes.
 	if (plane && (plane->category==Plane::categoryGlider || plane->category==Plane::categoryMotorglider))
