@@ -102,6 +102,7 @@ SET (startkladde_MOC
 
 if (${ACPI_FOUND})
 	SET (AcpiWidget libacpi)
+	INCLUDE_DIRECTORIES(${ACPI_INCLUDE_DIR})
 	SET (libs ${libs} ${ACPI_LIBRARIES})
 else ()
 	SET (AcpiWidget dummy)
