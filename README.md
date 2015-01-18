@@ -29,7 +29,7 @@ For more information, please refer to the [git documentation](http://git-scm.com
 TODO
 
 The process of installing these components and setting up an environment for
-development is described in the [INSTALL.md](INSTALL.md) file (TODO).
+development is described in the [BUILDING.md](BUILDING.md) file (TODO).
 
 ## Contact and Contributing
 
