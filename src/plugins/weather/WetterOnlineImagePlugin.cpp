@@ -26,7 +26,7 @@ SK_PLUGIN_DEFINITION (
 
 enum State { stateIndexPage, stateImage };
 
-const QString indexUrl (notr ("http://www.wetteronline.de/daten/radarhtml/de/dwddg/radarf.htm"));
+const QString indexUrl (notr ("http://www.wetteronline.de/regenradar"));
 
 WetterOnlineImagePlugin::WetterOnlineImagePlugin ():
 	downloader (new Downloader (this))
@@ -55,7 +55,7 @@ void WetterOnlineImagePlugin::downloadSucceeded (int state, QNetworkReply *reply
 	{
 		case stateIndexPage:
 		{
-			QString imagePath=findInIoDevice (*reply, QRegExp (notr ("(daten\\/radar[^\"]*)\"")), 1);
+			QString imagePath=findInIoDevice (*reply, QRegExp (notr ("src=\"([^\"]*p_radar_map[^\"]*)\"")), 1);
 			if (isBlank (imagePath)) OUTPUT_AND_RETURN (tr ("Error: no radar image found"));
 			QString imageUrl=qnotr ("http://www.wetteronline.de/%1").arg (imagePath);
 			downloader->startDownload (stateImage, imageUrl);
