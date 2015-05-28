@@ -152,6 +152,39 @@ Verdergaan?&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
+    <name>DWDAnimationPlugin</name>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="25"/>
+        <source>DWD rain radar (animation)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="26"/>
+        <source>Displays a rain radar animation from dwd.de</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="44"/>
+        <source>Downloading radar animation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="55"/>
+        <source>Saving radar animation</source>
+        <translation type="unfinished">Radaranimatie aan het saven</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="57"/>
+        <source>Error reading the animation</source>
+        <translation type="unfinished">Fout bij het lezen van de animatie</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/weather/DWDAnimationPlugin.cpp" line="66"/>
+        <source>Error: radar animation not found (404)</source>
+        <translation type="unfinished">Fout: radaranimatie niet gevonden (404)</translation>
+    </message>
+</context>
+<context>
     <name>DateInputDialogClass</name>
     <message>
         <location filename="../src/gui/windows/input/DateInputDialog.ui" line="14"/>
@@ -475,143 +508,139 @@ Update de databank nu?</translation>
         <translation>De databank is niet up te date na het laden.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="424"/>
-        <location filename="../src/db/DbManager.cpp" line="430"/>
         <source>Connection canceled</source>
         <comment>Title</comment>
-        <translation>Verbinding verbroken</translation>
+        <translation type="obsolete">Verbinding verbroken</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="425"/>
-        <location filename="../src/db/DbManager.cpp" line="431"/>
         <source>Connection canceled</source>
         <comment>Text</comment>
-        <translation>Verbinding geannuleerd </translation>
+        <translation type="obsolete">Verbinding geannuleerd </translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="436"/>
+        <location filename="../src/db/DbManager.cpp" line="432"/>
         <source>Connection failed</source>
         <translation>Verbinden mislukt</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="437"/>
+        <location filename="../src/db/DbManager.cpp" line="433"/>
         <source>An error occured while connecting: %1</source>
         <translation>Bij het verbinden is er een fout opgetreden: %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="444"/>
+        <location filename="../src/db/DbManager.cpp" line="440"/>
         <source>Beim Verbindungsaufbau ist ein Fehler aufgetreten: %1 (Fehlercode %2, Typ %3)</source>
         <translation>Bij het verbinden is er een fout opgetreden: %1 (Foutcode %2, Type %3)</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="448"/>
+        <location filename="../src/db/DbManager.cpp" line="444"/>
         <source>Error while connecting</source>
         <translation>Fout bij het verbinden</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="478"/>
+        <location filename="../src/db/DbManager.cpp" line="474"/>
         <source>Retrieving data</source>
         <translation>Ontvangt data</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="494"/>
-        <location filename="../src/db/DbManager.cpp" line="518"/>
+        <location filename="../src/db/DbManager.cpp" line="490"/>
+        <location filename="../src/db/DbManager.cpp" line="514"/>
         <source>Retrieving flights</source>
         <translation>Ontvangt vluchten</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="529"/>
+        <location filename="../src/db/DbManager.cpp" line="525"/>
         <source>Refreshing data</source>
         <translation>Actualiseert data</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="539"/>
+        <location filename="../src/db/DbManager.cpp" line="535"/>
         <source>Checking %1</source>
         <translation>Controleert.%1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="550"/>
-        <location filename="../src/db/DbManager.cpp" line="561"/>
+        <location filename="../src/db/DbManager.cpp" line="546"/>
+        <location filename="../src/db/DbManager.cpp" line="557"/>
         <source>Deleting %1</source>
         <translation>Verwijdert %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="571"/>
+        <location filename="../src/db/DbManager.cpp" line="567"/>
         <source>Creating %1</source>
         <translation>Creëert %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="581"/>
+        <location filename="../src/db/DbManager.cpp" line="577"/>
         <source>Updating %1</source>
         <translation>Actualiseert %1</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="601"/>
+        <location filename="../src/db/DbManager.cpp" line="597"/>
         <source>Beginning transaction</source>
         <translation>Begint transactie</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="611"/>
+        <location filename="../src/db/DbManager.cpp" line="607"/>
         <source>Committing transaction</source>
         <translation>Transactie uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="621"/>
+        <location filename="../src/db/DbManager.cpp" line="617"/>
         <source>Rolling back transaction</source>
         <translation>Transactie terugdraaien </translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="635"/>
+        <location filename="../src/db/DbManager.cpp" line="631"/>
         <source>People still in use</source>
         <translation>Personen nog in gebruik</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="637"/>
+        <location filename="../src/db/DbManager.cpp" line="633"/>
         <source>Person still in use</source>
         <translation>Persoon nog in gebruik</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="645"/>
+        <location filename="../src/db/DbManager.cpp" line="641"/>
         <source>After merging, %1 people are still in use.</source>
         <translation>Na het samenvoegen zijn %1 personen nog in gebruik.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="647"/>
+        <location filename="../src/db/DbManager.cpp" line="643"/>
         <source>After merging, one person is still in use.</source>
         <translation>Na het samenvoegen is nog één persoon in gebruik.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="650"/>
+        <location filename="../src/db/DbManager.cpp" line="646"/>
         <source>No person will be deleted.</source>
         <translation>Geen enkele persoon zal verwijderd worden.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="652"/>
+        <location filename="../src/db/DbManager.cpp" line="648"/>
         <source>One person will be deleted.</source>
         <translation>Eén persoon zal verwijderd worden.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="654"/>
+        <location filename="../src/db/DbManager.cpp" line="650"/>
         <source>Only %1 people will be deleted.</source>
         <translation>Er word(en) slechts %1 perso(o)n(en) verwijderd.</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="686"/>
+        <location filename="../src/db/DbManager.cpp" line="682"/>
         <source>Flights: refresh pilots</source>
         <translation>Vluchten: piloten bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="687"/>
+        <location filename="../src/db/DbManager.cpp" line="683"/>
         <source>Flights: refresh copilots</source>
         <translation>Vluchten : copiloten bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="688"/>
+        <location filename="../src/db/DbManager.cpp" line="684"/>
         <source>Flights: refresh towpilots</source>
         <translation>Vluchten: sleeppiloten bijwerken</translation>
     </message>
     <message>
-        <location filename="../src/db/DbManager.cpp" line="689"/>
+        <location filename="../src/db/DbManager.cpp" line="685"/>
         <source>Users: refresh people references</source>
         <translation>Gebruikers: bijwerken persoon gegevens</translation>
     </message>
@@ -1061,17 +1090,17 @@ Update de databank nu?</translation>
         <translation>Sleeppiloot</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="205"/>
+        <location filename="../src/model/Flight.h" line="212"/>
         <source>flight</source>
         <translation>vlucht</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="206"/>
+        <location filename="../src/model/Flight.h" line="213"/>
         <source>the flight</source>
         <translation>de vlucht</translation>
     </message>
     <message>
-        <location filename="../src/model/Flight.h" line="207"/>
+        <location filename="../src/model/Flight.h" line="214"/>
         <source>flights</source>
         <translation>vluchten</translation>
     </message>
@@ -2580,312 +2609,320 @@ De preselectie wordt gereset bij de volgende opstart van het programma.</transla
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="525"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="526"/>
         <source>Show &amp;log</source>
         <translation>Toon Logfile</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="302"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="303"/>
         <source>%1
 Configuration: %2</source>
         <translation>%1
 Configuratie: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="379"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="380"/>
         <source>Weather</source>
         <translation>Meteo</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="445"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="451"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="446"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="452"/>
         <source>Really exit?</source>
         <translation>Weet je zeker dat je wil afsluiten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="445"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="451"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="446"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="452"/>
         <source>Really exit the program?</source>
         <translation>Bevestig programma afsluiten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="456"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="457"/>
         <source>Really shut down?</source>
         <translation>Bevestig afsluiten </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="456"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="457"/>
         <source>Really shut down the computer?</source>
         <translation>Computer echt afsluiten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="528"/>
         <source>Startkladde</source>
-        <translation>Startplank</translation>
+        <translation type="obsolete">Startplank</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="530"/>
         <source>Flight log %1 - Startkladde</source>
-        <translation>Vluchtenlijst %1 - Startplank</translation>
+        <translation type="obsolete">Vluchtenlijst %1 - Startplank</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="566"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="569"/>
         <source>Today (%1)</source>
         <translation>Vandaag (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="571"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="574"/>
         <source>dddd, M/d/yyyy</source>
         <translation>dddd, d.M.yyyy</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="777"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="780"/>
         <source>According to the database, the %1 %2 is still flying. Depart anyway?</source>
         <translation>Volgens de database is de %1 %2 nog in de lucht. Toch starten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="779"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="782"/>
         <source>Plane still flying</source>
         <translation>Dit vliegtuig is nog in de lucht</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="791"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="794"/>
         <source>According to the database, the %1 %2 is still flying. Start anyway?</source>
         <translation>Volgens de database is de %1 %2 nog in de lucht. Toch starten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="793"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="796"/>
         <source>Person still flying</source>
         <translation>Deze persoon is nog in de lucht</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="815"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="818"/>
         <source>plane</source>
         <translation>Vliegtuig</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="817"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="820"/>
         <source>towplane</source>
         <translation>sleepvliegtuig</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1073"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1076"/>
         <source>Delete flight?</source>
         <translation>Vlucht wissen ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1073"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1076"/>
         <source>Really delete flight?</source>
         <translation>Vlucht zeker wissen ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1075"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1078"/>
         <source>Delete glider flight?</source>
         <translation>Zweefvlucht  wissen ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1076"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1079"/>
         <source>The selected flight is a towflight. Really delete the corresponding glider flight?</source>
         <translation>De geselecteerde vlucht is een sleepvlucht. Bevestig dat de bijhorende zweefvlucht mag gewist worden </translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1103"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1276"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1106"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1279"/>
         <source>No flight selected</source>
         <translation>Geen vlucht geselecteerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1235"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1238"/>
         <source>Unable to display virtual keyboard</source>
         <translation>Virtueel toestenbord kan niet getoond worden</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1323"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1326"/>
         <source>An error occured while executing the network diagnostics command.</source>
         <translation>Tijdens het uitvoeren van de netwerk diagnose is een fout opgetreden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1605"/>
         <source>Set displayed date</source>
         <translation>Getoonde datum instellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1602"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1605"/>
         <source>Displayed date:</source>
         <translation>Getoonde datum:</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1684"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1687"/>
         <source>The database password must be entered to display the flight database.</source>
         <translation>Het database paswoord moet ingegeven worden om de vluchtendatabase te tonen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1943"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1946"/>
         <source>The system time was changed. The setting may only be stored permanently when the system is shut down.</source>
         <translation>De systeemtijd werd gewijzigd. De wijziging kan enkel blijvend gewijzigd worden als het systeem afgesloten is</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1151"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1154"/>
         <source>Towflight has errors</source>
         <translation>Sleepvlucht bevat fouten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1151"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1154"/>
         <source>First error of the towflight: %1</source>
         <translation>Eerste fout van de sleepvlucht : %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1153"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1156"/>
         <source>Flight has errors</source>
         <translation>Vlucht bevat fouten</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1153"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1156"/>
         <source>First error of the flight: %1</source>
         <translation>Eerste fout van de vlucht: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1158"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1161"/>
         <source>Towflight has no errors</source>
         <translation>Sleepvlucht is foutenvrij</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1158"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1161"/>
         <source>The towflight has no errors.</source>
         <translation>Sleepvlucht is foutenvrij</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1160"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1163"/>
         <source>Flight has no errors</source>
         <translation>vlucht is foutenvrij</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1160"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1163"/>
         <source>The flight has no errors.</source>
         <translation>De vlucht is foutenvrij</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1229"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1246"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1232"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1249"/>
         <source>DBus call failed</source>
         <translation>DBus-call failed</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1230"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1233"/>
         <source>The call to dbus-send for displaying the virtual keyboard failed.</source>
         <translation>The call to dbus-send for displaying the virtual keyboard failed.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1236"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1239"/>
         <source>The virtual keyboard could not be displayed. Maybe kvkbd is not installed.</source>
         <translation>The virtual keyboard could not be displayed. Maybe kvkbd is not installed.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1247"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1250"/>
         <source>The call to dbus-send for hiding the virtual keyboard failed.</source>
         <translation>The call to dbus-send for hiding the virtual keyboard failed.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1103"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1276"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1106"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1279"/>
         <source>No flight is selected.</source>
         <translation>Geen vlucht geselecteerd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1287"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="529"/>
+        <source>Startkladde %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="531"/>
+        <source>Flight log %1 - Startkladde %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1290"/>
         <source>Either the selected flight is neither a towflight nor a towed flight, or it has not departed yet.</source>
         <translation>De geselecteerde vlucht is noch een sleepvlucht, noch een gesleepte vlucht, of ze is nog niet opgestegen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1288"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1291"/>
         <source>No towflight</source>
         <translation>Geen sleepvlucht</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1322"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1948"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1325"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1951"/>
         <source>Error</source>
         <translation>Fout</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1705"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1708"/>
         <source>Database: %2 (%1)</source>
         <translation>Database: %2 (%1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1777"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1780"/>
         <source>Not connected</source>
         <translation>Geen verbinding</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1781"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1784"/>
         <source>Connecting...</source>
         <translation>Verbinding wordt gemaakt...</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1785"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1788"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1835"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1838"/>
         <source>No reply</source>
         <translation>Geen antwoord</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1905"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1908"/>
         <source>Database settings changed</source>
         <translation>Database settings gewijzigd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1907"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1910"/>
         <source>The database settings were changed. The changes will be effective on the next reconnect. Do you want to reconnect now?</source>
         <translation>De database settings werden gewijzigd. De wijzingen worden effectief vanaf de volgende hernieuwde verbinding. Wil je nu de verbinding hernieuwen ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1929"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1932"/>
         <source>Set system time</source>
         <translation>Systeemtijd instellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1942"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1945"/>
         <source>System time changed</source>
         <translation>Systeemtijd gewijzigd</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1949"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1952"/>
         <source>Changing the system time failed. Maybe the user has insufficient permissions.</source>
         <translation>Wijziging systeemtijd mislukt. Heeft de gebruiker voldoende toegangsrechten ?</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="834"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="837"/>
         <source>Departing not possible</source>
         <translation>Start niet mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="860"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="886"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="863"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="889"/>
         <source>Landing not possible</source>
         <translation>Landing niet mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="934"/>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="957"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="937"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="960"/>
         <source>Touch-and-go not possible</source>
         <translation>Touch-and-go niet mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="935"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="938"/>
         <source>The selected flight is a towflight. Towflights cannot perform a touch-and-go.</source>
         <translation>De geselecteerde vlucht is een sleepvlucht. Sleepvluchten kunnen geen touch-and-go uitvoeren</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1045"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1048"/>
         <source>Replicating not possible</source>
         <translation>Dupliceren niet mogelijk</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1046"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1049"/>
         <source>The selected flight is a towflight. Towflights cannot be replicated.</source>
         <translation>De geselecteerde vlucht is een sleepvlucht. Sleepvluchten kunnen niet gedupliceerd worden</translation>
     </message>
@@ -3978,17 +4015,17 @@ moet het databasepaswoord ingegeven worden.</translation>
         <translation>OO-</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="73"/>
+        <location filename="../src/model/Plane.h" line="76"/>
         <source>plane</source>
         <translation>Vliegtuig</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="74"/>
+        <location filename="../src/model/Plane.h" line="77"/>
         <source>the plane</source>
         <translation>het vliegtuig</translation>
     </message>
     <message>
-        <location filename="../src/model/Plane.h" line="75"/>
+        <location filename="../src/model/Plane.h" line="78"/>
         <source>planes</source>
         <translation>Vliegtuigen</translation>
     </message>
@@ -4299,47 +4336,51 @@ moet het databasepaswoord ingegeven worden.</translation>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="../src/config/Settings.cpp" line="142"/>
+        <location filename="../src/config/Settings.cpp" line="157"/>
         <source>Sunset:</source>
         <translation>zonsondergang:</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="143"/>
+        <location filename="../src/config/Settings.cpp" line="158"/>
         <source>Time until sunset:</source>
         <translation>Tijd tot zonsondergang:</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="149"/>
+        <location filename="../src/config/Settings.cpp" line="164"/>
         <source>Weather:</source>
         <translation>Meteo:</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="149"/>
+        <location filename="../src/config/Settings.cpp" line="164"/>
         <source>KSFO</source>
         <translatorcomment>Maastricht</translatorcomment>
         <translation>EHBK</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="150"/>
+        <location filename="../src/config/Settings.cpp" line="165"/>
         <source>KJFK</source>
         <translatorcomment>Liege airport</translatorcomment>
         <translation>EBLG</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="151"/>
+        <location filename="../src/config/Settings.cpp" line="166"/>
         <source>KFTW</source>
         <translatorcomment>Zaventem</translatorcomment>
         <translation>EBBR</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="195"/>
+        <location filename="../src/config/Settings.cpp" line="214"/>
         <source>Twiddlethorpe</source>
         <translation>Zutendaal</translation>
     </message>
     <message>
-        <location filename="../src/config/Settings.cpp" line="221"/>
+        <location filename="../src/config/Settings.cpp" line="240"/>
+        <source>Weather radar (2 hours)</source>
+        <translation type="unfinished">Buienradar (3 uren) {2 ?}</translation>
+    </message>
+    <message>
         <source>Weather radar (3 hours)</source>
-        <translation>Buienradar (3 uren)</translation>
+        <translation type="obsolete">Buienradar (3 uren)</translation>
     </message>
 </context>
 <context>
@@ -4869,17 +4910,17 @@ Directoryies can be absolute (e. g. /var/lib/startkladde/plugins or relative to 
 <context>
     <name>StatisticsWindow</name>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1613"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1616"/>
         <source>Plane logbooks</source>
         <translation>Vliegtuig logboek</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1614"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1617"/>
         <source>Pilot logbooks</source>
         <translation>Piloot vliegboek</translation>
     </message>
     <message>
-        <location filename="../src/gui/windows/MainWindow.cpp" line="1615"/>
+        <location filename="../src/gui/windows/MainWindow.cpp" line="1618"/>
         <source>Launch method overview</source>
         <translation>Overzicht startwijzen</translation>
     </message>
@@ -5204,7 +5245,7 @@ Database een referentielengtegraad opgegeven werd.</translation>
 <context>
     <name>Translation</name>
     <message>
-        <location filename="../src/i18n/TranslationManager.cpp" line="265"/>
+        <location filename="../src/i18n/TranslationManager.cpp" line="272"/>
         <source> </source>
         <comment>Replace with the name of the translation language, in that language</comment>
         <translation>Nederlands</translation>
@@ -5213,64 +5254,52 @@ Database een referentielengtegraad opgegeven werd.</translation>
 <context>
     <name>WetterOnlineAnimationPlugin</name>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="25"/>
         <source>Wetter Online (animation)</source>
-        <translation>Wetter Online (Animatie)</translation>
+        <translation type="obsolete">Wetter Online (Animatie)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="26"/>
         <source>Displays a weather radar animation from wetteronline.de</source>
-        <translation>Toont een weerradar animatie van Wetteronline.de </translation>
+        <translation type="obsolete">Toont een weerradar animatie van Wetteronline.de </translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="44"/>
         <source>Downloading radar animation (1)...</source>
-        <translation>Radaranimatie downloaden (1)...</translation>
+        <translation type="obsolete">Radaranimatie downloaden (1)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="60"/>
         <source>Error: no animation link was found on the navigation page</source>
-        <translation>Fout: er werd geen animatielink gevonden op de navigatie pagina</translation>
+        <translation type="obsolete">Fout: er werd geen animatielink gevonden op de navigatie pagina</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="63"/>
         <source>Downloading radar animation (2)...</source>
-        <translation>Radaranimatie aan het downloaden (2)...</translation>
+        <translation type="obsolete">Radaranimatie aan het downloaden (2)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="68"/>
         <source>Error: no animation was found on the weather page</source>
-        <translation>Fout: er werd geen animatielink gevonden op de meteo pagina</translation>
+        <translation type="obsolete">Fout: er werd geen animatielink gevonden op de meteo pagina</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="71"/>
         <source>Downloading radar animation (3)...</source>
-        <translation>Radaranimatie aan het downloaden (3)...</translation>
+        <translation type="obsolete">Radaranimatie aan het downloaden (3)...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="75"/>
         <source>Saving radar animation</source>
-        <translation>Radaranimatie aan het saven</translation>
+        <translation type="obsolete">Radaranimatie aan het saven</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="77"/>
         <source>Error reading the animation</source>
-        <translation>Fout bij het lezen van de animatie</translation>
+        <translation type="obsolete">Fout bij het lezen van de animatie</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="91"/>
         <source>Error: navigation page not found (404)</source>
-        <translation>Fout: Navigatiepagina niet gevonden (404)</translation>
+        <translation type="obsolete">Fout: Navigatiepagina niet gevonden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="94"/>
         <source>Error: radar page not found (404)</source>
-        <translation>Fout: radarpagina niet gevonden (404)</translation>
+        <translation type="obsolete">Fout: radarpagina niet gevonden (404)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/weather/WetterOnlineAnimationPlugin.cpp" line="97"/>
         <source>Error: radar animation not found (404)</source>
-        <translation>Fout: radaranimatie niet gevonden (404)</translation>
+        <translation type="obsolete">Fout: radaranimatie niet gevonden (404)</translation>
     </message>
 </context>
 <context>
