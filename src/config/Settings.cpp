@@ -20,7 +20,7 @@
 #include "src/plugins/info/sunset/SunsetTimePlugin.h"
 #include "src/plugins/info/sunset/SunsetCountdownPlugin.h"
 #include "src/plugins/weather/WetterOnlineImagePlugin.h"
-#include "src/plugins/weather/WetterOnlineAnimationPlugin.h"
+#include "src/plugins/weather/DWDAnimationPlugin.h"
 #include "src/i18n/notr.h"
 
 
@@ -233,11 +233,11 @@ void Settings::readSettings ()
 	weatherPluginHeight  =s.value (notr ("weatherPluginHeight")  , 200).toInt ();
 	weatherPluginInterval=s.value (notr ("weatherPluginInterval"), 15*60).toInt ();
 	// Weather dialog
-	weatherWindowPluginId=s.value (notr ("weatherWindowPluginId"), WetterOnlineAnimationPlugin::_getId ().toString ()).toString ();
+	weatherWindowPluginId=s.value (notr ("weatherWindowPluginId"), DWDAnimationPlugin::_getId ().toString ()).toString ();
 	weatherWindowCommand =s.value (notr ("weatherWindowCommand") , notr ("regenradar_wetteronline.de_animation.rb")).toString ();
 	weatherWindowEnabled =s.value (notr ("weatherWindowEnabled") , true).toBool ();
 	weatherWindowInterval=s.value (notr ("weatherWindowInterval"), 15*60).toInt ();
-	weatherWindowTitle   =s.value (notr ("weatherWindowTitle")   , tr ("Weather radar (3 hours)")).toString ();
+	weatherWindowTitle   =s.value (notr ("weatherWindowTitle")   , tr ("Weather radar (2 hours)")).toString ();
 
 	// *** Plugins - Paths
 	pluginPaths.clear ();

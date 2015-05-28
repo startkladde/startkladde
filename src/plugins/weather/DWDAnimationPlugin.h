@@ -1,5 +1,5 @@
-#ifndef WETTERONLINEANIMATIONPLUGIN_H_
-#define WETTERONLINEANIMATIONPLUGIN_H_
+#ifndef DWDANIMATIONPLUGIN_H_
+#define DWDANIMATIONPLUGIN_H_
 
 #include "src/plugin/weather/WeatherPlugin.h"
 
@@ -7,14 +7,14 @@
 
 class Downloader;
 
-class WetterOnlineAnimationPlugin: public WeatherPlugin
+class DWDAnimationPlugin: public WeatherPlugin
 {
 		SK_PLUGIN
 		Q_OBJECT
 
 	public:
-		WetterOnlineAnimationPlugin ();
-		virtual ~WetterOnlineAnimationPlugin ();
+		DWDAnimationPlugin ();
+		virtual ~DWDAnimationPlugin ();
 
 	private:
 		Downloader *downloader;
