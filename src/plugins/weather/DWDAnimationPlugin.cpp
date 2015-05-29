@@ -50,7 +50,7 @@ void DWDAnimationPlugin::abort ()
 	downloader->abort ();
 }
 
-void DWDAnimationPlugin::downloadSucceeded (int state, QNetworkReply *reply)
+void DWDAnimationPlugin::downloadSucceeded (int state __attribute__((unused)), QNetworkReply *reply)
 {
 	outputText (tr ("Saving radar animation"));
 	SkMovie movie (reply);
@@ -59,7 +59,7 @@ void DWDAnimationPlugin::downloadSucceeded (int state, QNetworkReply *reply)
 	outputMovie (movie);
 }
 
-void DWDAnimationPlugin::downloadFailed (int state, QNetworkReply *reply, QNetworkReply::NetworkError code)
+void DWDAnimationPlugin::downloadFailed (int state __attribute__((unused)), QNetworkReply *reply, QNetworkReply::NetworkError code)
 {
 	if (code==QNetworkReply::ContentNotFoundError)
 	{
