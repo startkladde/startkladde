@@ -38,9 +38,7 @@ You can reach us on our [mailing lists](http://sourceforge.net/mail/?group_id=12
 * startkladde-devel - for developers ([subscribe](https://lists.sourceforge.net/lists/listinfo/startkladde-devel), [archive](http://sourceforge.net/mailarchive/forum.php?forum_name=startkladde-devel))
 
 Bugs and feature request can be submitted on
-[GitHub](https://github.com/startkladde/startkladde/issues). New ideas can also
-be discussed in the [Wiki](https://github.com/startkladde/startkladde/wiki)
-first.
+[GitHub](https://github.com/startkladde/startkladde/issues).
 
 Patches should be submitted using the
 [Pull Request](https://github.com/startkladde/startkladde/pulls) system of
