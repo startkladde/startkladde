@@ -28,6 +28,8 @@ ELSE()
 ENDIF()
 
 cmake_minimum_required (VERSION 2.8.6) # 2.8.6 required for automoc
+
+cmake_policy(SET CMP0048 OLD)
 PROJECT (startkladde)
 
 # Include additional cmake scripts (e. g. finding the MySQL library)
