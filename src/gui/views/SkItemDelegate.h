@@ -17,7 +17,7 @@ class QModelIndex;
 class SkItemDelegate: public QItemDelegate
 {
 	public:
-		SkItemDelegate (QObject *parent);
+		SkItemDelegate (QObject *parent=NULL);
 		virtual ~SkItemDelegate ();
 
 		virtual void paint (QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
