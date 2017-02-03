@@ -373,7 +373,7 @@ template<class T> void ObjectListWindow<T>::on_actionRefresh_triggered ()
 	// Store the old index and ID
 	QModelIndex oldTableIndex=ui.table->currentIndex ();
 
-	list->replaceList (manager.getCache ().getObjects<T> ().getList ());
+	list->replaceList (manager.getCache ().template getObjects<T> ().getList ());
 
 	QAbstractItemModel *model=ui.table->model ();
 
