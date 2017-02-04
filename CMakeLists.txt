@@ -28,6 +28,8 @@ ELSE()
 ENDIF()
 
 cmake_minimum_required (VERSION 2.8.6) # 2.8.6 required for automoc
+
+cmake_policy(SET CMP0048 OLD)
 PROJECT (startkladde)
 
 # Include additional cmake scripts (e. g. finding the MySQL library)
@@ -210,12 +212,12 @@ ADD_CUSTOM_TARGET (lupdate_drop
 
 ADD_EXECUTABLE(startkladde
 	WIN32 # GUI application on Windows - ignored on other platforms
-	${startkladde_SOURCES} 
-	${startkladde_MOC} 
-    ${startkladde_FORMS_HEADERS} 
-    ${startkladde_RESOURCES_RCC}
-    ${startkladde_WINDOWS_RESOURCES}
-    ${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
+	${startkladde_SOURCES}
+	${startkladde_MOC}
+	${startkladde_FORMS_HEADERS}
+	${startkladde_RESOURCES_RCC}
+	${startkladde_WINDOWS_RESOURCES}
+	${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
 	${translation_files}
 )
 
@@ -258,15 +260,15 @@ ADD_CUSTOM_TARGET (svnheader ALL)
 ADD_CUSTOM_COMMAND(
 	TARGET svnheader
 	COMMAND ${CMAKE_COMMAND}
-		-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR} 
+		-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}
 		-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/generateSvnHeader.cmake
 )
 
 # Mark svnVersion.h as generated
 set_source_files_properties (
 	${CMAKE_CURRENT_BINARY_DIR}/svnVersion.h
-    PROPERTIES GENERATED TRUE
-    HEADER_FILE_ONLY TRUE)
+	PROPERTIES GENERATED TRUE
+	HEADER_FILE_ONLY TRUE)
 
 # The executable depends on the svnheader target
 add_dependencies (startkladde svnheader)
@@ -342,14 +344,14 @@ ENDIF ()
 
 # uninstall target
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
-    IMMEDIATE @ONLY
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+	IMMEDIATE @ONLY
 )
 
 add_custom_target (
 	uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
 )
 
 
@@ -368,7 +370,7 @@ SET (CPACK_PACKAGE_DESCRIPTION_SUMMARY "A flight logging application for flying 
 SET (CPACK_PACKAGE_VENDOR "Startkladde team")
 SET (CPACK_PACKAGE_CONTACT "martin@famherrmann.de")
 #SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/doc/gpl.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 
 # Installed files
 SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
@@ -377,7 +379,7 @@ SET(CPACK_PACKAGE_EXECUTABLES "startkladde" "Startkladde")
 SET (CPACK_SOURCE_IGNORE_FILES CMakeLists.txt.user "~$" ".svn$")
 SET (CPACK_STRIP_FILES 1)
 
-# Set the package file name 
+# Set the package file name
 IF (WIN32)
 	# On Windows, include the version and -setup in the file name
 	SET (CPACK_PACKAGE_FILE_NAME "startkladde-${full_version}-setup")
@@ -472,4 +474,3 @@ SET (CPACK_DEBIAN_PACKAGE_RECOMMENDS "mysql-server")
 SET (CPACK_DEBIAN_PACKAGE_SUGGESTS   "kvkbd")
 
 include (CPack)
-

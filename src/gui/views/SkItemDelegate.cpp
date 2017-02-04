@@ -10,7 +10,7 @@
 #include <QPainter>
 #include <QModelIndex>
 
-SkItemDelegate::SkItemDelegate (QObject *parent=NULL):
+SkItemDelegate::SkItemDelegate (QObject *parent):
 	QItemDelegate (parent),
 	coloredSelectionEnabled (false)
 {
